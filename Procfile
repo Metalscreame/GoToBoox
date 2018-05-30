@@ -1,2 +1,2 @@
-web: gotoboox
+web: GoToBoox
 
