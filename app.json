@@ -1,0 +1,12 @@
+{
+  "name": "Start on Heroku: Go",
+  "description": "GoToBooX App",
+  "keywords": [
+    "getting-started",
+    "go",
+    "sample",
+    "example"
+  ],
+  "website": "http://github.com/metalscreame/gotoboox",
+  "repository": "http://github.com/metalscreame/gotoboox"
+}
