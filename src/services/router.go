@@ -5,8 +5,13 @@ import (
 	"log"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"github.com/metalscreame/GoToBoox/src/services/api/v1/userProfile"
 )
 
+const (
+	apiV1route       = "/api/v1"
+	userProfileRoute = "/userProfile"
+)
 
 
 var router *gin.Engine
@@ -38,4 +43,11 @@ func InitializeRouter() {
 	// exm router.GET("/", showIndex.ShowIndexPage)
 
 	router.Run(":" + port)
+}
+
+func initUserProfileRouters(){
+	router.GET(apiV1route+userProfileRoute,userProfile.UserGet)
+	router.POST(apiV1route+userProfileRoute,userProfile.UserCreate)
+	router.PUT(apiV1route+userProfileRoute,userProfile.UserUpdate)
+	router.DELETE(apiV1route+userProfileRoute,userProfile.UserDelete)
 }
