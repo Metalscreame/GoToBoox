@@ -8,4 +8,5 @@ import (
 func main() {
 	//For local testing uncomment port in init
 	services.InitializeRouter()
+	//models.GetCategories()
 }
