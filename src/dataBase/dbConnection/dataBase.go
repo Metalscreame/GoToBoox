@@ -9,9 +9,14 @@ import (
 
 //Specify this values for concrette db
 const (
-	DB_USER                = "postgres"
-	DB_PASSWORD            = "root"
-	DB_NAME                = "postgres"
+	DB_USER     ="zrlfyamblttpom"// "postgres" // for local
+	DB_PASSWORD = "e2c0e8832ea228e6b15e553ce69f7cb2c0ff4d646ff0f284245ce77cc78b437b"//"root"
+	DB_NAME     = "d7ckgvm53enhum"//"postgres"
+
+	//use this for local machines
+	//DB_USER                = "postgres"
+	//DB_PASSWORD            = "root"
+	//DB_NAME                = "postgres"
 	DB_SCHEMA              = "gotoboox."
 	DB_USERS_TABLE         = "users"
 	DB_BOOKS_TABLE         = "books"
