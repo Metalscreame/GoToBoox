@@ -17,15 +17,22 @@ const (
 
 type User entity.User
 
+type UserRepository interface {
+	GetUserByEmail(email string) (u User, err error)
+	UpdateInsertUserByEmail(u User) (err error)
+	DeleteUserByEmail(email string) (err error)
+}
+
 //GetUserByEmail gets users from users table by
-func (u *User) GetUserByEmail() (err error) {
+func GetUserByEmail(email string) (u User, err error) {
+
 	query := prepareQueryString(selectQueryType)
 	stmt, err := db.GlobalDataBaseConnection.Prepare(query)
 	if err != nil {
 		return
 	}
 
-	rows, err := execQueueByEmail(stmt, u)
+	rows, err := execQueueByEmail(stmt, email)
 	if err != nil {
 		return
 	}
@@ -39,37 +46,21 @@ func (u *User) GetUserByEmail() (err error) {
 	return
 }
 
-func (u *User) UpdateUserByEmail() (err error) {
+func UpdateInsertUserByEmail(u User) (err error) {
 	query := prepareQueryString(updateQueryType)
 	stmt, err := db.GlobalDataBaseConnection.Prepare(query)
 	if err != nil {
 		return
 	}
 
-	err= execInsertStmtByEmail(stmt,u)
-	if err != nil{
-		return
-	}
-	return
-}
-
-func (u *User) DeleteUserByEmail() (err error) {
-	query := prepareQueryString(deleteQueryType)
-	stmt, err := db.GlobalDataBaseConnection.Prepare(query)
-	if err != nil {
+	err = execInsertStmtByEmail(stmt, &u)
+	if err == nil {
 		return
 	}
 
-	err= execInsertStmtByEmail(stmt,u)
-	if err != nil{
-		return
-	}
-	return
-}
-
-func (u *User) CreateUser() (err error) {
-	query := prepareQueryString(insertQueryType)
-	stmt, err := db.GlobalDataBaseConnection.Prepare(query)
+	//insert here if cant update
+	query = prepareQueryString(insertQueryType)
+	stmt, err = db.GlobalDataBaseConnection.Prepare(query)
 	if err != nil {
 		return
 	}
@@ -81,7 +72,21 @@ func (u *User) CreateUser() (err error) {
 
 	_, err = res.RowsAffected()
 	if err != nil {
-		return errors.New("There is no user with such email")
+		return
+	}
+	return
+}
+
+func DeleteUserByEmail(email string) (err error) {
+	query := prepareQueryString(deleteQueryType)
+	stmt, err := db.GlobalDataBaseConnection.Prepare(query)
+	if err != nil {
+		return
+	}
+
+	_, err = execQueueByEmail(stmt, email)
+	if err != nil {
+		return
 	}
 	return
 }
@@ -117,7 +122,7 @@ func prepareQueryString(typeOfQuery string) (string) {
 }
 
 func execInsertStmtByEmail(stmt *sql.Stmt, u *User) (err error) {
-	res, err := stmt.Exec(u.Nickname,u.Email,u.Password,u.Email)
+	res, err := stmt.Exec(u.Nickname, u.Email, u.Password, u.Email)
 	if err != nil {
 		return err
 	}
@@ -128,8 +133,8 @@ func execInsertStmtByEmail(stmt *sql.Stmt, u *User) (err error) {
 	}
 }
 
-func execQueueByEmail(stmt *sql.Stmt, u *User) (rows *sql.Rows, err error) {
-	rows, err = stmt.Query(u.Email)
+func execQueueByEmail(stmt *sql.Stmt, email string) (rows *sql.Rows, err error) {
+	rows, err = stmt.Query(email)
 	if err != nil {
 		return nil, err
 	}
