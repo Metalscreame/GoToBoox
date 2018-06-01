@@ -5,9 +5,12 @@ import (
 	"log"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"github.com/metalscreame/GoToBoox/src/services/api/v.1"
 )
 
+const (
+	apiV1route       = "/api/v1"
+	userProfileRoute = "/userProfile"
+)
 
 
 var router *gin.Engine
@@ -33,15 +36,16 @@ func InitializeRouter() {
 		c.HTML(http.StatusOK, "index.tmpl.html", nil)
 	})
 
-	//The place for api-handlers routes
 	router.GET("/api/v.1/", api.Handler)
-
-
-	// The place for ui-handlers routes
-	// router.GET("/", ui.Index)
-
-
-
-
+	//The place for handlers routes
+	// exm router.GET("/", showIndex.ShowIndexPage)
+	initUserProfileRouters()
 	router.Run(":" + port)
+}
+
+func initUserProfileRouters(){
+	router.GET(apiV1route+userProfileRoute,userProfile.UserGet)
+	router.POST(apiV1route+userProfileRoute,userProfile.UserCreate)
+	router.PUT(apiV1route+userProfileRoute,userProfile.UserUpdate)
+	router.DELETE(apiV1route+userProfileRoute,userProfile.UserDelete)
 }
