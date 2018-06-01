@@ -5,6 +5,7 @@ import (
 	"log"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"github.com/metalscreame/GoToBoox/src/services/api/v.1"
 )
 
 
@@ -12,7 +13,6 @@ import (
 var router *gin.Engine
 
 func InitializeRouter() {
-
 	//Used for heroku
 	port := os.Getenv("PORT")
 
@@ -25,7 +25,6 @@ func InitializeRouter() {
 	}
 
 	router = gin.New()
-
 	router.Use(gin.Logger())
 	router.LoadHTMLGlob("templates/*.tmpl.html")
 	router.Static("/static", "static")
@@ -34,8 +33,15 @@ func InitializeRouter() {
 		c.HTML(http.StatusOK, "index.tmpl.html", nil)
 	})
 
-	//The place for handlers routes
-	// exm router.GET("/", showIndex.ShowIndexPage)
+	//The place for api-handlers routes
+	router.GET("/api/v.1/", api.Handler)
+
+
+	// The place for ui-handlers routes
+	// router.GET("/", ui.Index)
+
+
+
 
 	router.Run(":" + port)
 }
