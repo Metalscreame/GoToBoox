@@ -37,4 +37,8 @@ func InitializeConnection() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	GlobalDataBaseConnection.Ping()
+	if err != nil {
+		log.Fatal(err)
+	}
 }
