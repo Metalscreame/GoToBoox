@@ -9,17 +9,17 @@ import (
 )
 
 const (
-	selectType = "select"
-	insertType = "insert"
-	deleteType = "delete"
-	updateType = "update"
+	selectQueryType = "select"
+	insertQueryType = "insert"
+	deleteQueryType = "delete"
+	updateQueryType = "update"
 )
 
 type User entity.User
 
 //GetUser gets users from users table by
 func (u *User) GetUser() (err error) {
-	query := prepareQueryString(selectType)
+	query := prepareQueryString(selectQueryType)
 	stmt, err := db.GlobalDataBaseConnection.Prepare(query)
 	if err != nil {
 		return
@@ -40,7 +40,7 @@ func (u *User) GetUser() (err error) {
 }
 
 func (u *User) UpdateUser() (err error) {
-	query := prepareQueryString(updateType)
+	query := prepareQueryString(updateQueryType)
 	stmt, err := db.GlobalDataBaseConnection.Prepare(query)
 	if err != nil {
 		return
@@ -54,7 +54,7 @@ func (u *User) UpdateUser() (err error) {
 }
 
 func (u *User) DeleteUser() (err error) {
-	query := prepareQueryString(deleteType)
+	query := prepareQueryString(deleteQueryType)
 	stmt, err := db.GlobalDataBaseConnection.Prepare(query)
 	if err != nil {
 		return
@@ -68,7 +68,7 @@ func (u *User) DeleteUser() (err error) {
 }
 
 func (u *User) CreateUser() (err error) {
-	query := prepareQueryString(insertType)
+	query := prepareQueryString(insertQueryType)
 	stmt, err := db.GlobalDataBaseConnection.Prepare(query)
 	if err != nil {
 		return
@@ -86,25 +86,25 @@ func (u *User) CreateUser() (err error) {
 	return
 }
 
-func prepareQueryString(typeOfQueue string) (string) {
+func prepareQueryString(typeOfQuery string) (string) {
 	var b bytes.Buffer
 
-	switch typeOfQueue {
-	case insertType:
+	switch typeOfQuery {
+	case insertQueryType:
 		b.WriteString("insert into ")
 		b.WriteString(db.DB_SCHEMA)
 		b.WriteString(db.DB_USERS_TABLE)
 		b.WriteString("(nickname,email,password,registrDate) values($1,$2,$3,$4)")
 		return b.String()
-	case updateType:
+	case updateQueryType:
 		b.WriteString("update ")
 		b.WriteString(db.DB_SCHEMA)
 		b.WriteString(db.DB_USERS_TABLE)
 		b.WriteString(" set nickname=&1,email=$2,password=$3 where email=$4")
 		return b.String()
-	case selectType:
+	case selectQueryType:
 		b.WriteString("select from ")
-	case deleteType:
+	case deleteQueryType:
 		b.WriteString("delete from ")
 	default:
 		return ""

@@ -41,7 +41,7 @@ func InitializeRouter() {
 
 	//The place for handlers routes
 	// exm router.GET("/", showIndex.ShowIndexPage)
-
+	initUserProfileRouters()
 	router.Run(":" + port)
 }
 
