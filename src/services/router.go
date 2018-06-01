@@ -5,13 +5,14 @@ import (
 	"log"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"github.com/metalscreame/GoToBoox/src/services/api/v1"
+	"github.com/metalscreame/GoToBoox/src/services/api/v1/userProfile"
 )
 
 const (
 	apiV1route       = "/api/v1"
 	userProfileRoute = "/userProfile"
 )
-
 
 var router *gin.Engine
 
@@ -21,7 +22,6 @@ func InitializeRouter() {
 
 	//Uncomment for local machine   !!!!
 	//port="8080"
-
 
 	if port == "" {
 		log.Fatal("$PORT must be set")
@@ -36,16 +36,17 @@ func InitializeRouter() {
 		c.HTML(http.StatusOK, "index.tmpl.html", nil)
 	})
 
-	router.GET("/api/v.1/", api.Handler)
 	//The place for handlers routes
 	// exm router.GET("/", showIndex.ShowIndexPage)
+	router.GET("/api/v.1/", v1.IndexHandler)
 	initUserProfileRouters()
+
 	router.Run(":" + port)
 }
 
-func initUserProfileRouters(){
-	router.GET(apiV1route+userProfileRoute,userProfile.UserGet)
-	router.POST(apiV1route+userProfileRoute,userProfile.UserCreate)
-	router.PUT(apiV1route+userProfileRoute,userProfile.UserUpdate)
-	router.DELETE(apiV1route+userProfileRoute,userProfile.UserDelete)
+func initUserProfileRouters() {
+	router.GET(apiV1route+userProfileRoute, userProfile.UserGet)
+	router.POST(apiV1route+userProfileRoute, userProfile.UserCreate)
+	router.PUT(apiV1route+userProfileRoute, userProfile.UserUpdate)
+	router.DELETE(apiV1route+userProfileRoute, userProfile.UserDelete)
 }

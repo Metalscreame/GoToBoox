@@ -3,7 +3,7 @@ package main
 import (
 	_ "github.com/heroku/x/hmetrics/onload"
 	"github.com/metalscreame/GoToBoox/src/services"
-	db "github.com/metalscreame/GoToBoox/src/dataBase/dbConnection"
+	db "github.com/metalscreame/GoToBoox/src/dataBase/configuration"
 )
 
 

@@ -1,4 +1,4 @@
-package api
+package v1
 
 import (
 	"github.com/gin-gonic/gin"
@@ -6,7 +6,7 @@ import (
 )
 
 
-func Handler(c *gin.Context) {
+func IndexHandler(c *gin.Context) {
 	type Category struct{
 		Id int64
 		Title string

@@ -2,7 +2,7 @@ package repository
 
 import (
 	"github.com/metalscreame/GoToBoox/src/dataBase/entity"
-	db "github.com/metalscreame/GoToBoox/src/dataBase/dbConnection"
+	db "github.com/metalscreame/GoToBoox/src/dataBase/configuration"
 	"bytes"
 	"errors"
 	"database/sql"
@@ -17,8 +17,8 @@ const (
 
 type User entity.User
 
-//GetUser gets users from users table by
-func (u *User) GetUser() (err error) {
+//GetUserByEmail gets users from users table by
+func (u *User) GetUserByEmail() (err error) {
 	query := prepareQueryString(selectQueryType)
 	stmt, err := db.GlobalDataBaseConnection.Prepare(query)
 	if err != nil {
@@ -39,28 +39,28 @@ func (u *User) GetUser() (err error) {
 	return
 }
 
-func (u *User) UpdateUser() (err error) {
+func (u *User) UpdateUserByEmail() (err error) {
 	query := prepareQueryString(updateQueryType)
 	stmt, err := db.GlobalDataBaseConnection.Prepare(query)
 	if err != nil {
 		return
 	}
 
-	err=execStmtByEmail(stmt,u)
+	err= execInsertStmtByEmail(stmt,u)
 	if err != nil{
 		return
 	}
 	return
 }
 
-func (u *User) DeleteUser() (err error) {
+func (u *User) DeleteUserByEmail() (err error) {
 	query := prepareQueryString(deleteQueryType)
 	stmt, err := db.GlobalDataBaseConnection.Prepare(query)
 	if err != nil {
 		return
 	}
 
-	err=execStmtByEmail(stmt,u)
+	err= execInsertStmtByEmail(stmt,u)
 	if err != nil{
 		return
 	}
@@ -116,7 +116,7 @@ func prepareQueryString(typeOfQuery string) (string) {
 	return b.String()
 }
 
-func execStmtByEmail(stmt *sql.Stmt, u *User) (err error) {
+func execInsertStmtByEmail(stmt *sql.Stmt, u *User) (err error) {
 	res, err := stmt.Exec(u.Nickname,u.Email,u.Password,u.Email)
 	if err != nil {
 		return err
