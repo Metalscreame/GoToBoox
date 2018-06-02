@@ -3,10 +3,14 @@
 	"ignore": "test",
 	"package": [
 		{
-			"checksumSHA1": "WgnmO18uJSWUTHYrkc/SctRw6ug=",
-			"comment": "v1.0rc1-110-g4cc2de6",
+			"path": "all",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "wNyBbcFyAWzNN0dBbdLEQCLz/AE=",
 			"path": "github.com/gin-gonic/gin",
-			"revision": "4cc2de6207f4128624cbdd16be30f64966c67c08"
+			"revision": "caf3e350a548af1add9def68087ac53d1d000caa",
+			"revisionTime": "2018-05-31T06:13:40Z"
 		},
 		{
 			"checksumSHA1": "hYBUzMNfxNli3gvmwRo0QP6JWco=",
@@ -19,6 +23,10 @@
 			"comment": "v1.0rc1-110-g4cc2de6",
 			"path": "github.com/gin-gonic/gin/render",
 			"revision": "4cc2de6207f4128624cbdd16be30f64966c67c08"
+		},
+		{
+			"path": "github.com/gin-gonic/render",
+			"revision": ""
 		},
 		{
 			"checksumSHA1": "tcUeB0Ga42q969py3DzqOLC9JuA=",
