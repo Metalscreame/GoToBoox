@@ -76,7 +76,7 @@ func initUserProfileRouters() {
 		// Ensure that the user is not logged in by using the middleware
 		userRoutes.POST("/register", midlware.EnsureNotLoggedIn(), service.UserCreateHandler)
 
-		// Handle the GET requests at /api/v1/register
+		// Handle the GET requests at /api/v1/userProfile
 		// Show the user's profile page
 		// Ensure that the user is logged in by using the middleware
 		userRoutes.GET("/userProfile", midlware.EnsureLoggedIn(), service.UserGetHandler)

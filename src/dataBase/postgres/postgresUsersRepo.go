@@ -34,7 +34,7 @@ func (p *postgresUsersRepository) GetUserByEmail(email string) (u entity.User, e
 	}
 
 	//rows, err := execQueueByEmail(stmt, email)
-	row := stmt.QueryRow()
+	row := stmt.QueryRow(email)
 	if err != nil {
 		return
 	}
@@ -105,7 +105,7 @@ func prepareQueryString(typeOfQuery string) (string) {
 		b.WriteString(" set nickname=&1,email=$2,password=$3 where email=$4")
 		return b.String()
 	case selectQueryType:
-		b.WriteString("select from ")
+		b.WriteString("select * from ")
 	case deleteQueryType:
 		b.WriteString("delete from ")
 	default:
