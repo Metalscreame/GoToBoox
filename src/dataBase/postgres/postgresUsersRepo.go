@@ -5,6 +5,8 @@ import (
 	"bytes"
 	"errors"
 	"database/sql"
+	db "github.com/metalscreame/GoToBoox/src/dataBase"
+	"github.com/metalscreame/GoToBoox/src/dataBase/repository/users"
 )
 
 const (
@@ -18,7 +20,7 @@ type postgresUsersRepository struct {
 	Db *sql.DB
 }
 
-func NewPostgresUsersRepo(Db *sql.DB)  {
+func NewPostgresUsersRepo(Db *sql.DB)  users.UserRepository{
 	return &postgresUsersRepository{Db}
 }
 

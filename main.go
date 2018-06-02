@@ -18,5 +18,3 @@ func main() {
 	services.InitializeRouter()
 	//models.GetCategories()
 }
-
-
