@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strconv"
 	"math/rand"
-	"github.com/metalscreame/GoToBoox/src/dataBase/repository/entity"
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository/users"
+	"github.com/metalscreame/GoToBoox/src/dataBase/repository/entity"
 )
 
 func (s *UserService) LogoutHandler(c *gin.Context) {

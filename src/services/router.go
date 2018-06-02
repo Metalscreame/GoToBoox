@@ -8,6 +8,7 @@ import (
 	"github.com/metalscreame/GoToBoox/src/services/authentification/midlware"
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository/users"
 	"github.com/metalscreame/GoToBoox/src/dataBase"
+	"github.com/metalscreame/GoToBoox/src/dataBase/postgres"
 )
 
 const (
@@ -20,7 +21,7 @@ type UserService struct {
 
 func NewUserService(repository users.UserRepository) *UserService {
 	return &UserService{
-		UsersRepo:repository,
+		UsersRepo: repository,
 	}
 }
 
@@ -31,7 +32,7 @@ func InitializeRouter() {
 	port := os.Getenv("PORT")
 
 	//Uncomment for local machine   !!!!
-	port="8080"
+	port = "8080"
 
 	if port == "" {
 		log.Fatal("$PORT must be set")
@@ -60,8 +61,7 @@ func initUserProfileRouters() {
 	// indicating whether the request was from an authenticated user or not
 	router.Use(midlware.SetUserStatus())
 
-	service:=NewUserService(users.NewPostgresUsersRepo(dataBase.GlobalDataBaseConnection))
-
+	service := NewUserService(postgres.NewPostgresUsersRepo(dataBase.GlobalDataBaseConnection))
 	userRoutes := router.Group(apiRoute)
 	{
 		// Handle POST requests at /api/v1/login
@@ -70,11 +70,11 @@ func initUserProfileRouters() {
 
 		// Handle GET requests at /api/v1/logout
 		// Ensure that the user is logged in by using the middleware
-		userRoutes.GET("/logout",  midlware.EnsureLoggedIn(), service.LogoutHandler)
+		userRoutes.GET("/logout", midlware.EnsureLoggedIn(), service.LogoutHandler)
 
 		// Handle POST requests at /api/v1/register
 		// Ensure that the user is not logged in by using the middleware
-		userRoutes.POST("/register",  midlware.EnsureNotLoggedIn(), service.UserCreateHandler)
+		userRoutes.POST("/register", midlware.EnsureNotLoggedIn(), service.UserCreateHandler)
 
 		// Handle the GET requests at /api/v1/register
 		// Show the user's profile page
@@ -84,12 +84,12 @@ func initUserProfileRouters() {
 		// Handle the GET requests at /api/v1/register
 		// Show the user's profile page
 		// Ensure that the user is logged in by using the middleware
-		userRoutes.PUT("/userProfile",  midlware.EnsureLoggedIn(),service.UserUpdateHandler)
+		userRoutes.PUT("/userProfile", midlware.EnsureLoggedIn(), service.UserUpdateHandler)
 
 		// Handle the GET requests at /api/v1/register
 		// Show the user's profile page
 		// Ensure that the user is logged in by using the middleware
-		userRoutes.DELETE("/userProfile",  midlware.EnsureLoggedIn(),service.UserDeleteHandler)
+		userRoutes.DELETE("/userProfile", midlware.EnsureLoggedIn(), service.UserDeleteHandler)
 	}
 
 	// Show the login page
@@ -98,9 +98,9 @@ func initUserProfileRouters() {
 
 	// Show the registration page
 	// Ensure that the user is not logged in by using the middleware
-	router.GET("/register",  midlware.EnsureNotLoggedIn(), ShowRegistrPage)
+	router.GET("/register", midlware.EnsureNotLoggedIn(), ShowRegistrPage)
 
 	// Show the user's profile page
 	// Ensure that the user is logged in by using the middleware
-	router.GET("/usersProfile", midlware.EnsureLoggedIn(),ShowUsersProfilePage)
+	router.GET("/usersProfile", midlware.EnsureLoggedIn(), ShowUsersProfilePage)
 }

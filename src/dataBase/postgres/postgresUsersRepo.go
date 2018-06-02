@@ -1,8 +1,7 @@
-package users
+package postgres
 
 import (
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository/entity"
-	db "github.com/metalscreame/GoToBoox/src/dataBase/configuration"
 	"bytes"
 	"errors"
 	"database/sql"
@@ -19,7 +18,7 @@ type postgresUsersRepository struct {
 	Db *sql.DB
 }
 
-func NewPostgresUsersRepo(Db *sql.DB) UserRepository {
+func NewPostgresUsersRepo(Db *sql.DB)  {
 	return &postgresUsersRepository{Db}
 }
 
