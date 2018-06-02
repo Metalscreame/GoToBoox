@@ -6,10 +6,9 @@ package gin
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"reflect"
-
-	"github.com/gin-gonic/gin/json"
 )
 
 type ErrorType uint64
@@ -24,13 +23,15 @@ const (
 	ErrorTypeNu            = 2
 )
 
-type Error struct {
-	Err  error
-	Type ErrorType
-	Meta interface{}
-}
+type (
+	Error struct {
+		Err  error
+		Type ErrorType
+		Meta interface{}
+	}
 
-type errorMsgs []*Error
+	errorMsgs []*Error
+)
 
 var _ error = &Error{}
 
@@ -65,13 +66,13 @@ func (msg *Error) JSON() interface{} {
 	return json
 }
 
-// MarshalJSON implements the json.Marshaller interface.
+// Implements the json.Marshaller interface
 func (msg *Error) MarshalJSON() ([]byte, error) {
 	return json.Marshal(msg.JSON())
 }
 
-// Error implements the error interface
-func (msg Error) Error() string {
+// Implements the error interface
+func (msg *Error) Error() string {
 	return msg.Err.Error()
 }
 
@@ -79,8 +80,8 @@ func (msg *Error) IsType(flags ErrorType) bool {
 	return (msg.Type & flags) > 0
 }
 
-// ByType returns a readonly copy filtered the byte.
-// ie ByType(gin.ErrorTypePublic) returns a slice of errors with type=ErrorTypePublic.
+// Returns a readonly copy filterd the byte.
+// ie ByType(gin.ErrorTypePublic) returns a slice of errors with type=ErrorTypePublic
 func (a errorMsgs) ByType(typ ErrorType) errorMsgs {
 	if len(a) == 0 {
 		return nil
@@ -88,7 +89,7 @@ func (a errorMsgs) ByType(typ ErrorType) errorMsgs {
 	if typ == ErrorTypeAny {
 		return a
 	}
-	var result errorMsgs
+	var result errorMsgs = nil
 	for _, msg := range a {
 		if msg.IsType(typ) {
 			result = append(result, msg)
@@ -97,21 +98,24 @@ func (a errorMsgs) ByType(typ ErrorType) errorMsgs {
 	return result
 }
 
-// Last returns the last error in the slice. It returns nil if the array is empty.
-// Shortcut for errors[len(errors)-1].
+// Returns the last error in the slice. It returns nil if the array is empty.
+// Shortcut for errors[len(errors)-1]
 func (a errorMsgs) Last() *Error {
-	if length := len(a); length > 0 {
-		return a[length-1]
+	length := len(a)
+	if length == 0 {
+		return nil
 	}
-	return nil
+	return a[length-1]
 }
 
-// Errors returns an array will all the error messages.
-// Example:
-// 		c.Error(errors.New("first"))
-// 		c.Error(errors.New("second"))
-// 		c.Error(errors.New("third"))
-// 		c.Errors.Errors() // == []string{"first", "second", "third"}
+// Returns an array will all the error messages.
+// Example
+// ```
+// c.Error(errors.New("first"))
+// c.Error(errors.New("second"))
+// c.Error(errors.New("third"))
+// c.Errors.Errors() // == []string{"first", "second", "third"}
+// ``
 func (a errorMsgs) Errors() []string {
 	if len(a) == 0 {
 		return nil
@@ -148,7 +152,7 @@ func (a errorMsgs) String() string {
 	}
 	var buffer bytes.Buffer
 	for i, msg := range a {
-		fmt.Fprintf(&buffer, "Error #%02d: %s\n", i+1, msg.Err)
+		fmt.Fprintf(&buffer, "Error #%02d: %s\n", (i + 1), msg.Err)
 		if msg.Meta != nil {
 			fmt.Fprintf(&buffer, "     Meta: %v\n", msg.Meta)
 		}
