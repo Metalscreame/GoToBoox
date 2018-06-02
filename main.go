@@ -3,15 +3,16 @@ package main
 import (
 	_ "github.com/heroku/x/hmetrics/onload"
 	"github.com/metalscreame/GoToBoox/src/services"
-	db "github.com/metalscreame/GoToBoox/src/dataBase/configuration"
+	"github.com/metalscreame/GoToBoox/src/dataBase"
 )
+
 
 
 func main() {
 
 	//Opens database connection
-	db.InitializeConnection()
-	defer db.GlobalDataBaseConnection.Close()
+	connection:= dataBase.InitializeConnection()
+	defer connection.Close()
 
 	//For local testing uncomment port in init
 	services.InitializeRouter()
