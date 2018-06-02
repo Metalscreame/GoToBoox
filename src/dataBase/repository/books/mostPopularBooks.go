@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"fmt"
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository/entity"
-	"github.com/metalscreame/GoToBoox/src/dataBase/configuration"
+	db "github.com/metalscreame/GoToBoox/src/dataBase"
 )
 
 var B entity.Book
@@ -16,7 +16,7 @@ var B entity.Book
 func GetMostPopularBooks(c *gin.Context) {
 	var id sql.NullInt64
 	var title sql.NullString
-	row := configuration.GlobalDataBaseConnection.QueryRow("SELECT Id, Title FROM Books where Popularity > $1 ORDER BY Popularity", B.Popularity)
+	row := db.GlobalDataBaseConnection.QueryRow("SELECT Id, Title FROM Books where Popularity > $1 ORDER BY Popularity", B.Popularity)
 	err := row.Scan(&id, &title)
 	if err != nil {
 		log.Fatal(err)

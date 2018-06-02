@@ -1,11 +1,14 @@
 package entity
 
+import "time"
+
 type User struct {
 	Id          int    `json:"id"`
 	Nickname    string `json:"nickname"`
 	Email       string `json:"email"`
 	Password    string `json:"password"`
-	RegistrDate string `json:"registr_date"`
+	RegistrDate time.Time `json:"-"`
+	RegTimeStr string `json:"registrDate"`
 }
 
 type Categories struct {

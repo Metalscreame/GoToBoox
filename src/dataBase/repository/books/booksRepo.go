@@ -4,15 +4,15 @@ import (
 	"fmt"
 	"database/sql"
 	"log"
-	"github.com/metalscreame/GoToBoox/src/dataBase/configuration"
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository/entity"
+	db "github.com/metalscreame/GoToBoox/src/dataBase"
 )
 
 type Books entity.Book
 
 func GetBooks() []Books{
 	dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable",
-		configuration.DB_USER, configuration.DB_PASSWORD, configuration.DB_NAME)
+		db.DB_USER, db.DB_PASSWORD, db.DB_NAME)
 	db, err := sql.Open("postgres", dbinfo)
 	if err != nil {
 		log.Fatal(err)

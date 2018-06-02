@@ -3,10 +3,10 @@ package postgres
 import (
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository/entity"
 	"bytes"
-	"errors"
 	"database/sql"
 	db "github.com/metalscreame/GoToBoox/src/dataBase"
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository/users"
+	"time"
 )
 
 const (
@@ -20,12 +20,12 @@ type postgresUsersRepository struct {
 	Db *sql.DB
 }
 
-func NewPostgresUsersRepo(Db *sql.DB)  users.UserRepository{
+func NewPostgresUsersRepo(Db *sql.DB) users.UserRepository {
 	return &postgresUsersRepository{Db}
 }
 
 //GetUserByEmail gets users from users table by
-func (p *postgresUsersRepository) GetUserByEmail(email string) (u entity.User, err error){
+func (p *postgresUsersRepository) GetUserByEmail(email string) (u entity.User, err error) {
 
 	query := prepareQueryString(selectQueryType)
 	stmt, err := p.Db.Prepare(query)
@@ -34,11 +34,11 @@ func (p *postgresUsersRepository) GetUserByEmail(email string) (u entity.User, e
 	}
 
 	//rows, err := execQueueByEmail(stmt, email)
-	row:=stmt.QueryRow()
+	row := stmt.QueryRow()
 	if err != nil {
 		return
 	}
-	err = row.Scan(&u.Id,&u.Nickname,&u.Email,&u.Password,&u.RegistrDate)
+	err = row.Scan(&u.Id, &u.Nickname, &u.Email, &u.Password, &u.RegistrDate)
 	if err != nil {
 		return
 	}
@@ -46,7 +46,7 @@ func (p *postgresUsersRepository) GetUserByEmail(email string) (u entity.User, e
 }
 
 //UpdateInsertUserByEmail updates a user or insert if there is no such user
-func (p *postgresUsersRepository) UpdateUserByEmail(u entity.User) (err error){
+func (p *postgresUsersRepository) UpdateUserByEmail(u entity.User) (err error) {
 	query := prepareQueryString(updateQueryType)
 	stmt, err := p.Db.Prepare(query)
 	if err != nil {
@@ -61,7 +61,7 @@ func (p *postgresUsersRepository) UpdateUserByEmail(u entity.User) (err error){
 }
 
 //DeleteUserByEmail deletes user from database
-func (p *postgresUsersRepository)  DeleteUserByEmail(email string) (err error) {
+func (p *postgresUsersRepository) DeleteUserByEmail(email string) (err error) {
 	query := prepareQueryString(deleteQueryType)
 	stmt, err := p.Db.Prepare(query)
 	if err != nil {
@@ -75,20 +75,13 @@ func (p *postgresUsersRepository)  DeleteUserByEmail(email string) (err error) {
 	return
 }
 
-
-func (p *postgresUsersRepository) InsertUser(u entity.User)(err error){
+func (p *postgresUsersRepository) InsertUser(u entity.User) (err error) {
 	query := prepareQueryString(insertQueryType)
 	stmt, err := p.Db.Prepare(query)
 	if err != nil {
 		return
 	}
-
-	res, err := stmt.Exec(u.Nickname, u.Email, u.Password, u.RegistrDate)
-	if err != nil {
-		return
-	}
-
-	_, err = res.RowsAffected()
+	err = execInsertStmtByEmail(stmt, &u)
 	if err != nil {
 		return
 	}
@@ -126,14 +119,18 @@ func prepareQueryString(typeOfQuery string) (string) {
 }
 
 func execInsertStmtByEmail(stmt *sql.Stmt, u *entity.User) (err error) {
-	res, err := stmt.Exec(u.Nickname, u.Email, u.Password, u.Email)
+	err = convertRegUserTime(u)
+	if err != nil {
+		return
+	}
+	res, err := stmt.Exec(u.Nickname, u.Email, u.Password, u.RegistrDate)
 	if err != nil {
 		return err
 	}
 
-	affect, err := res.RowsAffected()
-	if err != nil || affect == 0 {
-		return errors.New("There is no user with such email")
+	_, err = res.RowsAffected()
+	if err != nil {
+		return
 	}
 	return
 }
@@ -143,5 +140,15 @@ func execQueueByEmail(stmt *sql.Stmt, email string) (rows *sql.Rows, err error) 
 	if err != nil {
 		return nil, err
 	}
+	return
+}
+
+func convertRegUserTime(u *entity.User) (err error) {
+	layout := "2006-01-02"
+	updatedAt, err := time.Parse(layout, u.RegTimeStr)
+	if err != nil {
+		return
+	}
+	u.RegistrDate = updatedAt
 	return
 }

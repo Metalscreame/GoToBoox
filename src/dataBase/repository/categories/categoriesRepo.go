@@ -5,14 +5,14 @@ import (
 	"database/sql"
 	"log"
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository/entity"
-	"github.com/metalscreame/GoToBoox/src/dataBase/configuration"
+	db "github.com/metalscreame/GoToBoox/src/dataBase"
 )
 
 type Category entity.Categories
 
 func GetCategories() []Category{
 	dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable",
-		configuration.DB_USER, configuration.DB_PASSWORD, configuration.DB_NAME)
+		db.DB_USER, db.DB_PASSWORD, db.DB_NAME)
 	db, err := sql.Open("postgres", dbinfo)
 	if err != nil {
 		log.Fatal(err)
