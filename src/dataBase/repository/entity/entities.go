@@ -17,11 +17,11 @@ type Categories struct {
 }
 
 type Book struct {
-	Id           int
-	Title        string
-	Description  string
-	Popularity   float32
-	CategoriesID int
+	ID    int `json:"id"`
+	Title string `json:"title"`
+	Description string `json:"description"`
+	Popularity float32 `json:"popularity"`
+	CategoriesID int `json:"categoriesID"`
 }
 
 type Authors struct {
