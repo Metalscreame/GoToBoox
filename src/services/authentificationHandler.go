@@ -22,7 +22,8 @@ import (
 func (s *UserService) LogoutHandler(c *gin.Context) {
 	c.SetCookie("email", "", -1, "", "", false, true)
 	c.SetCookie("token", "", -1, "", "", false, true)
-	c.Redirect(http.StatusFound, "/")
+	c.Set("is_logged_in", false)
+	c.Redirect(http.StatusFound, "/login")
 }
 
 /* UserCreateHandler is a handler function that creates new user in a database\
@@ -62,9 +63,9 @@ func (s *UserService) PerformLoginHandler(c *gin.Context) {
 
 	if isUserValid(u.Email, u.Password, s.UsersRepo) {
 		performLoginCookiesSetting(u, c)
-		c.Redirect(http.StatusFound, "/")
+		c.JSON(http.StatusOK, gin.H{"status": "ok"})
 	} else {
-		c.Redirect(http.StatusFound, "/login")
+		c.JSON(http.StatusBadRequest, gin.H{"status": "wrong credentials"})
 	}
 }
 

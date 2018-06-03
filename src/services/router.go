@@ -40,8 +40,9 @@ func InitializeRouter() {
 
 	router = gin.New()
 	router.Use(gin.Logger())
-	router.LoadHTMLGlob("templates/*.tmpl.html")
-	router.Static("/static", "static")
+	//router.LoadHTMLGlob("templates/*.tmpl.html")
+	//router.Static("/static", "GoToBooX")
+	router.LoadHTMLGlob("static/pages/*.html")
 
 	router.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.tmpl.html", nil)
@@ -86,7 +87,7 @@ func initUserProfileRouters() {
 		// Ensure that the user is logged in by using the middleware
 		userRoutes.PUT("/userProfile", midlware.EnsureLoggedIn(), service.UserUpdateHandler)
 
-		// Handle the GET requests at /api/v1/register
+		// Handle the GET requests at /api/v1/userProfile
 		// Show the user's profile page
 		// Ensure that the user is logged in by using the middleware
 		userRoutes.DELETE("/userProfile", midlware.EnsureLoggedIn(), service.UserDeleteHandler)
@@ -102,5 +103,5 @@ func initUserProfileRouters() {
 
 	// Show the user's profile page
 	// Ensure that the user is logged in by using the middleware
-	router.GET("/usersProfile", midlware.EnsureLoggedIn(), ShowUsersProfilePage)
+	router.GET("/userProfile", midlware.EnsureLoggedIn(), ShowUsersProfilePage)
 }

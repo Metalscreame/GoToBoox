@@ -8,11 +8,8 @@ import (
 
 func ShowLoginPage(c *gin.Context) {
 	c.HTML(
-		// Set the HTTP status to 200 (OK)
 		http.StatusOK,
-		// Use the index.html template
 		"login.html",
-		// Pass the data that the page uses (in this case, 'title')
 		gin.H{
 			"title": "Login Page",
 		},
@@ -37,7 +34,7 @@ func ShowUsersProfilePage(c *gin.Context) {
 		// Set the HTTP status to 200 (OK)
 		http.StatusOK,
 		// Use the index.html template
-		"usersProfile.html",
+		"userProfile.html",
 		// Pass the data that the page uses (in this case, 'title')
 		gin.H{
 			"title": "User's profile",

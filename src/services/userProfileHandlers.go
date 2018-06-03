@@ -12,7 +12,7 @@ import (
 func (s *UserService) UserGetHandler(c *gin.Context) {
 	emailCookie, err := c.Request.Cookie("email")
 	if err != nil {
-		c.Redirect(http.StatusFound, "/")
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	email:=convertEmailString(emailCookie.Value)
@@ -21,13 +21,14 @@ func (s *UserService) UserGetHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-
 	c.JSON(http.StatusOK, user)
 	return
 }
 
-//UserDeleteHandler deletes user from database.
+//UserDeleteHandler deletes user from database. Uses DELETE method.
 func (s *UserService) UserDeleteHandler(c *gin.Context) {
+	var u entity.User
+	c.BindJSON(&u)
 	emailCookie, err := c.Request.Cookie("email")
 	if err != nil {
 		c.Redirect(http.StatusFound, "/")
@@ -40,10 +41,13 @@ func (s *UserService) UserDeleteHandler(c *gin.Context) {
 	}
 	c.SetCookie("email", "", -1, "", "", false, true)
 	c.SetCookie("token", "", -1, "", "", false, true)
-	c.Redirect(http.StatusFound, "/")
+	c.Set("is_logged_in", false)
+	c.Redirect(http.StatusFound, "/login")
+	//c.JSON(http.StatusOK, gin.H{"status":"ok"})
+	return
 }
 
-/* UserUpdateHandler is a handler function that updates users info in database
+/* UserUpdateHandler is a handler function that updates users info in database. Uses PUT method
 Input example for update
 {
 	"id": 1,
@@ -59,12 +63,19 @@ func (s *UserService) UserUpdateHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	if err := s.UsersRepo.UpdateUserByEmail(u); err != nil {
+	emailCookie, err := c.Request.Cookie("email")
+	if err != nil {
+		c.Redirect(http.StatusFound, "/")
+		return
+	}
+	email:=convertEmailString(emailCookie.Value)
+
+	if err := s.UsersRepo.UpdateUserByEmail(u,email); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusTemporaryRedirect, gin.H{"status": "updated"})
-	c.Redirect(http.StatusFound, "/")
+	c.SetCookie("email", u.Email, 15000, "", "", false, true)
+	c.JSON(http.StatusOK, gin.H{"status": "updated"})
 	return
 }
 

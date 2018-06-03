@@ -47,15 +47,17 @@ func (p *postgresUsersRepository) GetUserByEmail(email string) (u entity.User, e
 }
 
 //UpdateInsertUserByEmail updates a user or insert if there is no such user
-func (p *postgresUsersRepository) UpdateUserByEmail(u entity.User) (err error) {
+func (p *postgresUsersRepository) UpdateUserByEmail(u entity.User, oldEmail string) (err error) {
 	query := prepareQueryString(updateQueryType)
 	stmt, err := p.Db.Prepare(query)
 	if err != nil {
 		return
 	}
 
-	err = execInsertStmtByEmail(stmt, &u)
-	if err == nil {
+	_, err = stmt.Exec(u.Nickname, u.Email, u.Password, oldEmail)
+
+	//err = execInsertStmtByEmail(stmt, &u)
+	if err != nil {
 		return
 	}
 	return
@@ -103,7 +105,7 @@ func prepareQueryString(typeOfQuery string) (string) {
 		b.WriteString("update ")
 		b.WriteString(db.DB_SCHEMA)
 		b.WriteString(db.DB_USERS_TABLE)
-		b.WriteString(" set nickname=&1,email=$2,password=$3 where email=$4")
+		b.WriteString(" set nickname=$1,email=$2,password=$3 where email=$4")
 		return b.String()
 	case selectQueryType:
 		b.WriteString("select * from ")
