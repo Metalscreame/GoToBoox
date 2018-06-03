@@ -1,0 +1,89 @@
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
+
+
+<div class="container">
+    <hr>
+    <div class="card bg-light">
+        <article class="card-body mx-auto" style="max-width: 400px;">
+            <h4 class="card-title mt-3 text-center">Create Account</h4>
+            <p class="text-center">Get started with your free account</p>
+            <p class="divider-text">
+                <span class="bg-light">Enter youre credentials</span>
+            </p>
+            <form>
+                <div class="form-group input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+                    </div>
+                    <input name="" class="form-control" placeholder="Nickname" type="text" id="inputNickname">
+                </div> <!-- form-group// -->
+                <div class="form-group input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
+                    </div>
+                    <input name="" class="form-control" placeholder="Email address" type="email" id="inputEmail">
+                </div> <!-- form-group// -->
+
+                <div class="form-group input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+                    </div>
+                    <input class="form-control" placeholder="Create password" type="password" id="passwordInput">
+                </div> <!-- form-group// -->
+                <div class="form-group input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+                    </div>
+                    <input class="form-control" placeholder="Repeat password" type="password">
+                </div> <!-- form-group// -->
+                <div class="form-group">
+                    <button type="submit" id="createButton" class="btn btn-primary btn-block"> Create Account</button>
+                </div> <!-- form-group// -->
+                <p class="text-center">Have an account? <a href="/login">Log In</a></p>
+            </form>
+        </article>
+    </div> <!-- card.// -->
+
+    <script>
+        $('#createButton').on('click', function (e) {
+            var email = document.getElementById("inputEmail").value;
+            var password = document.getElementById("passwordInput").value;
+            var nickname = document.getElementById("inputNickname").value;
+            var xhr = new XMLHttpRequest();
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 400)) {
+                    if (xhr.responseText) {
+                        var json = JSON.parse(xhr.responseText);
+                        if (json.status == "ok") {
+                            alert("registered")
+                            window.location.replace("/")
+                        } else {
+                            alert("user is already registered")
+                            window.location.replace("/register")
+                        }
+                    }
+                } else {
+                    // alert("Wrong pass or email");
+                }
+            }
+            xhr.open('POST', "/api/v1/register", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+
+            var data = JSON.stringify({
+                "email": email,
+                "nickname": nickname,
+                "password": password
+            });
+            xhr.send(data);
+
+        });
+    </script>
+
+</div>
+<!--container end.//-->

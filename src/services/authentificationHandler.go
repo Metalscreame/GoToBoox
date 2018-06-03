@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository/users"
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository/entity"
+	"time"
 )
 
 /*
@@ -23,7 +24,8 @@ func (s *UserService) LogoutHandler(c *gin.Context) {
 	c.SetCookie("email", "", -1, "", "", false, true)
 	c.SetCookie("token", "", -1, "", "", false, true)
 	c.Set("is_logged_in", false)
-	c.Redirect(http.StatusFound, "/login")
+	c.Redirect(http.StatusFound,"/login")
+	//c.JSON(http.StatusOK, gin.H{"status": "ok"})
 }
 
 /* UserCreateHandler is a handler function that creates new user in a database\
@@ -43,12 +45,14 @@ func (s *UserService) UserCreateHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	u.RegistrDate = time.Now()
 	if err := s.UsersRepo.InsertUser(u); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	performLoginCookiesSetting(u, c)
-	c.Redirect(http.StatusFound, "/")
+	c.JSON(http.StatusOK, gin.H{"status": "ok"})
+	return
 }
 
 //PerformLoginHandler is a handler to handle loggining and setting cookies after success login
@@ -64,9 +68,10 @@ func (s *UserService) PerformLoginHandler(c *gin.Context) {
 	if isUserValid(u.Email, u.Password, s.UsersRepo) {
 		performLoginCookiesSetting(u, c)
 		c.JSON(http.StatusOK, gin.H{"status": "ok"})
-	} else {
-		c.JSON(http.StatusBadRequest, gin.H{"status": "wrong credentials"})
+		return
 	}
+	c.JSON(http.StatusBadRequest, gin.H{"status": "wrong credentials"})
+	return
 }
 
 func isUserValid(email string, password string, repository users.UserRepository) bool {

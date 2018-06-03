@@ -122,10 +122,10 @@ func prepareQueryString(typeOfQuery string) (string) {
 }
 
 func execInsertStmtByEmail(stmt *sql.Stmt, u *entity.User) (err error) {
-	err = convertRegUserTime(u)
-	if err != nil {
-		return
-	}
+	//err = convertRegUserTime(u)
+	//if err != nil {
+	//	return
+	//}
 	res, err := stmt.Exec(u.Nickname, u.Email, u.Password, u.RegistrDate)
 	if err != nil {
 		return err

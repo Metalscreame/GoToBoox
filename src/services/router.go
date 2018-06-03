@@ -42,10 +42,10 @@ func InitializeRouter() {
 	router.Use(gin.Logger())
 	//router.LoadHTMLGlob("templates/*.tmpl.html")
 	//router.Static("/static", "GoToBooX")
-	router.LoadHTMLGlob("static/pages/*.html")
+	router.LoadHTMLGlob("templates/*.html")
 
 	router.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.tmpl.html", nil)
+		c.HTML(http.StatusOK, "index.html", nil)
 	})
 
 	//The place for handlers routes

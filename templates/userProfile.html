@@ -1,5 +1,5 @@
 <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
 <!------ Include the above in your HEAD tag ---------->
 
@@ -50,27 +50,7 @@
         </form>
     </div><!-- /.col-lg-12 -->
 
-    <script>
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', "http://localhost:8080/api/v1/userProfile", true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                var json = JSON.parse(xhr.responseText);
-                $('#nicknameInput').val(json.nickname);
-                $('#emailInput').val(json.email);
-                $('#passwordInput').val(json.password);
-            } else if (xhr.readyState === 4 && xhr.status === 400) {
-                var redir = new XMLHttpRequest();
-                alert(xhr.status)
-                redir.open('GET', "http://localhost:8080/login", true);
-                redir.send();
-            }
-            else {
-            }
-        };
-        xhr.send();
-    </script>
+
 
 </div><!-- /.row -->
 
@@ -84,13 +64,13 @@
         var email = document.getElementById("emailInput").value;
         var password = document.getElementById("passwordInput").value;
         var xhr = new XMLHttpRequest();
-        xhr.open('PUT', "http://localhost:8080/api/v1/userProfile", true);
+        xhr.open('PUT', "/api/v1/userProfile", true);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
+            if (xhr.readyState == 4 && xhr.status == 200) {
                 var json = JSON.parse(xhr.responseText);
                 alert(json.status);
-                window.location.replace("http://localhost:8080/userProfile");
+                window.location.replace("/userProfile");
             } else {
             }
         };
@@ -106,24 +86,44 @@
 
     $('#deleteButton').on('click', function (e) {
         var xhr = new XMLHttpRequest();
-        xhr.open('DELETE', "http://localhost:8080/api/v1/userProfile", false);
+        xhr.open('DELETE', "/api/v1/userProfile", false);
         xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 302) {
-                // var json = JSON.parse(xhr.responseText);
-                alert("delete")
-                $(location).attr('href', 'http://localhost:8080/login')
-            } else {
-
-            }
-        };
+        // xhr.onreadystatechange = function () {
+        //     if (xhr.readyState == 4 && xhr.status == 200) {
+        //         if (xhrobj.responseText) {
+        //             alert("delete")
+        //             $(location).attr('href', 'http://localhost:8080/login')
+        //         }
+        //         // var json = JSON.parse(xhr.responseText);
+        //     }
+        // };
 
         xhr.send();
+        window.location.replace("/login");
+
     });
 
     <!-- goBackButton -->
-
     $('#goBackButton').on('click', function (e) {
-        window.location.replace("http://localhost:8080/index");
+        window.location.replace("/");
     });
+</script>
+
+<script>
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', "/api/v1/userProfile", true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            var json = JSON.parse(xhr.responseText);
+            $('#nicknameInput').val(json.nickname);
+            $('#emailInput').val(json.email);
+            $('#passwordInput').val(json.password);
+        } else if (xhr.readyState == 4 && xhr.status == 400) {
+            window.location.replace("/login");
+        }
+        else {
+        }
+    };
+    xhr.send();
 </script>

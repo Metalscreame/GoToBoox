@@ -27,8 +27,8 @@ func (s *UserService) UserGetHandler(c *gin.Context) {
 
 //UserDeleteHandler deletes user from database. Uses DELETE method.
 func (s *UserService) UserDeleteHandler(c *gin.Context) {
-	var u entity.User
-	c.BindJSON(&u)
+	//var u entity.User
+	//c.BindJSON(&u)
 	emailCookie, err := c.Request.Cookie("email")
 	if err != nil {
 		c.Redirect(http.StatusFound, "/")
@@ -39,12 +39,13 @@ func (s *UserService) UserDeleteHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+	//c.Cookie()
 	c.SetCookie("email", "", -1, "", "", false, true)
 	c.SetCookie("token", "", -1, "", "", false, true)
 	c.Set("is_logged_in", false)
-	c.Redirect(http.StatusFound, "/login")
-	//c.JSON(http.StatusOK, gin.H{"status":"ok"})
-	return
+	//c.Redirect(http.StatusFound,"/login.html")
+	c.JSON(http.StatusOK, gin.H{"status":"ok"})
+	//return
 }
 
 /* UserUpdateHandler is a handler function that updates users info in database. Uses PUT method
@@ -65,7 +66,7 @@ func (s *UserService) UserUpdateHandler(c *gin.Context) {
 	}
 	emailCookie, err := c.Request.Cookie("email")
 	if err != nil {
-		c.Redirect(http.StatusFound, "/")
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "unatorized"})
 		return
 	}
 	email:=convertEmailString(emailCookie.Value)

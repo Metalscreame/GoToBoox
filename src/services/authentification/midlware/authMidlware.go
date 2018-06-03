@@ -14,7 +14,7 @@ func EnsureLoggedIn() gin.HandlerFunc {
 		loggedInInterface, _ := c.Get("is_logged_in")
 		loggedIn := loggedInInterface.(bool)
 		if !loggedIn {
-			c.AbortWithStatus(http.StatusUnauthorized)
+			c.Redirect(http.StatusFound,"/")
 		}
 	}
 }
@@ -28,7 +28,8 @@ func EnsureNotLoggedIn() gin.HandlerFunc {
 		loggedInInterface, _ := c.Get("is_logged_in")
 		loggedIn := loggedInInterface.(bool)
 		if loggedIn {
-			c.AbortWithStatus(http.StatusUnauthorized)
+			c.Redirect(http.StatusFound,"/")
+			//c.AbortWithStatus(http.StatusUnauthorized)
 		}
 	}
 }
