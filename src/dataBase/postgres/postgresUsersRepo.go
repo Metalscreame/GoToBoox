@@ -38,6 +38,7 @@ func (p *postgresUsersRepository) GetUserByEmail(email string) (u entity.User, e
 	if err != nil {
 		return
 	}
+
 	err = row.Scan(&u.Id, &u.Nickname, &u.Email, &u.Password, &u.RegistrDate)
 	if err != nil {
 		return
@@ -68,7 +69,7 @@ func (p *postgresUsersRepository) DeleteUserByEmail(email string) (err error) {
 		return
 	}
 
-	_, err = execQueueByEmail(stmt, email)
+	_, err = stmt.Query(email)
 	if err != nil {
 		return
 	}
@@ -131,14 +132,6 @@ func execInsertStmtByEmail(stmt *sql.Stmt, u *entity.User) (err error) {
 	_, err = res.RowsAffected()
 	if err != nil {
 		return
-	}
-	return
-}
-
-func execQueueByEmail(stmt *sql.Stmt, email string) (rows *sql.Rows, err error) {
-	rows, err = stmt.Query(email)
-	if err != nil {
-		return nil, err
 	}
 	return
 }

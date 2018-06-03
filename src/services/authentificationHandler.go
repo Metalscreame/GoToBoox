@@ -17,14 +17,12 @@ import (
 	Yours Roman Kosyiy
  */
 
-
-
 //LogoutHandler is a handler function that logging out from site and clears users cookie
 // 				/api/v1/logout
 func (s *UserService) LogoutHandler(c *gin.Context) {
 	c.SetCookie("email", "", -1, "", "", false, true)
 	c.SetCookie("token", "", -1, "", "", false, true)
-	c.Redirect(http.StatusOK, "/")
+	c.Redirect(http.StatusFound, "/")
 }
 
 /* UserCreateHandler is a handler function that creates new user in a database\
@@ -48,8 +46,7 @@ func (s *UserService) UserCreateHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	performLoginCookiesSetting(u,c)
-	c.JSON(http.StatusFound, gin.H{"status": "ok"})
+	performLoginCookiesSetting(u, c)
 	c.Redirect(http.StatusFound, "/")
 }
 
@@ -64,7 +61,7 @@ func (s *UserService) PerformLoginHandler(c *gin.Context) {
 	}
 
 	if isUserValid(u.Email, u.Password, s.UsersRepo) {
-		performLoginCookiesSetting(u,c)
+		performLoginCookiesSetting(u, c)
 		c.Redirect(http.StatusFound, "/")
 	} else {
 		c.Redirect(http.StatusFound, "/login")
@@ -85,7 +82,7 @@ func generateSessionToken() string {
 	return strconv.FormatInt(rand.Int63(), 16)
 }
 
-func performLoginCookiesSetting(u entity.User,c *gin.Context) {
+func performLoginCookiesSetting(u entity.User, c *gin.Context) {
 	token := generateSessionToken()
 	c.SetCookie("token", token, 16000, "", "", false, true)
 	c.Set("is_logged_in", true)

@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository/entity"
+	"strings"
 )
 
 //UserGetHandler gets users data from database using unique email that is stored in cookie
@@ -14,7 +15,8 @@ func (s *UserService) UserGetHandler(c *gin.Context) {
 		c.Redirect(http.StatusFound, "/")
 		return
 	}
-	user, err := s.UsersRepo.GetUserByEmail(emailCookie.String())
+	email:=convertEmailString(emailCookie.Value)
+	user, err := s.UsersRepo.GetUserByEmail(email)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -31,12 +33,14 @@ func (s *UserService) UserDeleteHandler(c *gin.Context) {
 		c.Redirect(http.StatusFound, "/")
 		return
 	}
-	if err := s.UsersRepo.DeleteUserByEmail(emailCookie.String()); err != nil {
+	email:=convertEmailString(emailCookie.Value)
+	if err := s.UsersRepo.DeleteUserByEmail(email); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	s.LogoutHandler(c)
-	return
+	c.SetCookie("email", "", -1, "", "", false, true)
+	c.SetCookie("token", "", -1, "", "", false, true)
+	c.Redirect(http.StatusFound, "/")
 }
 
 /* UserUpdateHandler is a handler function that updates users info in database
@@ -62,4 +66,17 @@ func (s *UserService) UserUpdateHandler(c *gin.Context) {
 	c.JSON(http.StatusTemporaryRedirect, gin.H{"status": "updated"})
 	c.Redirect(http.StatusFound, "/")
 	return
+}
+
+//this function is make because cookie gives %40 instead of @
+func convertEmailString(email string) ( string) {
+	indexOfPercentSymb:=strings.IndexRune(email,'%')
+	runes:=[]rune(email)
+	//replacing %
+	runes[indexOfPercentSymb]='@'
+
+	//deleting 4 and 0 symbols
+	runes=append(runes[:indexOfPercentSymb+1],runes[indexOfPercentSymb+2:]...)
+	runes=append(runes[:indexOfPercentSymb+1],runes[indexOfPercentSymb+2:]...)
+	return string(runes)
 }
