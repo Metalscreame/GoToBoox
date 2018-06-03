@@ -10,7 +10,7 @@ func ShowLoginPage(c *gin.Context) {
 	c.HTML(
 		// Set the HTTP status to 200 (OK)
 		http.StatusOK,
-		// Use the index.html template
+
 		"login.html",
 		// Pass the data that the page uses (in this case, 'title')
 		gin.H{
@@ -23,7 +23,7 @@ func ShowRegistrPage(c *gin.Context) {
 	c.HTML(
 		// Set the HTTP status to 200 (OK)
 		http.StatusOK,
-		// Use the index.html template
+
 		"registration.html",
 		// Pass the data that the page uses (in this case, 'title')
 		gin.H{
@@ -36,7 +36,7 @@ func ShowUsersProfilePage(c *gin.Context) {
 	c.HTML(
 		// Set the HTTP status to 200 (OK)
 		http.StatusOK,
-		// Use the index.html template
+
 		"usersProfile.html",
 		// Pass the data that the page uses (in this case, 'title')
 		gin.H{

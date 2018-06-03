@@ -18,12 +18,15 @@ import (
 }*/
 
 
+type BooksRepository struct{
 
+}
 
 type BookRepository interface {
 	GetAll() ([]entity.Book, error)
 	GetByCategory(categoryID int) ([]entity.Book, error)
 	GetMostPopular() ([]entity.Book, error)
+	GetByID(bookID int) (entity.Book, error)
 }
 
 
@@ -40,27 +43,66 @@ func openDb() *sql.DB {
 	return db
 }
 
-func GetAll() ([]entity.Book, error){
+
+
+func GetByID(bookID int) (entity.Book, error) {
 	db:=openDb()
 
-	rows, err := db.Query("SELECT title FROM gotoboox.books")
+	rows, err := db.Query("SELECT title, description, popularity FROM gotoboox.books where id=$1", bookID)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
 
-	books := []entity.Book{}
+	book := entity.Book{}
+
+	for rows.Next() {
+
+		book := new(entity.Book)
+		if err := rows.Scan(&book.Title);
+			err != nil {
+			log.Fatal(err)
+		}
+
+		//just for checking
+		fmt.Printf("%s\n%s\n%f\n", book.Title, book.Description, book.Popularity)
+
+	}
+	if err := rows.Err(); err != nil {
+		log.Fatal(err)
+	}
+	return book, nil
+
+
+
+
+}
+func GetAll() ([]interface{}, error){
+	db:=openDb()
+
+	rows, err := db.Query("SELECT a.title, a.description, a.popularity, b.title FROM gotoboox.books a, gotoboox.categories b where a.categoriesid=b.id")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+
+	books := []interface{}{[]entity.Book{}, []entity.Categories{}}
+	//books, cats := []entity.Book{}, []entity.Categories{}
 	i:=0
 //	fmt.Printf("Titles: \n")
 	for rows.Next() {
 
 		book := new(entity.Book)
-		if err := rows.Scan(&book.Title);
+		cat := new(entity.Categories)
+		if err := rows.Scan(&book.Title, &book.Description, &book.Popularity, &cat.Title );
 		err != nil {
 			log.Fatal(err)
 		}
-		books = append(books, *book)
-		fmt.Printf("%s\n", books[i].Title)
+		books = append(books, *book, *cat)
+
+		//just for checking
+		fmt.Printf("%v\n%v\n", book.Title, cat.Title)
 		i++
 	}
 	if err := rows.Err(); err != nil {
@@ -93,6 +135,7 @@ func GetByCategory(categoryID int) ([]entity.Book, error) {
 			log.Fatal(err)
 		}
 		books = append(books, *book)
+		//just for checking
 		fmt.Printf("%s\n", books[i].Title)
 		i++
 	}
@@ -122,6 +165,7 @@ func GetByPopularity() ([]entity.Book, error) {
 			log.Fatal(err)
 		}
 		books = append(books, *book)
+		//just for checking
 		fmt.Printf("%s - %d booXmark\n", books[i].Title, books[i].Popularity)
 
 	i++

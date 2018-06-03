@@ -9,6 +9,7 @@ import (
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository/users"
 	"github.com/metalscreame/GoToBoox/src/dataBase"
 	"github.com/metalscreame/GoToBoox/src/dataBase/postgres"
+	"github.com/metalscreame/GoToBoox/src/dataBase/repository/books"
 )
 
 const (
@@ -22,6 +23,16 @@ type UserService struct {
 func NewUserService(repository users.UserRepository) *UserService {
 	return &UserService{
 		UsersRepo: repository,
+	}
+}
+
+type BookService struct {
+	BooksRepo books.BookRepository
+}
+
+func NewBookService(repository books.BookRepository) *BookService {
+	return &BookService{
+		BooksRepo: repository,
 	}
 }
 
@@ -40,7 +51,7 @@ func InitializeRouter() {
 
 	router = gin.New()
 	router.Use(gin.Logger())
-	router.LoadHTMLGlob("templates/*.tmpl.html")
+	router.LoadHTMLGlob("templates/*.html")
 	router.Static("/static", "static")
 
 	router.GET("/", func(c *gin.Context) {
@@ -51,6 +62,7 @@ func InitializeRouter() {
 	// exm router.GET("/", showIndex.ShowIndexPage)
 	router.GET("/api/v.1/", IndexHandler)
 	initUserProfileRouters()
+	initBooksRoute()
 
 	router.Run(":" + port)
 }
@@ -104,3 +116,17 @@ func initUserProfileRouters() {
 	// Ensure that the user is logged in by using the middleware
 	router.GET("/usersProfile", midlware.EnsureLoggedIn(), ShowUsersProfilePage)
 }
+
+func initBooksRoute(){
+
+	bookService := BookService{}
+	   //get all books in certain category
+		router.GET("categories/:cat_id/books", bookService.getBooks)
+		//get all books
+		router.GET("/books", bookService.showAllBooks)
+		//get books by ID
+	    router.GET("categories/:cat_id/book/:book_id", bookService.getBook)
+
+
+	}
+

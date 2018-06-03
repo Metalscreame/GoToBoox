@@ -13,7 +13,7 @@ type User struct {
 
 type Categories struct {
 	Id    int
-	Title string
+	Title string `json:"categories"`
 }
 
 type Book struct {
