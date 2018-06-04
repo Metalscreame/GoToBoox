@@ -70,7 +70,7 @@ func initUserProfileRouters() {
 	// indicating whether the request was from an authenticated user or not
 	router.Use(midlware.SetUserStatus())
 
-	service := NewUserService(postgres.NewPostgresUsersRepo(dataBase.GlobalDataBaseConnection))
+	service := NewUserService(postgres.NewPostgresUsersRepo(dataBase.Connection))
 	userRoutes := router.Group(apiRoute)
 	{
 		// Handle POST requests at /api/v1/login
