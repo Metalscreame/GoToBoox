@@ -64,7 +64,7 @@ func InitializeRouter() {
 	router.Use(gin.Logger())
 
 	//router.LoadHTMLGlob("templates/*.tmpl.html")
-	router.Static("/static", "/")
+	router.Static("/static", "./static")
 	router.LoadHTMLGlob("templates/*.html")
 
 	router.GET("/", func(c *gin.Context) {
