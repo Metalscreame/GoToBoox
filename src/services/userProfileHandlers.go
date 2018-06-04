@@ -4,9 +4,52 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository/entity"
+	"strings"
 )
 
-/* Input example for create and update
+//UserGetHandler gets users data from database using unique email that is stored in cookie
+//if there is no email in coolie that means that session is over
+func (s *UserService) UserGetHandler(c *gin.Context) {
+	emailCookie, err := c.Request.Cookie("email")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	email:=convertEmailString(emailCookie.Value)
+	user, err := s.UsersRepo.GetUserByEmail(email)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, user)
+	return
+}
+
+//UserDeleteHandler deletes user from database. Uses DELETE method.
+func (s *UserService) UserDeleteHandler(c *gin.Context) {
+	//var u entity.User
+	//c.BindJSON(&u)
+	emailCookie, err := c.Request.Cookie("email")
+	if err != nil {
+		c.Redirect(http.StatusFound, "/")
+		return
+	}
+	email:=convertEmailString(emailCookie.Value)
+	if err := s.UsersRepo.DeleteUserByEmail(email); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	//c.Cookie()
+	c.SetCookie("email", "", -1, "", "", false, true)
+	c.SetCookie("token", "", -1, "", "", false, true)
+	c.Set("is_logged_in", false)
+	//c.Redirect(http.StatusFound,"/login.html")
+	c.JSON(http.StatusOK, gin.H{"status":"ok"})
+	//return
+}
+
+/* UserUpdateHandler is a handler function that updates users info in database. Uses PUT method
+Input example for update
 {
 	"id": 1,
 	"nickname": "Denchick",
@@ -15,35 +58,37 @@ import (
 	"registrDate": "2018-01-01"
 }
  */
-func (s *UserService)UserCreateHandler(c *gin.Context) {
+func (s *UserService) UserUpdateHandler(c *gin.Context) {
 	var u entity.User
-	if err:=c.BindJSON(&u); err!=nil{
+	if err := c.BindJSON(&u); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	if err :=s.UsersRepo.InsertUser(u); err!=nil{
+	emailCookie, err := c.Request.Cookie("email")
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "unatorized"})
+		return
+	}
+	email:=convertEmailString(emailCookie.Value)
+
+	if err := s.UsersRepo.UpdateUserByEmail(u,email); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusTemporaryRedirect, gin.H{"status": "ok"})
-	c.Redirect(http.StatusTemporaryRedirect, "/")
+	c.SetCookie("email", u.Email, 15000, "", "", false, true)
+	c.JSON(http.StatusOK, gin.H{"status": "updated"})
+	return
 }
 
-func (s *UserService)UserGetHandler(c *gin.Context) {
+//this function is make because cookie gives %40 instead of @
+func convertEmailString(email string) ( string) {
+	indexOfPercentSymb:=strings.IndexRune(email,'%')
+	runes:=[]rune(email)
+	//replacing %
+	runes[indexOfPercentSymb]='@'
 
-
-//	c.JSON(http.StatusOK,)
+	//deleting 4 and 0 symbols
+	runes=append(runes[:indexOfPercentSymb+1],runes[indexOfPercentSymb+2:]...)
+	runes=append(runes[:indexOfPercentSymb+1],runes[indexOfPercentSymb+2:]...)
+	return string(runes)
 }
-
-func (s *UserService)UserDeleteHandler(c *gin.Context) {
-
-
-	c.Redirect(http.StatusTemporaryRedirect, "/")
-}
-
-
-func (s *UserService)UserUpdateHandler(c *gin.Context) {
-
-}
-
-

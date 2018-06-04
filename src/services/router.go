@@ -10,6 +10,7 @@ import (
 	"github.com/metalscreame/GoToBoox/src/dataBase"
 	"github.com/metalscreame/GoToBoox/src/dataBase/postgres"
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository/books"
+	"github.com/metalscreame/GoToBoox/src/dataBase/repository/categories"
 )
 
 const (
@@ -30,6 +31,16 @@ type BookService struct {
 	BooksRepo books.BookRepository
 }
 
+type CategoriesService struct {
+	CategoriesRepoPq categories.CategoryRepository
+}
+
+func NewCategoriesService (repository categories.CategoryRepository) *CategoriesService{
+	return &CategoriesService{
+		CategoriesRepoPq: repository,
+	}
+}
+
 func NewBookService(repository books.BookRepository) *BookService {
 	return &BookService{
 		BooksRepo: repository,
@@ -43,24 +54,30 @@ func InitializeRouter() {
 	port := os.Getenv("PORT")
 
 	//Uncomment for local machine   !!!!
-	port = "8080"
+	//port = "8080"
 
 	if port == "" {
 		log.Fatal("$PORT must be set")
 	}
-
+	gin.SetMode(gin.ReleaseMode)
 	router = gin.New()
 	router.Use(gin.Logger())
+
+	//router.LoadHTMLGlob("templates/*.tmpl.html")
+	router.Static("/static", "/")
 	router.LoadHTMLGlob("templates/*.html")
-	router.Static("/static", "static")
 
 	router.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.tmpl.html", nil)
-	})
+		isLoggedIn := midlware.CheckLoggedIn(c)
+			if !isLoggedIn{
+				guest := true
+				c.HTML(http.StatusOK, "index.tmpl.html", guest)
+			}else{
+				c.HTML(http.StatusOK, "index.tmpl.html", nil)
+			}
+		})
 
-	//The place for handlers routes
-	// exm router.GET("/", showIndex.ShowIndexPage)
-	router.GET("/api/v.1/", IndexHandler)
+	router.GET(apiRoute, IndexHandler)
 	initUserProfileRouters()
 	initBooksRoute()
 
@@ -88,7 +105,7 @@ func initUserProfileRouters() {
 		// Ensure that the user is not logged in by using the middleware
 		userRoutes.POST("/register", midlware.EnsureNotLoggedIn(), service.UserCreateHandler)
 
-		// Handle the GET requests at /api/v1/register
+		// Handle the GET requests at /api/v1/userProfile
 		// Show the user's profile page
 		// Ensure that the user is logged in by using the middleware
 		userRoutes.GET("/userProfile", midlware.EnsureLoggedIn(), service.UserGetHandler)
@@ -98,7 +115,7 @@ func initUserProfileRouters() {
 		// Ensure that the user is logged in by using the middleware
 		userRoutes.PUT("/userProfile", midlware.EnsureLoggedIn(), service.UserUpdateHandler)
 
-		// Handle the GET requests at /api/v1/register
+		// Handle the GET requests at /api/v1/userProfile
 		// Show the user's profile page
 		// Ensure that the user is logged in by using the middleware
 		userRoutes.DELETE("/userProfile", midlware.EnsureLoggedIn(), service.UserDeleteHandler)
@@ -117,15 +134,24 @@ func initUserProfileRouters() {
 	router.GET("/usersProfile", midlware.EnsureLoggedIn(), ShowUsersProfilePage)
 }
 
-func initBooksRoute(){
+func initBooksRoute() {
 
 	bookService := BookService{}
-	   //get all books in certain category
-		router.GET("categories/:cat_id/books", bookService.getBooks)
-		//get all books
-		router.GET("/books", bookService.showAllBooks)
-		//get books by ID
-	    router.GET("categories/:cat_id/book/:book_id", bookService.getBook)
+	//get all books in certain category
+	router.GET("categories/:cat_id/books", bookService.getBooks)
+	//get all books
+	router.GET("/books", bookService.showAllBooks)
+	router.GET("/mostPopularBooks", bookService.FiveMostPop)
+	//get books by ID
+	router.GET("categories/:cat_id/book/:book_id", bookService.getBook)
+}
 
+	func initCategoriesRouters(){
+		categoriesService := NewCategoriesService(categories.CategoryRepoPq{})
+		{
+			// Ensure that the user is logged in by using the middleware
+			router.GET("/categories/0", categoriesService.AllCategories)
+		}
 	}
+
 

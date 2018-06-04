@@ -9,9 +9,9 @@ import (
 
 //Specify this values for concrette db
 const (
-	DB_USER     ="postgres"//"zrlfyamblttpom"//  // for local
-	DB_PASSWORD = "root"//"e2c0e8832ea228e6b15e553ce69f7cb2c0ff4d646ff0f284245ce77cc78b437b"//
-	DB_NAME     = "postgres" //"d7ckgvm53enhum"//
+	DB_USER     ="zrlfyamblttpom"//"postgres"//  // for local
+	DB_PASSWORD = "e2c0e8832ea228e6b15e553ce69f7cb2c0ff4d646ff0f284245ce77cc78b437b"//"root"//
+	DB_NAME     = "d7ckgvm53enhum" //"postgres"//
 
 	//use this for local machines
 	//DB_USER                = "postgres"
@@ -25,10 +25,9 @@ const (
 	DB_BOOKS_AUTHORS_TABLE = "books_authors"
 )
 
-//GlobalDataBaseConnection is a global variableto manage connections to database
 var Connection *sql.DB
 
-//InitializeConnection is a function that is used to open connection
+//InitializeConnection is a function that is used to open Connection
 //with a dataBase.
 func InitializeConnection() (*sql.DB){
 	var err error

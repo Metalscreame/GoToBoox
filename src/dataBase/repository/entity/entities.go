@@ -3,17 +3,17 @@ package entity
 import "time"
 
 type User struct {
-	Id          int    `json:"id"`
+	ID          int    `json:"id"`
 	Nickname    string `json:"nickname"`
 	Email       string `json:"email"`
 	Password    string `json:"password"`
-	RegistrDate time.Time `json:"-"`
+	RegisterDate time.Time `json:"-"`
 	RegTimeStr string `json:"registrDate"`
 }
 
 type Categories struct {
-	Id    int
-	Title string `json:"categories"`
+	ID    int      `json:"id"`
+	Title string   `json:"title"`
 }
 
 type Book struct {
@@ -25,13 +25,9 @@ type Book struct {
 }
 
 type Authors struct {
-	Id        int
+	ID        int
 	FirstName string
-	MidleName string
+	MiddleName string
 	LastName  string
 }
 
-type BooksAuthors struct {
-	BookID   int
-	AuthorID int
-}

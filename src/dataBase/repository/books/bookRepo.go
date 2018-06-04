@@ -11,15 +11,13 @@ import (
 
 
 
-type BooksRepository struct{
-
-}
+type BooksRepositoryPG struct{}
 
 type BookRepository interface {
 	GetAll() ([]entity.Book, error)
 	GetByCategory(categoryID int) ([]entity.Book, error)
-	GetMostPopular() ([]entity.Book, error)
 	GetByID(bookID int) (entity.Book, error)
+	GetMostPopularBooks(id int) ([]entity.Book, error)
 }
 
 //For connection to HerokuDatabase
@@ -131,7 +129,28 @@ func GetByCategory(categoryID int) ([]entity.Book, error) {
 	return books, nil
 }
 
-
+//Function GetMostPopulareBooks iterates over the DB using the SQL SELECT Request and return 5 top-rated books.
+func (br BooksRepositoryPG) GetMostPopularBooks (id int) ([]entity.Book, error) {
+	db := dataBase.Connection
+	rows, err := db.Query("SELECT Id, Title, Popularity FROM gotoboox.books ORDER BY Popularity DESC LIMIT $ID", id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var popularBooks []entity.Book
+	for rows.Next() {
+		var id int
+		var title string
+		var popularity float32
+		err = rows.Scan(&id, &title, &popularity)
+		if err != nil {
+			return nil, err
+		}
+		book := entity.Book{ID: id, Title: title, Popularity: popularity}
+		popularBooks = append(popularBooks, book)
+	}
+	return popularBooks, err
+}
 
 
 

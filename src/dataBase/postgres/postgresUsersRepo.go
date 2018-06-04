@@ -34,11 +34,12 @@ func (p *postgresUsersRepository) GetUserByEmail(email string) (u entity.User, e
 	}
 
 	//rows, err := execQueueByEmail(stmt, email)
-	row := stmt.QueryRow()
+	row := stmt.QueryRow(email)
 	if err != nil {
 		return
 	}
-	err = row.Scan(&u.Id, &u.Nickname, &u.Email, &u.Password, &u.RegistrDate)
+
+	err = row.Scan(&u.ID, &u.Nickname, &u.Email, &u.Password, &u.RegisterDate)
 	if err != nil {
 		return
 	}
@@ -46,15 +47,17 @@ func (p *postgresUsersRepository) GetUserByEmail(email string) (u entity.User, e
 }
 
 //UpdateInsertUserByEmail updates a user or insert if there is no such user
-func (p *postgresUsersRepository) UpdateUserByEmail(u entity.User) (err error) {
+func (p *postgresUsersRepository) UpdateUserByEmail(u entity.User, oldEmail string) (err error) {
 	query := prepareQueryString(updateQueryType)
 	stmt, err := p.Db.Prepare(query)
 	if err != nil {
 		return
 	}
 
-	err = execInsertStmtByEmail(stmt, &u)
-	if err == nil {
+	_, err = stmt.Exec(u.Nickname, u.Email, u.Password, oldEmail)
+
+	//err = execInsertStmtByEmail(stmt, &u)
+	if err != nil {
 		return
 	}
 	return
@@ -68,7 +71,7 @@ func (p *postgresUsersRepository) DeleteUserByEmail(email string) (err error) {
 		return
 	}
 
-	_, err = execQueueByEmail(stmt, email)
+	_, err = stmt.Query(email)
 	if err != nil {
 		return
 	}
@@ -102,10 +105,10 @@ func prepareQueryString(typeOfQuery string) (string) {
 		b.WriteString("update ")
 		b.WriteString(db.DB_SCHEMA)
 		b.WriteString(db.DB_USERS_TABLE)
-		b.WriteString(" set nickname=&1,email=$2,password=$3 where email=$4")
+		b.WriteString(" set nickname=$1,email=$2,password=$3 where email=$4")
 		return b.String()
 	case selectQueryType:
-		b.WriteString("select from ")
+		b.WriteString("select * from ")
 	case deleteQueryType:
 		b.WriteString("delete from ")
 	default:
@@ -119,11 +122,11 @@ func prepareQueryString(typeOfQuery string) (string) {
 }
 
 func execInsertStmtByEmail(stmt *sql.Stmt, u *entity.User) (err error) {
-	err = convertRegUserTime(u)
-	if err != nil {
-		return
-	}
-	res, err := stmt.Exec(u.Nickname, u.Email, u.Password, u.RegistrDate)
+	//err = convertRegUserTime(u)
+	//if err != nil {
+	//	return
+	//}
+	res, err := stmt.Exec(u.Nickname, u.Email, u.Password, u.RegisterDate)
 	if err != nil {
 		return err
 	}
@@ -135,20 +138,12 @@ func execInsertStmtByEmail(stmt *sql.Stmt, u *entity.User) (err error) {
 	return
 }
 
-func execQueueByEmail(stmt *sql.Stmt, email string) (rows *sql.Rows, err error) {
-	rows, err = stmt.Query(email)
-	if err != nil {
-		return nil, err
-	}
-	return
-}
-
 func convertRegUserTime(u *entity.User) (err error) {
 	layout := "2006-01-02"
 	updatedAt, err := time.Parse(layout, u.RegTimeStr)
 	if err != nil {
 		return
 	}
-	u.RegistrDate = updatedAt
+	u.RegisterDate = updatedAt
 	return
 }
