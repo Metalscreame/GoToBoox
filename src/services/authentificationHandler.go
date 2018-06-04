@@ -45,7 +45,7 @@ func (s *UserService) UserCreateHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	u.RegistrDate = time.Now()
+	u.RegisterDate = time.Now()
 	if err := s.UsersRepo.InsertUser(u); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

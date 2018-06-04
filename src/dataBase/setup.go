@@ -25,7 +25,6 @@ const (
 	DB_BOOKS_AUTHORS_TABLE = "books_authors"
 )
 
-//Connection is a global variableto manage connections to database
 var Connection *sql.DB
 
 //InitializeConnection is a function that is used to open Connection

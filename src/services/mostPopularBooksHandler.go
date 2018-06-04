@@ -7,7 +7,7 @@ import (
 )
 
 func (bs *BookService) FiveMostPop (c *gin.Context) {
-	FiveMostPop, _ := (books.BookRepository{}).GetMostPopularBooks(5)
+	FiveMostPop, _ := (books.BooksRepositoryPG{}).GetMostPopularBooks(5)
 	if len(FiveMostPop) > 0 {
 		c.JSON(http.StatusOK, FiveMostPop)
 	} else {

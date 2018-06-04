@@ -79,6 +79,7 @@ func InitializeRouter() {
 
 	router.GET(apiRoute, IndexHandler)
 	initUserProfileRouters()
+	initBooksRoute()
 
 	router.Run(":" + port)
 }
@@ -130,8 +131,20 @@ func initUserProfileRouters() {
 
 	// Show the user's profile page
 	// Ensure that the user is logged in by using the middleware
-	router.GET("/userProfile", midlware.EnsureLoggedIn(), ShowUsersProfilePage)
-  }
+	router.GET("/usersProfile", midlware.EnsureLoggedIn(), ShowUsersProfilePage)
+}
+
+func initBooksRoute() {
+
+	bookService := BookService{}
+	//get all books in certain category
+	router.GET("categories/:cat_id/books", bookService.getBooks)
+	//get all books
+	router.GET("/books", bookService.showAllBooks)
+	router.GET("/mostPopularBooks", bookService.FiveMostPop)
+	//get books by ID
+	router.GET("categories/:cat_id/book/:book_id", bookService.getBook)
+}
 
 	func initCategoriesRouters(){
 		categoriesService := NewCategoriesService(categories.CategoryRepoPq{})
@@ -141,11 +154,4 @@ func initUserProfileRouters() {
 		}
 	}
 
-	func initBooksRouters(){
-		booksService := BookService{BooksRepo: books.BookRepository{}}
-
-		{
-			router.GET("/mostPopularBooks", booksService.FiveMostPop)
-		}
-	}
 

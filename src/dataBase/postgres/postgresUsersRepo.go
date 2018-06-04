@@ -39,7 +39,7 @@ func (p *postgresUsersRepository) GetUserByEmail(email string) (u entity.User, e
 		return
 	}
 
-	err = row.Scan(&u.Id, &u.Nickname, &u.Email, &u.Password, &u.RegistrDate)
+	err = row.Scan(&u.ID, &u.Nickname, &u.Email, &u.Password, &u.RegisterDate)
 	if err != nil {
 		return
 	}
@@ -126,7 +126,7 @@ func execInsertStmtByEmail(stmt *sql.Stmt, u *entity.User) (err error) {
 	//if err != nil {
 	//	return
 	//}
-	res, err := stmt.Exec(u.Nickname, u.Email, u.Password, u.RegistrDate)
+	res, err := stmt.Exec(u.Nickname, u.Email, u.Password, u.RegisterDate)
 	if err != nil {
 		return err
 	}
@@ -144,6 +144,6 @@ func convertRegUserTime(u *entity.User) (err error) {
 	if err != nil {
 		return
 	}
-	u.RegistrDate = updatedAt
+	u.RegisterDate = updatedAt
 	return
 }
