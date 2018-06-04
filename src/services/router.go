@@ -32,24 +32,33 @@ func InitializeRouter() {
 	port := os.Getenv("PORT")
 
 	//Uncomment for local machine   !!!!
-	port = "8080"
+	//port = "8080"
 
 	if port == "" {
 		log.Fatal("$PORT must be set")
 	}
-
+	gin.SetMode(gin.ReleaseMode)
 	router = gin.New()
 	router.Use(gin.Logger())
-	router.LoadHTMLGlob("templates/*.tmpl.html")
-	router.Static("/static", "static")
+	//router.LoadHTMLGlob("templates/*.tmpl.html")
+	router.Static("/static", "/")
+	router.LoadHTMLGlob("templates/*.html")
+
 
 	router.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.tmpl.html", nil)
-	})
+		isLoggedIn := midlware.CheckLoggedIn(c)
+			if !isLoggedIn{
+				guest := true
+				c.HTML(http.StatusOK, "index.tmpl.html", guest)
+			}else{
+				c.HTML(http.StatusOK, "index.tmpl.html", nil)
+			}
+		})
+
 
 	//The place for handlers routes
 	// exm router.GET("/", showIndex.ShowIndexPage)
-	router.GET("/api/v.1/", IndexHandler)
+	router.GET(apiRoute, IndexHandler)
 	initUserProfileRouters()
 
 	router.Run(":" + port)
@@ -76,7 +85,7 @@ func initUserProfileRouters() {
 		// Ensure that the user is not logged in by using the middleware
 		userRoutes.POST("/register", midlware.EnsureNotLoggedIn(), service.UserCreateHandler)
 
-		// Handle the GET requests at /api/v1/register
+		// Handle the GET requests at /api/v1/userProfile
 		// Show the user's profile page
 		// Ensure that the user is logged in by using the middleware
 		userRoutes.GET("/userProfile", midlware.EnsureLoggedIn(), service.UserGetHandler)
@@ -86,7 +95,7 @@ func initUserProfileRouters() {
 		// Ensure that the user is logged in by using the middleware
 		userRoutes.PUT("/userProfile", midlware.EnsureLoggedIn(), service.UserUpdateHandler)
 
-		// Handle the GET requests at /api/v1/register
+		// Handle the GET requests at /api/v1/userProfile
 		// Show the user's profile page
 		// Ensure that the user is logged in by using the middleware
 		userRoutes.DELETE("/userProfile", midlware.EnsureLoggedIn(), service.UserDeleteHandler)
@@ -102,5 +111,5 @@ func initUserProfileRouters() {
 
 	// Show the user's profile page
 	// Ensure that the user is logged in by using the middleware
-	router.GET("/usersProfile", midlware.EnsureLoggedIn(), ShowUsersProfilePage)
+	router.GET("/userProfile", midlware.EnsureLoggedIn(), ShowUsersProfilePage)
 }

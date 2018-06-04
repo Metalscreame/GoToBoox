@@ -1,0 +1,138 @@
+<html>
+{{template "header.tmpl.html"}}
+<body>
+{{template "nav.tmpl.html"}}
+
+
+<link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<!------ <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>---------->
+<script src="/static/js/jquery-1.11.1.js"></script>
+
+<!------ Include the above in your HEAD tag ---------->
+
+
+<div class="row">
+    <div class="col-md-4 col-md-offset-4">
+        <form class="form-horizontal" role="form">
+            <fieldset>
+
+                <!-- Form Name -->
+                <legend>Account Details</legend>
+
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="textinput">Nickname</label>
+                    <div class="col-sm-10">
+                        <input type="text" placeholder="Youre nickname" class="form-control" id="nicknameInput">
+                    </div>
+                </div>
+
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="textinput">Email</label>
+                    <div class="col-sm-10">
+                        <input type="text" placeholder="Your Email" class="form-control" id="emailInput">
+                    </div>
+                </div>
+
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="textinput">Password</label>
+                    <div class="col-sm-10">
+                        <input type="text" placeholder="Youre password" class="form-control" id="passwordInput">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <div class="pull-right">
+                            <button type="submit" id="saveButton" class="btn btn-primary">Save changes</button>
+                            <button type="submit" id="deleteButton" class="btn btn-default">Delete user</button>
+                            <button type="submit" id="goBackButton" class="btn btn-default">Go back</button>
+                        </div>
+                    </div>
+                </div>
+
+            </fieldset>
+        </form>
+    </div><!-- /.col-lg-12 -->
+
+
+
+</div><!-- /.row -->
+
+<script>
+
+    $('#saveButton').on('click', function (e) {
+        var nickname = document.getElementById("nicknameInput").value;
+        var email = document.getElementById("emailInput").value;
+        var password = document.getElementById("passwordInput").value;
+        var xhr = new XMLHttpRequest();
+        xhr.open('PUT', "/api/v1/userProfile", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                var json = JSON.parse(xhr.responseText);
+                alert(json.status);
+                window.location.replace("/userProfile");
+            } else {
+            }
+        };
+        var body = JSON.stringify({
+            "nickname": nickname,
+            "email": email,
+            "password": password
+        });
+        xhr.send(body);
+    });
+
+    <!-- deleteButton -->
+
+    $('#deleteButton').on('click', function (e) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('DELETE', "/api/v1/userProfile", false);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        // xhr.onreadystatechange = function () {
+        //     if (xhr.readyState == 4 && xhr.status == 200) {
+        //         if (xhrobj.responseText) {
+        //             alert("delete")
+        //             $(location).attr('href', 'http://localhost:8080/login')
+        //         }
+        //         // var json = JSON.parse(xhr.responseText);
+        //     }
+        // };
+
+        xhr.send();
+        window.location.replace("/login");
+
+    });
+
+    <!-- goBackButton -->
+    $('#goBackButton').on('click', function (e) {
+        window.location.replace("/");
+    });
+</script>
+
+<script>
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', "/api/v1/userProfile", true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            var json = JSON.parse(xhr.responseText);
+            $('#nicknameInput').val(json.nickname);
+            $('#emailInput').val(json.email);
+            $('#passwordInput').val(json.password);
+        } else if (xhr.readyState == 4 && xhr.status == 400) {
+            window.location.replace("/login");
+        }
+        else {
+        }
+    };
+    xhr.send();
+</script>
+
+{{template "footer.tmpl.html"}}
+
+</body>
+</html>
