@@ -16,7 +16,7 @@ const (
 	DB_BOOKS_AUTHORS_TABLE = "books_authors"
 )
 
-type DataCredentials struct {
+type DataBaseCredentials struct {
 	DB_USER     string
 	DB_PASSWORD string
 	DB_NAME     string
@@ -26,9 +26,9 @@ var Connection *sql.DB
 
 //Connect is a function that is used to open Connection
 //with a dataBase.
-func Connect(dbConf DataCredentials) (*sql.DB) {
+func Connect(d DataBaseCredentials) (*sql.DB) {
 	var err error
-	dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable", dbConf.DB_USER, dbConf.DB_PASSWORD, dbConf.DB_NAME)
+	dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable", d.DB_USER, d.DB_PASSWORD, d.DB_NAME)
 	Connection, err = sql.Open("postgres", dbinfo)
 	if err != nil {
 		log.Fatal(err)

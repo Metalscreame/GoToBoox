@@ -16,13 +16,12 @@ import (
 const envVariable = "GOLANG_RUN_MODE"
 
 func main() {
-	credentials,port:= getDatabaseCredentialsAndPort()
+	credentials, port := getDatabaseCredentialsAndPort()
 	dataBase.Connect(credentials)
 	services.Start(port)
 }
 
-
-func getDatabaseCredentialsAndPort() (dbConf dataBase.DataCredentials,port string) {
+func getDatabaseCredentialsAndPort() (d dataBase.DataBaseCredentials, port string) {
 	var file *os.File
 	var err error
 
@@ -30,30 +29,30 @@ func getDatabaseCredentialsAndPort() (dbConf dataBase.DataCredentials,port strin
 	if runMode == "production" {
 		file, err = os.Open("productionConfig")
 		CheckForFatalError(err)
-		dbConf=readConfigValuesFromFile(file)
+		d = readConfigValuesFromFile(file)
 		port = os.Getenv("PORT")
 	} else {
 		file, err = os.Open("developmentConfig")
 		CheckForFatalError(err)
-		dbConf=readConfigValuesFromFile(file)
-		port="8080"
+		d = readConfigValuesFromFile(file)
+		port = "8080"
 	}
 	if err := file.Close(); err != nil {
-			panic(err)
+		panic(err)
 	}
 	return
 }
 
-func readConfigValuesFromFile(file *os.File)(dbConf dataBase.DataCredentials){
+func readConfigValuesFromFile(file *os.File) (d dataBase.DataBaseCredentials) {
 	buf := bufio.NewReader(file)
-	dbConf.DB_NAME = getSingleLineFromFile(buf)
-	dbConf.DB_PASSWORD = getSingleLineFromFile(buf)
-	dbConf.DB_USER = getSingleLineFromFile(buf)
+	d.DB_NAME = getSingleLineFromFile(buf)
+	d.DB_PASSWORD = getSingleLineFromFile(buf)
+	d.DB_USER = getSingleLineFromFile(buf)
 	return
 }
 
-func getSingleLineFromFile(r *bufio.Reader)  string {
-	a,err := r.ReadString('\n')
+func getSingleLineFromFile(r *bufio.Reader) string {
+	a, err := r.ReadString('\n')
 	CheckForFatalError(err)
 	return string(a[:len(a)-2])
 }
@@ -64,4 +63,3 @@ func CheckForFatalError(err error) {
 		log.Fatal(err)
 	}
 }
-
