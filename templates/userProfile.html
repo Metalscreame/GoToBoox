@@ -1,6 +1,13 @@
-<link href="//netdna.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+<html>
+{{template "header.tmpl.html"}}
+<body>
+{{template "nav.tmpl.html"}}
+
+
+<link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<!------ <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>---------->
+<script src="/static/js/jquery-1.11.1.js"></script>
+
 <!------ Include the above in your HEAD tag ---------->
 
 
@@ -55,9 +62,6 @@
 </div><!-- /.row -->
 
 <script>
-
-    <!--
-    saveButton -->
 
     $('#saveButton').on('click', function (e) {
         var nickname = document.getElementById("nicknameInput").value;
@@ -127,3 +131,8 @@
     };
     xhr.send();
 </script>
+
+{{template "footer.tmpl.html"}}
+
+</body>
+</html>

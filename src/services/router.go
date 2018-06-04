@@ -37,7 +37,7 @@ func InitializeRouter() {
 	if port == "" {
 		log.Fatal("$PORT must be set")
 	}
-
+	gin.SetMode(gin.ReleaseMode)
 	router = gin.New()
 	router.Use(gin.Logger())
 	//router.LoadHTMLGlob("templates/*.tmpl.html")
