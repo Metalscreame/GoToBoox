@@ -9,6 +9,8 @@ import (
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository/users"
 	"github.com/metalscreame/GoToBoox/src/dataBase"
 	"github.com/metalscreame/GoToBoox/src/dataBase/postgres"
+	"github.com/metalscreame/GoToBoox/src/dataBase/repository/books"
+	"github.com/metalscreame/GoToBoox/src/dataBase/repository/categories"
 )
 
 const (
@@ -22,6 +24,26 @@ type UserService struct {
 func NewUserService(repository users.UserRepository) *UserService {
 	return &UserService{
 		UsersRepo: repository,
+	}
+}
+
+type BookService struct {
+	BooksRepo books.BookRepository
+}
+
+type CategoriesService struct {
+	CategoriesRepoPq categories.CategoryRepository
+}
+
+func NewCategoriesService (repository categories.CategoryRepository) *CategoriesService{
+	return &CategoriesService{
+		CategoriesRepoPq: repository,
+	}
+}
+
+func NewBookService(repository books.BookRepository) *BookService {
+	return &BookService{
+		BooksRepo: repository,
 	}
 }
 
@@ -40,10 +62,10 @@ func InitializeRouter() {
 	gin.SetMode(gin.ReleaseMode)
 	router = gin.New()
 	router.Use(gin.Logger())
+
 	//router.LoadHTMLGlob("templates/*.tmpl.html")
 	router.Static("/static", "/")
 	router.LoadHTMLGlob("templates/*.html")
-
 
 	router.GET("/", func(c *gin.Context) {
 		isLoggedIn := midlware.CheckLoggedIn(c)
@@ -55,9 +77,6 @@ func InitializeRouter() {
 			}
 		})
 
-
-	//The place for handlers routes
-	// exm router.GET("/", showIndex.ShowIndexPage)
 	router.GET(apiRoute, IndexHandler)
 	initUserProfileRouters()
 
@@ -112,4 +131,21 @@ func initUserProfileRouters() {
 	// Show the user's profile page
 	// Ensure that the user is logged in by using the middleware
 	router.GET("/userProfile", midlware.EnsureLoggedIn(), ShowUsersProfilePage)
-}
+  }
+
+	func initCategoriesRouters(){
+		categoriesService := NewCategoriesService(categories.CategoryRepoPq{})
+		{
+			// Ensure that the user is logged in by using the middleware
+			router.GET("/categories/0", categoriesService.AllCategories)
+		}
+	}
+
+	func initBooksRouters(){
+		booksService := BookService{BooksRepo: books.BookRepository{}}
+
+		{
+			router.GET("/mostPopularBooks", booksService.FiveMostPop)
+		}
+	}
+

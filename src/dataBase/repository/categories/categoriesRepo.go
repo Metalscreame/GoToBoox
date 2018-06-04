@@ -1,41 +1,38 @@
 package categories
 
 import (
-	"fmt"
-	"database/sql"
 	"log"
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository/entity"
-	db "github.com/metalscreame/GoToBoox/src/dataBase"
+	_"github.com/lib/pq"
+	"github.com/metalscreame/GoToBoox/src/dataBase"
 )
 
-type Category entity.Categories
+type CategoryRepository interface{
+	GetAllCategories () ([]entity.Categories, error)
+}
 
-func GetCategories() []Category{
-	dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable",
-		db.DB_USER, db.DB_PASSWORD, db.DB_NAME)
-	db, err := sql.Open("postgres", dbinfo)
+type CategoryRepoPq struct{}
+
+var CategoryRepo CategoryRepository
+
+//Function GetAllCategories creates a list of all categories currently available and order them alphabetically
+func (cr CategoryRepoPq) GetAllCategories ( ) ([]entity.Categories, error) {
+
+	rows, err := dataBase.Connection.Query("SELECT id, title FROM gotoboox.categories")
 	if err != nil {
-		log.Fatal(err)
-	}
-	rows, err := db.Query("SELECT * FROM categories")
-	if err != nil {
-		log.Fatal(err)
+		log.Println("Unknown error occurred")
 	}
 	defer rows.Close()
-
-
-	Cats := []Category{}
+	var allCategories []entity.Categories
 	for rows.Next() {
-		cat := new(Category)
-		if err := rows.Scan(&cat.Id, &cat.Title); err != nil {
+		var id int
+		var title string
+		if err := rows.Scan(&id, &title); err != nil {
 			log.Fatal(err)
 		}
-		Cats = append(Cats, *cat)
-		fmt.Printf("id %d title %s\n", Cats[0].Id, Cats[0].Title)
+		category := entity.Categories{id, title}
+		allCategories = append(allCategories, category)
 	}
-	if err := rows.Err(); err != nil {
-		log.Fatal(err)
-	}
-	return Cats
+	return allCategories, err
 }
 
