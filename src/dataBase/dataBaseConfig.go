@@ -26,20 +26,20 @@ const (
 )
 
 //GlobalDataBaseConnection is a global variableto manage connections to database
-var GlobalDataBaseConnection *sql.DB
+var Connection *sql.DB
 
 //InitializeConnection is a function that is used to open connection
 //with a dataBase.
 func InitializeConnection() (*sql.DB){
 	var err error
 	dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable", DB_USER, DB_PASSWORD, DB_NAME)
-	GlobalDataBaseConnection, err = sql.Open("postgres", dbinfo)
+	Connection, err = sql.Open("postgres", dbinfo)
 	if err != nil {
 		log.Fatal(err)
 	}
-	GlobalDataBaseConnection.Ping()
+	Connection.Ping()
 	if err != nil {
 		log.Fatal(err)
 	}
-	return GlobalDataBaseConnection
+	return Connection
 }

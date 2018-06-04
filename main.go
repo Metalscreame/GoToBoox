@@ -5,13 +5,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/metalscreame/GoToBoox/src/dataBase"
 	"github.com/metalscreame/GoToBoox/src/services"
-	"github.com/metalscreame/GoToBoox/src/dataBase/repository/books"
+
 )
 
 
 
 func main() {
-	books.GetByCatCertainBook(2,3)
+	//books.GetByCatCertainBook(2,3)
 	gin.SetMode(gin.ReleaseMode)
 	//Opens database connection
 	connection:= dataBase.InitializeConnection()

@@ -43,9 +43,9 @@ func (b *BookService) getBooks(c *gin.Context) {
 	}
 }
 
-/*func (b *BookService) getBook (c *gin.Context) {
+func (b *BookService) getBook (c *gin.Context) {
 	// Check if the bookID is valid
-	if bookID, err := strconv.Atoi(c.Param("cat_id"));
+	if bookID, err := strconv.Atoi(c.Param("book_id"));
 	err == nil {
 		// Check if the category exists
 		if book, err := books.GetByID(bookID); err == nil {
@@ -64,9 +64,9 @@ func (b *BookService) getBooks(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-}*/
+}
 
-func (b * BookService) getByCatCertainBook (c *gin.Context){
+/*func (b * BookService) getByCatCertainBook (c *gin.Context){
 	if catID, err := strconv.Atoi(c.Param("cat_id"));
 		err == nil {
 		if bookID, err := strconv.Atoi(c.Param("book_id"));
@@ -82,7 +82,7 @@ func (b * BookService) getByCatCertainBook (c *gin.Context){
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 		}
-	}
+	}*/
 
 
 

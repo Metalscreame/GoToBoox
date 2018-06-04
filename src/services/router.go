@@ -73,7 +73,7 @@ func initUserProfileRouters() {
 	// indicating whether the request was from an authenticated user or not
 	router.Use(midlware.SetUserStatus())
 
-	service := NewUserService(postgres.NewPostgresUsersRepo(dataBase.GlobalDataBaseConnection))
+	service := NewUserService(postgres.NewPostgresUsersRepo(dataBase.Connection))
 	userRoutes := router.Group(apiRoute)
 	{
 		// Handle POST requests at /api/v1/login
@@ -125,8 +125,7 @@ func initBooksRoute(){
 		//get all books
 		router.GET("/books", bookService.showAllBooks)
 		//get books by ID
-	    router.GET("categories/:cat_id/book/:book_id", bookService.getByCatCertainBook)
-
+	    router.GET("categories/:cat_id/book/:book_id", bookService.getBook)
 
 	}
 

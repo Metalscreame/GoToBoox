@@ -1,0 +1,23 @@
+
+<body>
+
+<div class="col-md-8" id="allBooksByCat">
+    <ul id="bookList"> </ul>
+    <script>
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/api/v1', false);
+        xhr.send();
+        if (xhr.status != 200) {
+            alert( xhr.status + ': ' + xhr.statusText );
+        } else {
+            //  alert( xhr.responseText );
+            var Books = document.getElementById("bookList")
+            for (var i = 0; i < data.data['Books'].length; i++){
+                var newLi = document.createElement('li')
+                newLi.innerHTML = "<a href='/categories/" + data.data['Books'][i]['CategoryId'] + "/book/" + data.data['Books'][i]['Id'] + "'>" + data.data['Books'][i]['Title'] + "</a>"
+                Books.appendChild(newLi)
+            }
+        }
+    </script>
+</div>>
+</body>
