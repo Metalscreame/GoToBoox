@@ -189,7 +189,7 @@ func GetByCatCertainBook(catID ,bookID int) (entity.Book, error) {
 
 	for rows.Next() {
 
-		book := new(entity.Book)
+		book = *new(entity.Book)
 		if err := rows.Scan(&book.Title, &book.Description, &book.Popularity);
 			err != nil {
 			log.Fatal(err)
