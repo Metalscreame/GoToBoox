@@ -47,7 +47,7 @@ func InitializeRouter() {
 
 	router.GET("/", func(c *gin.Context) {
 		isLoggedIn := midlware.CheckLoggedIn(c)
-			if isLoggedIn == nil{
+			if !isLoggedIn{
 				guest := true
 				c.HTML(http.StatusOK, "index.tmpl.html", guest)
 			}else{

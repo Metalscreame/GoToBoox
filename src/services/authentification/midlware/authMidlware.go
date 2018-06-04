@@ -45,11 +45,14 @@ func SetUserStatus() gin.HandlerFunc {
 	}
 }
 
-func CheckLoggedIn(c *gin.Context) interface{}{
+func CheckLoggedIn(c *gin.Context) bool{
 		// If there's an error or if the token is empty
 		// the user is not logged in
 		loggedInInterface, _ := c.Get("is_logged_in")
-		loggedIn := loggedInInterface
-		return loggedIn
+		b,loggedIn := loggedInInterface.(bool)
+		if loggedIn{
+			return true
+		}
+		return b
 
 }
