@@ -1,0 +1,91 @@
+<html>
+  {{template "header.tmpl.html"}}
+<body>
+  {{template "nav.tmpl.html"}}
+
+  <header>
+      <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+          <div class="carousel-inner" role="listbox">
+              <!-- Slide One - Set the background image for this slide in the line below -->
+              <div class="carousel-item active" style="background-image: url('/static/bg.jpg')">
+                  <div class="carousel-caption d-none d-md-block">
+                      <h3>First Slide</h3>
+                      <p>This is a description for the first slide.</p>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </header>
+
+  <!-- Page Content -->
+  <div class="container">
+
+      <h1 class="my-4">Welcome to GoToBooX project</h1>
+
+
+      <div class="row">
+          <div class="col-lg-6">
+              <h2>Modern Business Features</h2>
+              <p>The project includes:</p>
+              <ul>
+                  <li>
+                      <strong>Bootstrap v4</strong>
+                  </li>
+                  <li>Unstyled page elements for easy customization</li>
+                  <li>jQuery</li>
+                  <li>Heroku</li>
+                  <li>Go v.1.10</li>
+                  <li>PostgreSQL</li>
+                  <li>Git</li>
+                  <li>Working with RESTfull api</li>
+              </ul>
+              <p>The project is a golang based web application that is a book-crossing automated system.
+                  It allows to manage online member accounts, book reservation and their usage tracking.</p>
+          </div>
+          <div class="col-lg-6">
+              <img class="img-fluid rounded" src="http://placehold.it/700x450" alt="">
+          </div>
+      </div>
+      <!-- /.row -->
+
+      <hr>
+      <h2 class="my-4">Popular books (TOP-5)</h2>
+      <!-- Call to Action Section -->
+      <div class="row mb-4">
+          <div class="col-md-8" id="popularBooks">
+            <ul>
+
+            </ul>
+          </div>
+          <div class="col-md-4">
+          </div>
+      </div>
+
+  </div>
+  <script>
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', '/api/v1', false);
+      xhr.send();
+      if (xhr.status != 200) {
+          alert( xhr.status + ': ' + xhr.statusText );
+      } else {
+            var popularBooks = document.getElementById('popularBooks');
+            var catList = document.getElementById('catList')
+            var data = JSON.parse(xhr.responseText)
+                for (var i = 0; i < data.data['PopularBooks'].length; i++){
+                    var newLi = document.createElement('li')
+                    newLi.innerHTML = "<a href='/categories/" + data.data['PopularBooks'][i]['CategoryId'] + "/books/" + data.data['PopularBooks'][i]['Id'] + "'>" + data.data['PopularBooks'][i]['Title'] + "</a>"
+                    popularBooks.appendChild(newLi)
+                }
+                for (var i = 0; i < data.data['Categories'].length; i++){
+                   var newLi = document.createElement('li')
+                      newLi.innerHTML = "<a class=\"dropdown-item\" href='/categories/" + data.data['Categories'][i]['Id'] + "'>" + data.data['Categories'][i]['Title'] + "</a>"
+                    catList.appendChild(newLi)
+                }
+      }
+  </script>
+  <!-- /.container -->
+  {{template "footer.tmpl.html"}}
+
+</body>
+</html>
