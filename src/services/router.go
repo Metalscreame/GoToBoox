@@ -125,7 +125,7 @@ func initBooksRoute(){
 		//get all books
 		router.GET("/books", bookService.showAllBooks)
 		//get books by ID
-	    router.GET("categories/:cat_id/book/:book_id", bookService.getBook)
+	    router.GET("categories/:cat_id/book/:book_id", bookService.getByCatCertainBook)
 
 
 	}

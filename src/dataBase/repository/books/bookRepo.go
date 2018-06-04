@@ -46,7 +46,7 @@ func openDb() *sql.DB {
 
 
 func GetByID(bookID int) (entity.Book, error) {
-	db:=openDb()
+	db := openDb()
 
 	rows, err := db.Query("SELECT title, description, popularity FROM gotoboox.books where id=$1", bookID)
 	if err != nil {
@@ -59,7 +59,7 @@ func GetByID(bookID int) (entity.Book, error) {
 	for rows.Next() {
 
 		book := new(entity.Book)
-		if err := rows.Scan(&book.Title);
+		if err := rows.Scan(&book.Title, &book.Description, &book.Popularity);
 			err != nil {
 			log.Fatal(err)
 		}
@@ -73,10 +73,8 @@ func GetByID(bookID int) (entity.Book, error) {
 	}
 	return book, nil
 
-
-
-
 }
+
 func GetAll() ([]interface{}, error){
 	db:=openDb()
 
@@ -178,6 +176,33 @@ func GetByPopularity() ([]entity.Book, error) {
 
 }
 
+func GetByCatCertainBook(catID ,bookID int) (entity.Book, error) {
+	db := openDb()
+	//SELECT a.title, a.description, a.popularity, b.title FROM gotoboox.books a, gotoboox.categories b where a.categoriesid=b.id
+	rows, err := db.Query("SELECT a.title, a.description, a.popularity FROM gotoboox.books a, gotoboox.categories b where b.id=$1 AND a.id = $2 AND a.categoriesid=b.id", catID, bookID )
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	book := entity.Book{}
+
+	for rows.Next() {
+
+		book := new(entity.Book)
+		if err := rows.Scan(&book.Title, &book.Description, &book.Popularity);
+			err != nil {
+			log.Fatal(err)
+		}
+		//just for checking
+		fmt.Printf("%s\n%s\n%f\n", book.Title, book.Description, book.Popularity)
+	}
+	if err := rows.Err(); err != nil {
+		log.Fatal(err)
+	}
+	return book, nil
+
+}
 
 
 
