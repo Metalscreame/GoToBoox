@@ -1,7 +1,6 @@
 package services
 
 import (
-	"os"
 	"log"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -48,14 +47,11 @@ func NewBookService(repository repository.BookRepository) *BookService {
 var router *gin.Engine
 
 //Start is a function that starts server and initializes all the routes.
-//For testing on local machine set port =8080
-func Start() {
-	port := os.Getenv("PORT")
-	//port = "8080"
-
+func Start(port string) {
 	if port == "" {
 		log.Fatal("$PORT must be set")
 	}
+	
 	gin.SetMode(gin.ReleaseMode)
 	router = gin.New()
 	router.Use(gin.Logger())

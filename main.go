@@ -16,13 +16,13 @@ import (
 const envVariable = "GOLANG_RUN_MODE"
 
 func main() {
-	credentials:=getDatabaseCredentials()
+	credentials,port:= getDatabaseCredentialsAndPort()
 	dataBase.Connect(credentials)
-	services.Start()
+	services.Start(port)
 }
 
 
-func getDatabaseCredentials() (dbConf dataBase.DataCredentials) {
+func getDatabaseCredentialsAndPort() (dbConf dataBase.DataCredentials,port string) {
 	var file *os.File
 	var err error
 
@@ -31,10 +31,12 @@ func getDatabaseCredentials() (dbConf dataBase.DataCredentials) {
 		file, err = os.Open("productionConfig")
 		CheckForFatalError(err)
 		dbConf=readConfigValuesFromFile(file)
+		port = os.Getenv("PORT")
 	} else {
 		file, err = os.Open("developmentConfig")
 		CheckForFatalError(err)
 		dbConf=readConfigValuesFromFile(file)
+		port="8080"
 	}
 	if err := file.Close(); err != nil {
 			panic(err)
