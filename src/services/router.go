@@ -33,7 +33,7 @@ type CategoriesService struct {
 	CategoriesRepoPq repository.CategoryRepository
 }
 
-func NewCategoriesService (repository repository.CategoryRepository) *CategoriesService{
+func NewCategoriesService(repository repository.CategoryRepository) *CategoriesService {
 	return &CategoriesService{
 		CategoriesRepoPq: repository,
 	}
@@ -47,11 +47,10 @@ func NewBookService(repository repository.BookRepository) *BookService {
 
 var router *gin.Engine
 
-func InitializeRouter() {
-	//Used for heroku
+//Start is a function that starts server and initializes all the routes.
+//For testing on local machine set port =8080
+func Start() {
 	port := os.Getenv("PORT")
-
-	//Uncomment for local machine   !!!!
 	//port = "8080"
 
 	if port == "" {
@@ -60,25 +59,22 @@ func InitializeRouter() {
 	gin.SetMode(gin.ReleaseMode)
 	router = gin.New()
 	router.Use(gin.Logger())
-
-	//router.LoadHTMLGlob("templates/*.tmpl.html")
 	router.Static("/static", "./static")
 	router.LoadHTMLGlob("templates/*.html")
 
 	router.GET("/", func(c *gin.Context) {
 		isLoggedIn := midlware.CheckLoggedIn(c)
-			if !isLoggedIn{
-				guest := true
-				c.HTML(http.StatusOK, "index.tmpl.html", guest)
-			}else{
-				c.HTML(http.StatusOK, "index.tmpl.html", nil)
-			}
-		})
+		if !isLoggedIn {
+			guest := true
+			c.HTML(http.StatusOK, "index.tmpl.html", guest)
+		} else {
+			c.HTML(http.StatusOK, "index.tmpl.html", nil)
+		}
+	})
 
 	router.GET(apiRoute, IndexHandler)
 	initUserProfileRouters()
 	initBooksRoute()
-
 	router.Run(":" + port)
 }
 
@@ -144,12 +140,10 @@ func initBooksRoute() {
 	router.GET("categories/:cat_id/book/:book_id", bookService.getBook)
 }
 
-	func initCategoriesRouters(){
-		categoriesService := NewCategoriesService(postgres.CategoryRepoPq{})
-		{
-			// Ensure that the user is logged in by using the middleware
-			router.GET("/categories/0", categoriesService.AllCategories)
-		}
+func initCategoriesRouters() {
+	categoriesService := NewCategoriesService(postgres.CategoryRepoPq{})
+	{
+		// Ensure that the user is logged in by using the middleware
+		router.GET("/categories/0", categoriesService.AllCategories)
 	}
-
-
+}
