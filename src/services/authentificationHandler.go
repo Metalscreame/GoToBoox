@@ -5,9 +5,8 @@ import (
 	"net/http"
 	"strconv"
 	"math/rand"
-	"github.com/metalscreame/GoToBoox/src/dataBase/repository/users"
-	"github.com/metalscreame/GoToBoox/src/dataBase/repository/entity"
 	"time"
+	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
 )
 
 /*
@@ -40,7 +39,7 @@ Input example for create
 }
  */
 func (s *UserService) UserCreateHandler(c *gin.Context) {
-	var u entity.User
+	var u repository.User
 	if err := c.BindJSON(&u); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -58,7 +57,7 @@ func (s *UserService) UserCreateHandler(c *gin.Context) {
 //PerformLoginHandler is a handler to handle loggining and setting cookies after success login
 // /api/v1/login
 func (s *UserService) PerformLoginHandler(c *gin.Context) {
-	var u entity.User
+	var u repository.User
 
 	if err := c.BindJSON(&u); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -74,7 +73,7 @@ func (s *UserService) PerformLoginHandler(c *gin.Context) {
 	return
 }
 
-func isUserValid(email string, password string, repository users.UserRepository) bool {
+func isUserValid(email string, password string, repository repository.UserRepository) bool {
 	user, err := repository.GetUserByEmail(email)
 	if err != nil || user.Password != password {
 		return false
@@ -88,7 +87,7 @@ func generateSessionToken() string {
 	return strconv.FormatInt(rand.Int63(), 16)
 }
 
-func performLoginCookiesSetting(u entity.User, c *gin.Context) {
+func performLoginCookiesSetting(u repository.User, c *gin.Context) {
 	token := generateSessionToken()
 	c.SetCookie("token", token, 16000, "", "", false, true)
 	c.Set("is_logged_in", true)

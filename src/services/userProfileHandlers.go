@@ -3,8 +3,8 @@ package services
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"github.com/metalscreame/GoToBoox/src/dataBase/repository/entity"
 	"strings"
+	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
 )
 
 //UserGetHandler gets users data from database using unique email that is stored in cookie
@@ -27,8 +27,6 @@ func (s *UserService) UserGetHandler(c *gin.Context) {
 
 //UserDeleteHandler deletes user from database. Uses DELETE method.
 func (s *UserService) UserDeleteHandler(c *gin.Context) {
-	//var u entity.User
-	//c.BindJSON(&u)
 	emailCookie, err := c.Request.Cookie("email")
 	if err != nil {
 		c.Redirect(http.StatusFound, "/")
@@ -39,13 +37,11 @@ func (s *UserService) UserDeleteHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	//c.Cookie()
 	c.SetCookie("email", "", -1, "", "", false, true)
 	c.SetCookie("token", "", -1, "", "", false, true)
 	c.Set("is_logged_in", false)
-	//c.Redirect(http.StatusFound,"/login.html")
 	c.JSON(http.StatusOK, gin.H{"status":"ok"})
-	//return
+	return
 }
 
 /* UserUpdateHandler is a handler function that updates users info in database. Uses PUT method
@@ -59,7 +55,7 @@ Input example for update
 }
  */
 func (s *UserService) UserUpdateHandler(c *gin.Context) {
-	var u entity.User
+	var u repository.User
 	if err := c.BindJSON(&u); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -84,10 +80,7 @@ func (s *UserService) UserUpdateHandler(c *gin.Context) {
 func convertEmailString(email string) ( string) {
 	indexOfPercentSymb:=strings.IndexRune(email,'%')
 	runes:=[]rune(email)
-	//replacing %
 	runes[indexOfPercentSymb]='@'
-
-	//deleting 4 and 0 symbols
 	runes=append(runes[:indexOfPercentSymb+1],runes[indexOfPercentSymb+2:]...)
 	runes=append(runes[:indexOfPercentSymb+1],runes[indexOfPercentSymb+2:]...)
 	return string(runes)

@@ -2,12 +2,12 @@ package services
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/metalscreame/GoToBoox/src/dataBase/repository/books"
 	"net/http"
+	"github.com/metalscreame/GoToBoox/src/dataBase/postgres"
 )
 
 func (bs *BookService) FiveMostPop (c *gin.Context) {
-	FiveMostPop, _ := (books.BooksRepositoryPG{}).GetMostPopularBooks(5)
+	FiveMostPop, _ := (postgres.BooksRepositoryPG{}).GetMostPopularBooks(5)
 	if len(FiveMostPop) > 0 {
 		c.JSON(http.StatusOK, FiveMostPop)
 	} else {

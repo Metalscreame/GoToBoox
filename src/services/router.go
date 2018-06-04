@@ -6,11 +6,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"github.com/metalscreame/GoToBoox/src/services/authentification/midlware"
-	"github.com/metalscreame/GoToBoox/src/dataBase/repository/users"
 	"github.com/metalscreame/GoToBoox/src/dataBase"
 	"github.com/metalscreame/GoToBoox/src/dataBase/postgres"
-	"github.com/metalscreame/GoToBoox/src/dataBase/repository/books"
-	"github.com/metalscreame/GoToBoox/src/dataBase/repository/categories"
+	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
 )
 
 const (
@@ -18,30 +16,30 @@ const (
 )
 
 type UserService struct {
-	UsersRepo users.UserRepository
+	UsersRepo repository.UserRepository
 }
 
-func NewUserService(repository users.UserRepository) *UserService {
+func NewUserService(repository repository.UserRepository) *UserService {
 	return &UserService{
 		UsersRepo: repository,
 	}
 }
 
 type BookService struct {
-	BooksRepo books.BookRepository
+	BooksRepo repository.BookRepository
 }
 
 type CategoriesService struct {
-	CategoriesRepoPq categories.CategoryRepository
+	CategoriesRepoPq repository.CategoryRepository
 }
 
-func NewCategoriesService (repository categories.CategoryRepository) *CategoriesService{
+func NewCategoriesService (repository repository.CategoryRepository) *CategoriesService{
 	return &CategoriesService{
 		CategoriesRepoPq: repository,
 	}
 }
 
-func NewBookService(repository books.BookRepository) *BookService {
+func NewBookService(repository repository.BookRepository) *BookService {
 	return &BookService{
 		BooksRepo: repository,
 	}
@@ -147,7 +145,7 @@ func initBooksRoute() {
 }
 
 	func initCategoriesRouters(){
-		categoriesService := NewCategoriesService(categories.CategoryRepoPq{})
+		categoriesService := NewCategoriesService(postgres.CategoryRepoPq{})
 		{
 			// Ensure that the user is logged in by using the middleware
 			router.GET("/categories/0", categoriesService.AllCategories)

@@ -3,13 +3,13 @@ package services
 import (
 	"github.com/gin-gonic/gin"
 	"strconv"
-	"github.com/metalscreame/GoToBoox/src/dataBase/repository/books"
 	"net/http"
+	"github.com/metalscreame/GoToBoox/src/dataBase/postgres"
 )
 
 
 func (b *BookService) showAllBooks(c *gin.Context) {
-	books, err := books.GetAll()
+	books, err := postgres.GetAll()
 	if err!=nil{
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	} else {
@@ -25,7 +25,7 @@ func (b *BookService) getBooks(c *gin.Context) {
 	if catID, err := strconv.Atoi(c.Param("cat_id"));
 	err == nil {
 		// Check if the category exists
-		if book, err := books.GetByCategory(catID);
+		if book, err := postgres.GetByCategory(catID);
 		err == nil {
 			c.JSON(http.StatusOK, book)
 			return
@@ -48,7 +48,7 @@ func (b *BookService) getBook (c *gin.Context) {
 	if bookID, err := strconv.Atoi(c.Param("book_id"));
 	err == nil {
 		// Check if the category exists
-		if book, err := books.GetByID(bookID); err == nil {
+		if book, err := postgres.GetByID(bookID); err == nil {
 
 			c.JSON(http.StatusOK, book)
 			return

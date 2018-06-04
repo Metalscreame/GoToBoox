@@ -1,38 +1,34 @@
-package categories
+package postgres
 
 import (
 	"log"
-	"github.com/metalscreame/GoToBoox/src/dataBase/repository/entity"
-	_"github.com/lib/pq"
 	"github.com/metalscreame/GoToBoox/src/dataBase"
+	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
 )
-
-type CategoryRepository interface{
-	GetAllCategories () ([]entity.Categories, error)
-}
 
 type CategoryRepoPq struct{}
 
-var CategoryRepo CategoryRepository
+var CategoryRepo repository.CategoryRepository
 
 //Function GetAllCategories creates a list of all categories currently available and order them alphabetically
-func (cr CategoryRepoPq) GetAllCategories ( ) ([]entity.Categories, error) {
+func (cr CategoryRepoPq) GetAllCategories ( ) ([]repository.Categories, error) {
 
 	rows, err := dataBase.Connection.Query("SELECT id, title FROM gotoboox.categories")
 	if err != nil {
 		log.Println("Unknown error occurred")
 	}
 	defer rows.Close()
-	var allCategories []entity.Categories
+	var allCategories []repository.Categories
 	for rows.Next() {
 		var id int
 		var title string
 		if err := rows.Scan(&id, &title); err != nil {
 			log.Fatal(err)
 		}
-		category := entity.Categories{id, title}
+		category := repository.Categories{id, title}
 		allCategories = append(allCategories, category)
 	}
 	return allCategories, err
 }
+
 

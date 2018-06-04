@@ -1,12 +1,11 @@
 package postgres
 
 import (
-	"github.com/metalscreame/GoToBoox/src/dataBase/repository/entity"
 	"bytes"
 	"database/sql"
 	db "github.com/metalscreame/GoToBoox/src/dataBase"
-	"github.com/metalscreame/GoToBoox/src/dataBase/repository/users"
 	"time"
+	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
 )
 
 const (
@@ -20,12 +19,12 @@ type postgresUsersRepository struct {
 	Db *sql.DB
 }
 
-func NewPostgresUsersRepo(Db *sql.DB) users.UserRepository {
+func NewPostgresUsersRepo(Db *sql.DB) repository.UserRepository {
 	return &postgresUsersRepository{Db}
 }
 
 //GetUserByEmail gets users from users table by
-func (p *postgresUsersRepository) GetUserByEmail(email string) (u entity.User, err error) {
+func (p *postgresUsersRepository) GetUserByEmail(email string) (u repository.User, err error) {
 
 	query := prepareQueryString(selectQueryType)
 	stmt, err := p.Db.Prepare(query)
@@ -47,7 +46,7 @@ func (p *postgresUsersRepository) GetUserByEmail(email string) (u entity.User, e
 }
 
 //UpdateInsertUserByEmail updates a user or insert if there is no such user
-func (p *postgresUsersRepository) UpdateUserByEmail(u entity.User, oldEmail string) (err error) {
+func (p *postgresUsersRepository) UpdateUserByEmail(u repository.User, oldEmail string) (err error) {
 	query := prepareQueryString(updateQueryType)
 	stmt, err := p.Db.Prepare(query)
 	if err != nil {
@@ -78,7 +77,7 @@ func (p *postgresUsersRepository) DeleteUserByEmail(email string) (err error) {
 	return
 }
 
-func (p *postgresUsersRepository) InsertUser(u entity.User) (err error) {
+func (p *postgresUsersRepository) InsertUser(u repository.User) (err error) {
 	query := prepareQueryString(insertQueryType)
 	stmt, err := p.Db.Prepare(query)
 	if err != nil {
@@ -121,7 +120,7 @@ func prepareQueryString(typeOfQuery string) (string) {
 	return b.String()
 }
 
-func execInsertStmtByEmail(stmt *sql.Stmt, u *entity.User) (err error) {
+func execInsertStmtByEmail(stmt *sql.Stmt, u *repository.User) (err error) {
 	//err = convertRegUserTime(u)
 	//if err != nil {
 	//	return
@@ -138,7 +137,7 @@ func execInsertStmtByEmail(stmt *sql.Stmt, u *entity.User) (err error) {
 	return
 }
 
-func convertRegUserTime(u *entity.User) (err error) {
+func convertRegUserTime(u *repository.User) (err error) {
 	layout := "2006-01-02"
 	updatedAt, err := time.Parse(layout, u.RegTimeStr)
 	if err != nil {
