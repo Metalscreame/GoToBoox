@@ -32,7 +32,7 @@ func InitializeRouter() {
 	port := os.Getenv("PORT")
 
 	//Uncomment for local machine   !!!!
-	port = "8080"
+	//port = "8080"
 
 	if port == "" {
 		log.Fatal("$PORT must be set")
@@ -41,7 +41,7 @@ func InitializeRouter() {
 	router = gin.New()
 	router.Use(gin.Logger())
 	//router.LoadHTMLGlob("templates/*.tmpl.html")
-	//router.Static("/static", "GoToBooX")
+	router.Static("/static", "/")
 	router.LoadHTMLGlob("templates/*.html")
 
 
