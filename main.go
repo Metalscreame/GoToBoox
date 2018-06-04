@@ -9,12 +9,6 @@ import (
 
 
 func main() {
-
-	//Opens database connection
-	connection:= dataBase.InitializeConnection()
-	defer connection.Close()
-
-	//For local testing uncomment port in init
+	dataBase.InitializeConnection()
 	services.InitializeRouter()
-	//models.GetCategories()
 }
