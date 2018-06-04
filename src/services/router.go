@@ -29,6 +29,12 @@ type BookService struct {
 	BooksRepo repository.BookRepository
 }
 
+func NewBookService(repository repository.BookRepository) *BookService {
+	return &BookService{
+		BooksRepo: repository,
+	}
+}
+
 type CategoriesService struct {
 	CategoriesRepoPq repository.CategoryRepository
 }
@@ -39,11 +45,7 @@ func NewCategoriesService (repository repository.CategoryRepository) *Categories
 	}
 }
 
-func NewBookService(repository repository.BookRepository) *BookService {
-	return &BookService{
-		BooksRepo: repository,
-	}
-}
+
 
 var router *gin.Engine
 
@@ -139,15 +141,15 @@ func initBooksRoute() {
 	router.GET("categories/:cat_id/books", bookService.getBooks)
 	//get all books
 	router.GET("/books", bookService.showAllBooks)
-	router.GET("/mostPopularBooks", bookService.FiveMostPop)
-	//get books by ID
+	//get books by it's ID
 	router.GET("categories/:cat_id/book/:book_id", bookService.getBook)
+	router.GET("/mostPopularBooks", bookService.FiveMostPop)
+
 }
 
 	func initCategoriesRouters(){
 		categoriesService := NewCategoriesService(postgres.CategoryRepoPq{})
 		{
-			// Ensure that the user is logged in by using the middleware
 			router.GET("/categories/0", categoriesService.AllCategories)
 		}
 	}

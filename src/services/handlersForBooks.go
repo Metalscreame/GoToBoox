@@ -4,28 +4,25 @@ import (
 	"github.com/gin-gonic/gin"
 	"strconv"
 	"net/http"
-	"github.com/metalscreame/GoToBoox/src/dataBase/postgres"
 )
 
-
+//showAllBooks is a handler for GetAll function
 func (b *BookService) showAllBooks(c *gin.Context) {
-	books, err := postgres.GetAll()
+	books, err :=b.BooksRepo.GetAll()
 	if err!=nil{
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	} else {
-
-	// Call the render function with the name of the template to render
-	c.JSON(http.StatusOK, books)
+		c.JSON(http.StatusOK, books)
 	}
 }
 
-//Get all books by certain category
+//getBooks is a handler for GetByCategory function
 func (b *BookService) getBooks(c *gin.Context) {
 	// Check if the categoryID is valid
 	if catID, err := strconv.Atoi(c.Param("cat_id"));
 	err == nil {
 		// Check if the category exists
-		if book, err := postgres.GetByCategory(catID);
+		if book, err := b.BooksRepo.GetByCategory(catID);
 		err == nil {
 			c.JSON(http.StatusOK, book)
 			return
@@ -42,13 +39,13 @@ func (b *BookService) getBooks(c *gin.Context) {
 		return
 	}
 }
-
+//getBook is a handler for GetByID function
 func (b *BookService) getBook (c *gin.Context) {
 	// Check if the bookID is valid
 	if bookID, err := strconv.Atoi(c.Param("book_id"));
 	err == nil {
 		// Check if the category exists
-		if book, err := postgres.GetByID(bookID); err == nil {
+		if book, err := b.BooksRepo.GetByID(bookID); err == nil {
 
 			c.JSON(http.StatusOK, book)
 			return
