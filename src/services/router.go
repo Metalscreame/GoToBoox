@@ -126,7 +126,7 @@ func initUserProfileRouters() {
 
 func initBooksRoute() {
 
-	bookService := BookService{}
+	bookService := BookService{postgres.NewBooksRepository(dataBase.Connection)}
 	//get all books in certain category
 	router.GET("categories/:cat_id/books", bookService.getBooks)
 	//get all books

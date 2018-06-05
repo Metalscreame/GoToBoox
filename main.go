@@ -10,6 +10,7 @@ import (
 	"log"
 	"io/ioutil"
 	"encoding/json"
+
 )
 
 //envVariable is a variable that stores run mode for server. if its "production" than its a heroku server, and we need
@@ -20,6 +21,7 @@ func main() {
 	credentials, port := getDatabaseCredentialsAndPort()
 	dataBase.Connect(credentials)
 	services.Start(port)
+
 }
 
 func getDatabaseCredentialsAndPort() (d dataBase.DataBaseCredentials, port string) {
