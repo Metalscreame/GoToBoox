@@ -16,6 +16,7 @@ func (cr CategoryRepoPq) GetAllCategories ( ) ([]repository.Categories, error) {
 	rows, err := dataBase.Connection.Query("SELECT id, title FROM gotoboox.categories")
 	if err != nil {
 		log.Println("Unknown error occurred")
+		return nil, err
 	}
 	defer rows.Close()
 	var allCategories []repository.Categories

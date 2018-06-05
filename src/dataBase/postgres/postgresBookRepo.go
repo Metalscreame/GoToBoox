@@ -18,7 +18,7 @@ func NewBooksRepository(Db *sql.DB) repository.BookRepository {
 //GetByCategory iterates over the DB using the SQL SELECT Request and return selected book by its ID
 func (p booksRepositoryPG) GetByID(bookID int) (b repository.Book, err error) {
 	//for connection to HerokuDatabase
-	//db := openDb()
+	//db := repository.OpenDb()
 //	db:=dataBase.Connection
 
 	rows, err := p.Db.Query("SELECT title, description, popularity FROM gotoboox.books where id=$1", bookID)
@@ -54,7 +54,7 @@ func (p booksRepositoryPG) GetAll() ([]interface{}, error) {
 	//for connection to HerokuDatabase
 	//db:=openDb()
 //	db:=dataBase.Connection
-
+	//db := repository.OpenDb()
 	rows, err := p.Db.Query("SELECT a.title, a.description, a.popularity, b.title FROM gotoboox.books a, gotoboox.categories b where a.categoriesid=b.id")
 	if err != nil {
 		log.Fatal(err)
@@ -85,7 +85,7 @@ func (p booksRepositoryPG) GetAll() ([]interface{}, error) {
 //GetByCategory iterates over the DB using the SQL SELECT Request and return books from chosen category
 func (p booksRepositoryPG)  GetByCategory(categoryID int) ([]repository.Book, error) {
 	//for connection to HerokuDatabase
-	//db:=openDb()
+	//db := repository.OpenDb()
 //	db:=dataBase.Connection
 	rows, err := p.Db.Query("SELECT title FROM gotoboox.books WHERE categoriesid=$1", categoryID)
 	if err != nil {
@@ -113,9 +113,9 @@ func (p booksRepositoryPG)  GetByCategory(categoryID int) ([]repository.Book, er
 }
 
 //Function GetMostPopulareBooks iterates over the DB using the SQL SELECT Request and return 5 top-rated books.
-func (p booksRepositoryPG) GetMostPopularBooks (id int) ([]repository.Book, error) {
+func (p booksRepositoryPG) GetMostPopularBooks (quantity int) ([]repository.Book, error) {
 //	db := dataBase.Connection
-	rows, err := p.Db.Query("SELECT Id, Title, Popularity FROM gotoboox.books ORDER BY Popularity DESC LIMIT $ID", id)
+	rows, err := p.Db.Query("SELECT Id, Title, Popularity FROM gotoboox.books ORDER BY Popularity DESC LIMIT $1", quantity)
 	if err != nil {
 		return nil, err
 	}
