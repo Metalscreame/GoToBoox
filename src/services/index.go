@@ -4,11 +4,13 @@ import (
 	"github.com/gin-gonic/gin"
 	//"github.com/metalscreame/GoToBoox/src/models"
 	"net/http"
+	"github.com/metalscreame/GoToBoox/src/dataBase/postgres"
+	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
 )
 
 func IndexHandler(c *gin.Context) {
-	type Categories []struct{
-		Id int64
+	type Categories struct{
+		ID int
 		Title string
 	}
 
@@ -21,16 +23,14 @@ func IndexHandler(c *gin.Context) {
 	}
 
 	type Data struct{
-		Categories
+		cats []repository.Categories
 		PopularBooks
 	}
 
-	categories := Categories{
-		{0, "Title-1"},
-		{1, "Title-2"},
-		{2, "Title-3"},
-	}
+	categories, err := postgres.CategoryRepo.GetAllCategories()
+	if err != nil{
 
+	}
 	popularBooks := PopularBooks{
 		{0, "Title-1", "Description", 5.0, 0},
 		{1, "Title-2", "Description", 4.5, 1},
