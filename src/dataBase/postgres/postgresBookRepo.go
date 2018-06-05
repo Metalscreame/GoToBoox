@@ -3,19 +3,25 @@ package postgres
 import (
 	"log"
 	"fmt"
-	"github.com/metalscreame/GoToBoox/src/dataBase"
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
+	"database/sql"
 )
 
-type BooksRepositoryPG struct{}
+type booksRepositoryPG struct{
+	Db *sql.DB
+}
 
+func NewBooksRepository(Db *sql.DB) repository.BookRepository {
+	return &booksRepositoryPG{Db}
+}
 
-func GetByID(bookID int) (repository.Book, error) {
+//GetByCategory iterates over the DB using the SQL SELECT Request and return selected book by its ID
+func (p booksRepositoryPG) GetByID(bookID int) (b repository.Book, err error) {
 	//for connection to HerokuDatabase
 	//db := openDb()
-	db:=dataBase.Connection
+//	db:=dataBase.Connection
 
-	rows, err := db.Query("SELECT title, description, popularity FROM gotoboox.books where id=$1", bookID)
+	rows, err := p.Db.Query("SELECT title, description, popularity FROM gotoboox.books where id=$1", bookID)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -38,16 +44,18 @@ func GetByID(bookID int) (repository.Book, error) {
 	if err := rows.Err(); err != nil {
 		log.Fatal(err)
 	}
-	return book, nil
+	return
 
 }
 
-func GetAll() ([]interface{}, error){
+
+//GetAll iterates over the DB using the SQL SELECT Request and return all books from DB
+func (p booksRepositoryPG) GetAll() ([]interface{}, error) {
 	//for connection to HerokuDatabase
 	//db:=openDb()
-	db:=dataBase.Connection
+//	db:=dataBase.Connection
 
-	rows, err := db.Query("SELECT a.title, a.description, a.popularity, b.title FROM gotoboox.books a, gotoboox.categories b where a.categoriesid=b.id")
+	rows, err := p.Db.Query("SELECT a.title, a.description, a.popularity, b.title FROM gotoboox.books a, gotoboox.categories b where a.categoriesid=b.id")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -74,11 +82,12 @@ func GetAll() ([]interface{}, error){
 
 }
 
-func GetByCategory(categoryID int) ([]repository.Book, error) {
+//GetByCategory iterates over the DB using the SQL SELECT Request and return books from chosen category
+func (p booksRepositoryPG)  GetByCategory(categoryID int) ([]repository.Book, error) {
 	//for connection to HerokuDatabase
 	//db:=openDb()
-	db:=dataBase.Connection
-	rows, err := db.Query("SELECT title FROM gotoboox.books WHERE categoriesid=$1", categoryID)
+//	db:=dataBase.Connection
+	rows, err := p.Db.Query("SELECT title FROM gotoboox.books WHERE categoriesid=$1", categoryID)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -104,9 +113,9 @@ func GetByCategory(categoryID int) ([]repository.Book, error) {
 }
 
 //Function GetMostPopulareBooks iterates over the DB using the SQL SELECT Request and return 5 top-rated books.
-func (br BooksRepositoryPG) GetMostPopularBooks (id int) ([]repository.Book, error) {
-	db := dataBase.Connection
-	rows, err := db.Query("SELECT Id, Title, Popularity FROM gotoboox.books ORDER BY Popularity DESC LIMIT $ID", id)
+func (p booksRepositoryPG) GetMostPopularBooks (id int) ([]repository.Book, error) {
+//	db := dataBase.Connection
+	rows, err := p.Db.Query("SELECT Id, Title, Popularity FROM gotoboox.books ORDER BY Popularity DESC LIMIT $ID", id)
 	if err != nil {
 		return nil, err
 	}
