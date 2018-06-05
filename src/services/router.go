@@ -24,26 +24,6 @@ func NewUserService(repository repository.UserRepository) *UserService {
 	}
 }
 
-type BookService struct {
-	BooksRepo repository.BookRepository
-}
-
-func NewBookService(repository repository.BookRepository) *BookService {
-	return &BookService{
-		BooksRepo: repository,
-	}
-}
-
-type CategoriesService struct {
-	CategoriesRepoPq repository.CategoryRepository
-}
-
-func NewCategoriesService(repository repository.CategoryRepository) *CategoriesService {
-	return &CategoriesService{
-		CategoriesRepoPq: repository,
-	}
-}
-
 var router *gin.Engine
 
 //Start is a function that starts server and initializes all the routes.
@@ -69,12 +49,13 @@ func Start(port string) {
 	})
 
 	router.GET(apiRoute, IndexHandler)
-	initUserProfileRouters()
-	initBooksRoute()
+	initUserProfileRoutes()
+	initBooksRoutes()
+	initCategoriesRoutes()
 	router.Run(":" + port)
 }
 
-func initUserProfileRouters() {
+func initUserProfileRoutes() {
 
 	// Use the SetUserStatus middleware for every route to set a flag
 	// indicating whether the request was from an authenticated user or not
@@ -124,9 +105,8 @@ func initUserProfileRouters() {
 	router.GET("/usersProfile", midlware.EnsureLoggedIn(), ShowUsersProfilePage)
 }
 
-func initBooksRoute() {
-
-	bookService := BookService{}
+func initBooksRoutes() {
+	bookService := BookService{postgres.NewBooksRepository(dataBase.Connection)}
 	//get all books in certain category
 	router.GET("categories/:cat_id/books", bookService.getBooks)
 	//get all books
@@ -137,10 +117,10 @@ func initBooksRoute() {
 
 }
 
-func initCategoriesRouters() {
+func initCategoriesRoutes() {
 	categoriesService := NewCategoriesService(postgres.CategoryRepoPq{})
 	{
-		router.GET("/categories/0", categoriesService.AllCategories)
+		router.GET("/categories", categoriesService.AllCategories)
 	}
 }
 

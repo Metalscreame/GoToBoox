@@ -12,8 +12,8 @@ type User struct {
 }
 
 type Categories struct {
-	ID    int      `json:"id"`
-	Title string   `json:"title"`
+	ID    int
+	Title string
 }
 
 type Book struct {
