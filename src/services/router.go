@@ -39,13 +39,13 @@ func Start(port string) {
 	router.LoadHTMLGlob("templates/*.html")
 
 	router.GET("/", func(c *gin.Context) {
-		isLoggedIn := midlware.CheckLoggedIn(c)
-		if !isLoggedIn {
-			guest := true
-			c.HTML(http.StatusOK, "index.tmpl.html", guest)
-		} else {
+		//isLoggedIn := midlware.CheckLoggedIn(c)
+		//if !isLoggedIn {
+		//	guest := true
+		//	c.HTML(http.StatusOK, "index.tmpl.html", guest)
+		//} else {
 			c.HTML(http.StatusOK, "index.tmpl.html", nil)
-		}
+		//}
 	})
 
 	router.GET(apiRoute, IndexHandler)
@@ -102,7 +102,10 @@ func initUserProfileRoutes() {
 
 	// Show the user's profile page
 	// Ensure that the user is logged in by using the middleware
-	router.GET("/userProfile", midlware.EnsureLoggedIn(), ShowUsersProfilePage)
+	router.GET("/userProfile", UserProfileHandler)
+
+	router.GET("/userProfilePage", midlware.EnsureLoggedIn(),ShowUsersProfilePage)
+
 }
 
 func initBooksRoutes() {

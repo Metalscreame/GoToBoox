@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"database/sql"
 	db "github.com/metalscreame/GoToBoox/src/dataBase"
-	"time"
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
 )
 
@@ -31,8 +30,6 @@ func (p *postgresUsersRepository) GetUserByEmail(email string) (u repository.Use
 	if err != nil {
 		return
 	}
-
-	//rows, err := execQueueByEmail(stmt, email)
 	row := stmt.QueryRow(email)
 	if err != nil {
 		return
@@ -52,10 +49,7 @@ func (p *postgresUsersRepository) UpdateUserByEmail(u repository.User, oldEmail 
 	if err != nil {
 		return
 	}
-
 	_, err = stmt.Exec(u.Nickname, u.Email, u.Password, oldEmail)
-
-	//err = execInsertStmtByEmail(stmt, &u)
 	if err != nil {
 		return
 	}
@@ -77,6 +71,7 @@ func (p *postgresUsersRepository) DeleteUserByEmail(email string) (err error) {
 	return
 }
 
+//InsertUser is a function that inserts a user entity into a database
 func (p *postgresUsersRepository) InsertUser(u repository.User) (err error) {
 	query := prepareQueryString(insertQueryType)
 	stmt, err := p.Db.Prepare(query)
@@ -121,28 +116,13 @@ func prepareQueryString(typeOfQuery string) (string) {
 }
 
 func execInsertStmtByEmail(stmt *sql.Stmt, u *repository.User) (err error) {
-	//err = convertRegUserTime(u)
-	//if err != nil {
-	//	return
-	//}
 	res, err := stmt.Exec(u.Nickname, u.Email, u.Password, u.RegisterDate)
 	if err != nil {
 		return err
 	}
-
 	_, err = res.RowsAffected()
 	if err != nil {
 		return
 	}
-	return
-}
-
-func convertRegUserTime(u *repository.User) (err error) {
-	layout := "2006-01-02"
-	updatedAt, err := time.Parse(layout, u.RegTimeStr)
-	if err != nil {
-		return
-	}
-	u.RegisterDate = updatedAt
 	return
 }

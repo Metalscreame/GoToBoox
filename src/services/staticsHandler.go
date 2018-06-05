@@ -4,6 +4,7 @@ package services
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"github.com/metalscreame/GoToBoox/src/services/authentification/midlware"
 )
 
 func ShowLoginPage(c *gin.Context) {
@@ -26,13 +27,24 @@ func ShowRegistrPage(c *gin.Context) {
 	)
 }
 
-func ShowUsersProfilePage(c *gin.Context) {
+func UserProfileHandler(c *gin.Context) {
+	loggedIn:=midlware.CheckLoggedIn(c)
+	if loggedIn{
+		c.Redirect(http.StatusFound,"/userProfilePage")
+		return
+	}else{
+		c.Redirect(http.StatusFound,"/login")
+		return
+	}
+
+}
+
+func ShowUsersProfilePage(c *gin.Context)  {
 	c.HTML(
 		http.StatusOK,
 		"userProfile.html",
-		// Pass the data that the page uses (in this case, 'title')
 		gin.H{
-			"title": "User's profile",
+			"title": "Registration Page",
 		},
 	)
 }

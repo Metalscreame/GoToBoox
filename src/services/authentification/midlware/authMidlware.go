@@ -41,11 +41,18 @@ func SetUserStatus() gin.HandlerFunc {
 }
 
 func CheckLoggedIn(c *gin.Context) bool{
-		loggedInInterface, _ := c.Get("is_logged_in")
-		_,loggedIn := loggedInInterface.(bool)
-		if loggedIn{
-			return true
-		}
+	loggedInInterface, _ := c.Get("is_logged_in")
+	loggedIn := loggedInInterface.(bool)
+	if !loggedIn {
 		return false
 
+	}
+	return true
+
+	//loggedInInterface, _ := c.Get("is_logged_in")
+	//	_,loggedIn := loggedInInterface.(bool)
+	//	if loggedIn{
+	//		return true
+	//	}
+	//	return false
 }
