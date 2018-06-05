@@ -75,7 +75,7 @@
           alert( xhr.status + ': ' + xhr.statusText );
       } else {
             var popularBooks = document.getElementById('popularBooks');
-            var catList = document.getElementById('catLisst')
+            var catList = document.getElementById('catList')
             var data = JSON.parse(xhr.responseText)
           console.log(data, data.data)
                 for (var i = 0; i < data.data['PopularBooks'].length; i++){
