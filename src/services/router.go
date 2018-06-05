@@ -24,26 +24,6 @@ func NewUserService(repository repository.UserRepository) *UserService {
 	}
 }
 
-type BookService struct {
-	BooksRepo repository.BookRepository
-}
-
-func NewBookService(repository repository.BookRepository) *BookService {
-	return &BookService{
-		BooksRepo: repository,
-	}
-}
-
-type CategoriesService struct {
-	CategoriesRepoPq repository.CategoryRepository
-}
-
-func NewCategoriesService(repository repository.CategoryRepository) *CategoriesService {
-	return &CategoriesService{
-		CategoriesRepoPq: repository,
-	}
-}
-
 var router *gin.Engine
 
 //Start is a function that starts server and initializes all the routes.
@@ -140,7 +120,7 @@ func initBooksRoutes() {
 func initCategoriesRoutes() {
 	categoriesService := NewCategoriesService(postgres.CategoryRepoPq{})
 	{
-		router.GET("/categories/0", categoriesService.AllCategories)
+		router.GET("/categories", categoriesService.AllCategories)
 	}
 }
 

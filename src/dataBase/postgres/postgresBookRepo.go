@@ -113,9 +113,9 @@ func (p booksRepositoryPG)  GetByCategory(categoryID int) ([]repository.Book, er
 }
 
 //Function GetMostPopulareBooks iterates over the DB using the SQL SELECT Request and return 5 top-rated books.
-func (p booksRepositoryPG) GetMostPopularBooks (id int) ([]repository.Book, error) {
+func (p booksRepositoryPG) GetMostPopularBooks (quantity int) ([]repository.Book, error) {
 //	db := dataBase.Connection
-	rows, err := p.Db.Query("SELECT Id, Title, Popularity FROM gotoboox.books ORDER BY Popularity DESC LIMIT $1", id)
+	rows, err := p.Db.Query("SELECT Id, Title, Popularity FROM gotoboox.books ORDER BY Popularity DESC LIMIT $1", quantity)
 	if err != nil {
 		return nil, err
 	}
