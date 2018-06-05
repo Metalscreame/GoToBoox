@@ -25,6 +25,7 @@ func (s *UserService) LogoutHandler(c *gin.Context) {
 	c.Set("is_logged_in", false)
 	c.Redirect(http.StatusFound,"/login")
 	//c.JSON(http.StatusOK, gin.H{"status": "ok"})
+	return
 }
 
 /* UserCreateHandler is a handler function that creates new user in a database\
@@ -41,12 +42,12 @@ Input example for create
 func (s *UserService) UserCreateHandler(c *gin.Context) {
 	var u repository.User
 	if err := c.BindJSON(&u); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"status": err.Error()})
 		return
 	}
 	u.RegisterDate = time.Now()
 	if err := s.UsersRepo.InsertUser(u); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"status": err.Error()})
 		return
 	}
 	performLoginCookiesSetting(u, c)

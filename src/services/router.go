@@ -1,7 +1,6 @@
 package services
 
 import (
-	"os"
 	"log"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -39,48 +38,39 @@ type CategoriesService struct {
 	CategoriesRepoPq repository.CategoryRepository
 }
 
-func NewCategoriesService (repository repository.CategoryRepository) *CategoriesService{
+func NewCategoriesService(repository repository.CategoryRepository) *CategoriesService {
 	return &CategoriesService{
 		CategoriesRepoPq: repository,
 	}
 }
 
-
-
 var router *gin.Engine
 
-func InitializeRouter() {
-	//Used for heroku
-	port := os.Getenv("PORT")
-
-	//Uncomment for local machine   !!!!
-	//port = "8080"
-
+//Start is a function that starts server and initializes all the routes.
+func Start(port string) {
 	if port == "" {
 		log.Fatal("$PORT must be set")
 	}
+
 	gin.SetMode(gin.ReleaseMode)
 	router = gin.New()
 	router.Use(gin.Logger())
-
-	//router.LoadHTMLGlob("templates/*.tmpl.html")
 	router.Static("/static", "./static")
 	router.LoadHTMLGlob("templates/*.html")
 
 	router.GET("/", func(c *gin.Context) {
 		isLoggedIn := midlware.CheckLoggedIn(c)
-			if !isLoggedIn{
-				guest := true
-				c.HTML(http.StatusOK, "index.tmpl.html", guest)
-			}else{
-				c.HTML(http.StatusOK, "index.tmpl.html", nil)
-			}
-		})
+		if !isLoggedIn {
+			guest := true
+			c.HTML(http.StatusOK, "index.tmpl.html", guest)
+		} else {
+			c.HTML(http.StatusOK, "index.tmpl.html", nil)
+		}
+	})
 
 	router.GET(apiRoute, IndexHandler)
 	initUserProfileRouters()
 	initBooksRoute()
-
 	router.Run(":" + port)
 }
 
@@ -147,11 +137,10 @@ func initBooksRoute() {
 
 }
 
-	func initCategoriesRouters(){
-		categoriesService := NewCategoriesService(postgres.CategoryRepoPq{})
-		{
-			router.GET("/categories/0", categoriesService.AllCategories)
-		}
+func initCategoriesRouters() {
+	categoriesService := NewCategoriesService(postgres.CategoryRepoPq{})
+	{
+		router.GET("/categories/0", categoriesService.AllCategories)
 	}
-
+}
 
