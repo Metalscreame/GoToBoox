@@ -9,22 +9,13 @@ import (
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
 )
 
-/*
-	IMPORTANT COMMENT section
-	Writing this i found a bug. When u do redirect from post method -  it gives 404
-	Researching told me that solves this http.StatusFound
-
-	Yours Roman Kosyiy
- */
-
 //LogoutHandler is a handler function that logging out from site and clears users cookie
 // 				/api/v1/logout
 func (s *UserService) LogoutHandler(c *gin.Context) {
 	c.SetCookie("email", "", -1, "", "", false, true)
 	c.SetCookie("token", "", -1, "", "", false, true)
 	c.Set("is_logged_in", false)
-	c.Redirect(http.StatusFound,"/login")
-	//c.JSON(http.StatusOK, gin.H{"status": "ok"})
+	c.JSON(http.StatusOK, gin.H{"status": "ok"})
 	return
 }
 

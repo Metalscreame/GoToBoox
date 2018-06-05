@@ -3,21 +3,17 @@
 <body>
 {{template "nav.tmpl.html"}}
 
-
 <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<!------ <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>---------->
 <script src="/static/js/jquery-1.11.1.js"></script>
 
 <!------ Include the above in your HEAD tag ---------->
-
-
 <div class="row">
-    <div class="col-md-4 col-md-offset-4">
+    <div class="col-md-6 col-md-offset-6">
         <form class="form-horizontal" role="form">
             <fieldset>
 
                 <!-- Form Name -->
-                <legend>Account Details</legend>
+                <h4 class="card-title mt-3 text-left">Account Details</h4>
 
                 <!-- Text input-->
                 <div class="form-group">
@@ -56,9 +52,6 @@
             </fieldset>
         </form>
     </div><!-- /.col-lg-12 -->
-
-
-
 </div><!-- /.row -->
 
 <script>
@@ -68,14 +61,14 @@
         var email = document.getElementById("emailInput").value;
         var password = document.getElementById("passwordInput").value;
         var xhr = new XMLHttpRequest();
-        xhr.open('PUT', "/api/v1/userProfile", true);
+        xhr.open('PUT', "/api/v1/userProfile", false);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onreadystatechange = function () {
-            if (xhr.readyState == 4 && xhr.status == 200) {
+            if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
                 var json = JSON.parse(xhr.responseText);
-                alert(json.status);
-                window.location.replace("/userProfile");
+                window.location.assign("/userProfile");
             } else {
+                window.location.assign("/");
             }
         };
         var body = JSON.stringify({
@@ -87,44 +80,32 @@
     });
 
     <!-- deleteButton -->
-
     $('#deleteButton').on('click', function (e) {
         var xhr = new XMLHttpRequest();
         xhr.open('DELETE', "/api/v1/userProfile", false);
         xhr.setRequestHeader("Content-Type", "application/json");
-        // xhr.onreadystatechange = function () {
-        //     if (xhr.readyState == 4 && xhr.status == 200) {
-        //         if (xhrobj.responseText) {
-        //             alert("delete")
-        //             $(location).attr('href', 'http://localhost:8080/login')
-        //         }
-        //         // var json = JSON.parse(xhr.responseText);
-        //     }
-        // };
-
         xhr.send();
-        window.location.replace("/login");
-
+        window.location.assign("/login");
     });
 
     <!-- goBackButton -->
     $('#goBackButton').on('click', function (e) {
-        window.location.replace("/");
+        window.location.assign("/");
     });
 </script>
 
 <script>
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', "/api/v1/userProfile", true);
+    xhr.open('GET', "/api/v1/userProfile", false);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
+        if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
             var json = JSON.parse(xhr.responseText);
             $('#nicknameInput').val(json.nickname);
             $('#emailInput').val(json.email);
             $('#passwordInput').val(json.password);
-        } else if (xhr.readyState == 4 && xhr.status == 400) {
-            window.location.replace("/login");
+        } else if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 400) {
+            window.location.assign("/login");
         }
         else {
         }

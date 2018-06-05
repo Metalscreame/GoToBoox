@@ -121,7 +121,7 @@ func initUserProfileRouters() {
 
 	// Show the user's profile page
 	// Ensure that the user is logged in by using the middleware
-	router.GET("/usersProfile", midlware.EnsureLoggedIn(), ShowUsersProfilePage)
+	router.GET("/userProfile", midlware.EnsureLoggedIn(), ShowUsersProfilePage)
 }
 
 func initBooksRoute() {
