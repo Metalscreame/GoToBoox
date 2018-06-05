@@ -1,5 +1,5 @@
 <!-- Navigation -->
-<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark fixed-top">
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark fixed-top" style="opacity:0.95">
     <div class="container">
         <a class="navbar-brand" href="/">GoToBooX</a>
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -10,7 +10,7 @@
                 <li class="nav-item">
                {{ if .guest }}
                    <a class="nav-link" href="/login">Log in</a>
-               {{ else }}}
+               {{ else }}
                    <a class="nav-link" href="/register">Reg in</a>
                {{end}}
                 </li>
