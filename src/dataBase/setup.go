@@ -17,9 +17,9 @@ const (
 )
 
 type DataBaseCredentials struct {
-	DB_USER     string
-	DB_PASSWORD string
-	DB_NAME     string
+	DB_USER     string `json:"db_user"`
+	DB_PASSWORD string `json:"db_password"`
+	DB_NAME     string `json:"db_name"`
 }
 
 var Connection *sql.DB

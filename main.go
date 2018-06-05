@@ -8,7 +8,8 @@ import (
 
 	"os"
 	"log"
-	"bufio"
+	"io/ioutil"
+	"encoding/json"
 )
 
 //envVariable is a variable that stores run mode for server. if its "production" than its a heroku server, and we need
@@ -22,39 +23,25 @@ func main() {
 }
 
 func getDatabaseCredentialsAndPort() (d dataBase.DataBaseCredentials, port string) {
-	var file *os.File
-	var err error
-
 	runMode := os.Getenv(envVariable)
 	if runMode == "production" {
-		file, err = os.Open("productionConfig")
+		bytes, err := ioutil.ReadFile("productionConfig")
 		CheckForFatalError(err)
-		d = readConfigValuesFromFile(file)
+		d = readConfigValuesFromFile(bytes)
 		port = os.Getenv("PORT")
 	} else {
-		file, err = os.Open("developmentConfig")
+		bytes, err := ioutil.ReadFile("developmentConfig")
 		CheckForFatalError(err)
-		d = readConfigValuesFromFile(file)
+		d = readConfigValuesFromFile(bytes)
 		port = "8080"
 	}
-	if err := file.Close(); err != nil {
-		panic(err)
-	}
 	return
 }
 
-func readConfigValuesFromFile(file *os.File) (d dataBase.DataBaseCredentials) {
-	buf := bufio.NewReader(file)
-	d.DB_NAME = getSingleLineFromFile(buf)
-	d.DB_PASSWORD = getSingleLineFromFile(buf)
-	d.DB_USER = getSingleLineFromFile(buf)
-	return
-}
-
-func getSingleLineFromFile(r *bufio.Reader) string {
-	a, err := r.ReadString('\n')
+func readConfigValuesFromFile(b []byte) (d dataBase.DataBaseCredentials) {
+	err := json.Unmarshal(b, &d)
 	CheckForFatalError(err)
-	return string(a[:len(a)-2])
+	return
 }
 
 //CheckForFatalError is an error handler function that stops program when a serious error occur

@@ -64,7 +64,7 @@
             var xhr = new XMLHttpRequest();
 
             xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 400)) {
+                if (xhr.readyState == 4 && xhr.status == 200 || xhr.status == 400) {
                     if (xhr.responseText) {
                         var json = JSON.parse(xhr.responseText);
                         if (json.status == "ok") {
@@ -95,6 +95,5 @@
 </div>
 <!--container end.//-->
 {{template "footer.tmpl.html"}}
-
 </body>
 </html>
