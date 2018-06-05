@@ -69,12 +69,13 @@ func Start(port string) {
 	})
 
 	router.GET(apiRoute, IndexHandler)
-	initUserProfileRouters()
-	initBooksRoute()
+	initUserProfileRoutes()
+	initBooksRoutes()
+	initCategoriesRoutes()
 	router.Run(":" + port)
 }
 
-func initUserProfileRouters() {
+func initUserProfileRoutes() {
 
 	// Use the SetUserStatus middleware for every route to set a flag
 	// indicating whether the request was from an authenticated user or not
@@ -124,8 +125,7 @@ func initUserProfileRouters() {
 	router.GET("/usersProfile", midlware.EnsureLoggedIn(), ShowUsersProfilePage)
 }
 
-func initBooksRoute() {
-
+func initBooksRoutes() {
 	bookService := BookService{postgres.NewBooksRepository(dataBase.Connection)}
 	//get all books in certain category
 	router.GET("categories/:cat_id/books", bookService.getBooks)
@@ -137,7 +137,7 @@ func initBooksRoute() {
 
 }
 
-func initCategoriesRouters() {
+func initCategoriesRoutes() {
 	categoriesService := NewCategoriesService(postgres.CategoryRepoPq{})
 	{
 		router.GET("/categories/0", categoriesService.AllCategories)
