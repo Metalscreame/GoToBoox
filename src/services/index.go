@@ -11,8 +11,8 @@ import (
 
 func IndexHandler(c *gin.Context) {
 	type Data struct{
-		books []repository.Book
-		cats []repository.Categories
+		PopularBooks []repository.Book
+		Categories []repository.Categories
 	}
 
 	bookRepo := postgres.NewBooksRepository(dataBase.Connection)
