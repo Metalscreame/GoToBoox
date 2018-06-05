@@ -11,15 +11,15 @@ import (
 
 func IndexHandler(c *gin.Context) {
 	type Data struct{
-		PopularBooks []repository.Book
+//		PopularBooks []repository.Book
 		Categories []repository.Categories
 	}
 
-	bookRepo := postgres.NewBooksRepository(dataBase.Connection)
-	books, _ := bookRepo.GetMostPopularBooks(5)
+//	bookRepo := postgres.NewBooksRepository(dataBase.Connection)
+//	books, _ := bookRepo.GetMostPopularBooks(5)
 	catRepo := postgres.CategoryRepoPq{}
 	cats, _ := catRepo.GetAllCategories()
 
-	output := Data{books, cats}
+	output := Data{cats}
 	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": output})
 }
