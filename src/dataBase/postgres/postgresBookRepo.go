@@ -16,7 +16,7 @@ func NewBooksRepository(Db *sql.DB) repository.BookRepository {
 }
 
 //GetByCategory iterates over the DB using the SQL SELECT Request and return selected book by its ID
-func (p *booksRepositoryPG) GetByID(bookID int) (b repository.Book, err error) {
+func (p booksRepositoryPG) GetByID(bookID int) (b repository.Book, err error) {
 	//for connection to HerokuDatabase
 	//db := openDb()
 //	db:=dataBase.Connection
@@ -50,7 +50,7 @@ func (p *booksRepositoryPG) GetByID(bookID int) (b repository.Book, err error) {
 
 
 //GetAll iterates over the DB using the SQL SELECT Request and return all books from DB
-func (p *booksRepositoryPG) GetAll() ([]interface{}, error) {
+func (p booksRepositoryPG) GetAll() ([]interface{}, error) {
 	//for connection to HerokuDatabase
 	//db:=openDb()
 //	db:=dataBase.Connection
@@ -83,7 +83,7 @@ func (p *booksRepositoryPG) GetAll() ([]interface{}, error) {
 }
 
 //GetByCategory iterates over the DB using the SQL SELECT Request and return books from chosen category
-func (p *booksRepositoryPG)  GetByCategory(categoryID int) ([]repository.Book, error) {
+func (p booksRepositoryPG)  GetByCategory(categoryID int) ([]repository.Book, error) {
 	//for connection to HerokuDatabase
 	//db:=openDb()
 //	db:=dataBase.Connection
@@ -113,7 +113,7 @@ func (p *booksRepositoryPG)  GetByCategory(categoryID int) ([]repository.Book, e
 }
 
 //Function GetMostPopulareBooks iterates over the DB using the SQL SELECT Request and return 5 top-rated books.
-func (p *booksRepositoryPG) GetMostPopularBooks (id int) ([]repository.Book, error) {
+func (p booksRepositoryPG) GetMostPopularBooks (id int) ([]repository.Book, error) {
 //	db := dataBase.Connection
 	rows, err := p.Db.Query("SELECT Id, Title, Popularity FROM gotoboox.books ORDER BY Popularity DESC LIMIT $ID", id)
 	if err != nil {
