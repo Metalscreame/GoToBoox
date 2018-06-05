@@ -29,7 +29,7 @@ func ShowRegistrPage(c *gin.Context) {
 func ShowUsersProfilePage(c *gin.Context) {
 	c.HTML(
 		http.StatusOK,
-		"usersProfile.html",
+		"userProfile.html",
 		// Pass the data that the page uses (in this case, 'title')
 		gin.H{
 			"title": "User's profile",

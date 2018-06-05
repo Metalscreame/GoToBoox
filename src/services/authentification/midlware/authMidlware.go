@@ -9,8 +9,6 @@ import (
 // if the user is not logged in
 func EnsureLoggedIn() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// If there's an error or if the token is empty
-		// the user is not logged in
 		loggedInInterface, _ := c.Get("is_logged_in")
 		loggedIn := loggedInInterface.(bool)
 		if !loggedIn {
@@ -23,13 +21,10 @@ func EnsureLoggedIn() gin.HandlerFunc {
 // if the user is already logged in
 func EnsureNotLoggedIn() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// If there's no error or if the token is not empty
-		// the user is already logged in
 		loggedInInterface, _ := c.Get("is_logged_in")
 		loggedIn := loggedInInterface.(bool)
 		if loggedIn {
 			c.Redirect(http.StatusFound,"/")
-			//c.AbortWithStatus(http.StatusUnauthorized)
 		}
 	}
 }
@@ -46,13 +41,11 @@ func SetUserStatus() gin.HandlerFunc {
 }
 
 func CheckLoggedIn(c *gin.Context) bool{
-		// If there's an error or if the token is empty
-		// the user is not logged in
 		loggedInInterface, _ := c.Get("is_logged_in")
-		b,loggedIn := loggedInInterface.(bool)
+		_,loggedIn := loggedInInterface.(bool)
 		if loggedIn{
 			return true
 		}
-		return b
+		return false
 
 }
