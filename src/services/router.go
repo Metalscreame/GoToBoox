@@ -44,8 +44,6 @@ func NewCategoriesService(repository repository.CategoryRepository) *CategoriesS
 	}
 }
 
-
-
 var router *gin.Engine
 
 //Start is a function that starts server and initializes all the routes.
@@ -53,7 +51,7 @@ func Start(port string) {
 	if port == "" {
 		log.Fatal("$PORT must be set")
 	}
-	
+
 	gin.SetMode(gin.ReleaseMode)
 	router = gin.New()
 	router.Use(gin.Logger())
@@ -139,10 +137,10 @@ func initBooksRoute() {
 
 }
 
-	func initCategoriesRouters(){
-		categoriesService := NewCategoriesService(postgres.CategoryRepoPq{})
-		{
-			router.GET("/categories/0", categoriesService.AllCategories)
-		}
+func initCategoriesRouters() {
+	categoriesService := NewCategoriesService(postgres.CategoryRepoPq{})
+	{
+		router.GET("/categories/0", categoriesService.AllCategories)
 	}
 }
+
