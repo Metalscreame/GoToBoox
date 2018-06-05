@@ -49,10 +49,10 @@ func CheckLoggedIn(c *gin.Context) bool{
 		// If there's an error or if the token is empty
 		// the user is not logged in
 		loggedInInterface, _ := c.Get("is_logged_in")
-		b,loggedIn := loggedInInterface.(bool)
+		_,loggedIn := loggedInInterface.(bool)
 		if loggedIn{
 			return true
 		}
-		return b
+		return false
 
 }
