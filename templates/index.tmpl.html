@@ -78,11 +78,11 @@
             var catList = document.getElementById('catList')
             var data = JSON.parse(xhr.responseText)
           console.log(data, data.data)
-                for (var i = 0; i < data.data['PopularBooks'].length; i++){
-                    var newLi = document.createElement('li')
-                    newLi.innerHTML = "<a href='/categories/" + data.data['PopularBooks'][i]['categoriesID'] + "/books/" + data.data['PopularBooks'][i]['id'] + "'>" + data.data['PopularBooks'][i]['title'] + "</a>"
-                    popularBooks.appendChild(newLi)
-                }
+//                 for (var i = 0; i < data.data['PopularBooks'].length; i++){
+//                     var newLi = document.createElement('li')
+//                     newLi.innerHTML = "<a href='/categories/" + data.data['PopularBooks'][i]['categoriesID'] + "/books/" + data.data['PopularBooks'][i]['id'] + "'>" + data.data['PopularBooks'][i]['title'] + "</a>"
+//                     popularBooks.appendChild(newLi)
+//                 }
                 for (var i = 0; i < data.data['Categories'].length; i++){
                    var newLi = document.createElement('li')
                       newLi.innerHTML = "<a class=\"dropdown-item\" href='/categories/" + data.data['Categories'][i]['id'] + "'>" + data.data['Categories'][i]['title'] + "</a>"
