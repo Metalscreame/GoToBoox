@@ -75,9 +75,9 @@
           alert( xhr.status + ': ' + xhr.statusText );
       } else {
             var popularBooks = document.getElementById('popularBooks');
-            var catList = document.getElementById('catList')
+            var catList = document.getElementById('catLisst')
             var data = JSON.parse(xhr.responseText)
-          console.log(data)
+          console.log(data, data.data)
                 for (var i = 0; i < data.data['PopularBooks'].length; i++){
                     var newLi = document.createElement('li')
                     newLi.innerHTML = "<a href='/categories/" + data.data['PopularBooks'][i]['categoriesID'] + "/books/" + data.data['PopularBooks'][i]['id'] + "'>" + data.data['PopularBooks'][i]['title'] + "</a>"
