@@ -55,7 +55,7 @@ func (p booksRepositoryPG) GetAll() ([]interface{}, error) {
 	//db:=openDb()
 //	db:=dataBase.Connection
 	//db := repository.OpenDb()
-	rows, err := p.Db.Query("SELECT a.title, a.description, a.popularity, b.title FROM gotoboox.books a, gotoboox.categories b where a.categoriesid=b.id")
+	rows, err := p.Db.Query("SELECT a.title, a.description, a.popularity, b.title FROM gotoboox.books a, gotoboox.categories b where a.categories_id=b.id")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -87,7 +87,7 @@ func (p booksRepositoryPG)  GetByCategory(categoryID int) ([]repository.Book, er
 	//for connection to HerokuDatabase
 	//db := repository.OpenDb()
 //	db:=dataBase.Connection
-	rows, err := p.Db.Query("SELECT title FROM gotoboox.books WHERE categoriesid=$1", categoryID)
+	rows, err := p.Db.Query("SELECT title FROM gotoboox.books WHERE categories_id=$1", categoryID)
 	if err != nil {
 		log.Fatal(err)
 	}
