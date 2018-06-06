@@ -15,7 +15,7 @@ import (
 
 //envVariable is a variable that stores run mode for server. if its "production" than its a heroku server, and we need
 //to start it in production mode. If its empty = its a local machine with no such variable.
-const envVariable = "GOLANG_RUN_MODE"
+const envVariable = "production"
 
 func main() {
 	credentials, port := getDatabaseCredentialsAndPort()
