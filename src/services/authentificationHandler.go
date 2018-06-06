@@ -15,7 +15,7 @@ func (s *UserService) LogoutHandler(c *gin.Context) {
 	c.SetCookie("email", "", -1, "", "", false, true)
 	c.SetCookie("token", "", -1, "", "", false, true)
 	c.Set("is_logged_in", false)
-	c.JSON(http.StatusOK, gin.H{"status": "ok"})
+	c.Redirect(http.StatusFound, "/")
 	return
 }
 
