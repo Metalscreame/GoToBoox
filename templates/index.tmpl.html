@@ -43,28 +43,24 @@
                   It allows to manage online member accounts, book reservation and their usage tracking.</p>
           </div>
           <div class="col-lg-6" style="text-align: right">
-              <img class="img-fluid rounded" style="max-width:60% !important;
+              <h2>Popular books (TOP-5)</h2>
+              <div class="row mb-4">
+                  <div class="col-md-8" id="popularBooks">
+                      <ul>
 
-
-
-
-" src="/static/info.png" alt="">
+                      </ul>
+                  </div>
+                  <div class="col-md-4">
+                  </div>
+              </div>
           </div>
       </div>
       <!-- /.row -->
 
       <hr>
-      <h2 class="my-4">Popular books (TOP-5)</h2>
-      <!-- Call to Action Section -->
-      <div class="row mb-4">
-          <div class="col-md-8" id="popularBooks">
-            <ul>
 
-            </ul>
-          </div>
-          <div class="col-md-4">
-          </div>
-      </div>
+      <!-- Call to Action Section -->
+
 
   </div>
   <script>
@@ -77,12 +73,12 @@
             var popularBooks = document.getElementById('popularBooks');
             var catList = document.getElementById('catList')
             var data = JSON.parse(xhr.responseText)
-          console.log(data, data.data)
-                 for (var i = 0; i < data.data['PopularBooks'].length; i++){
-                     var newLi = document.createElement('li')
-                     newLi.innerHTML = "<a href='/categories/" + data.data['PopularBooks'][i]['categoriesID'] + "/books/" + data.data['PopularBooks'][i]['id'] + "'>" + data.data['PopularBooks'][i]['title'] + "</a>"
-                     popularBooks.appendChild(newLi)
-                 }
+          console.log(data)
+                for (var i = 0; i < data.data['PopularBooks'].length; i++){
+                    var newLi = document.createElement('li')
+                    newLi.innerHTML = "<a href='/categories/" + data.data['PopularBooks'][i]['categoriesID'] + "/books/" + data.data['PopularBooks'][i]['id'] + "'>" + data.data['PopularBooks'][i]['title'] + "</a>"
+                    popularBooks.appendChild(newLi)
+                }
                 for (var i = 0; i < data.data['Categories'].length; i++){
                    var newLi = document.createElement('li')
                       newLi.innerHTML = "<a class=\"dropdown-item\" href='/categories/" + data.data['Categories'][i]['id'] + "'>" + data.data['Categories'][i]['title'] + "</a>"
