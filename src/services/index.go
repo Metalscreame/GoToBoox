@@ -2,8 +2,10 @@ package services
 
 import (
 	"github.com/gin-gonic/gin"
+	//"github.com/metalscreame/GoToBoox/src/models"
 	"net/http"
 	"github.com/metalscreame/GoToBoox/src/dataBase/postgres"
+	"github.com/metalscreame/GoToBoox/src/dataBase"
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
 )
 
@@ -18,6 +20,6 @@ func IndexHandler(c *gin.Context) {
 	catRepo := postgres.CategoryRepoPq{}
 	cats, _ := catRepo.GetAllCategories()
 
-	output := Data{cats}
+	output := Data{books, cats}
 	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": output})
 }
