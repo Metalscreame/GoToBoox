@@ -12,7 +12,7 @@ func EnsureLoggedIn() gin.HandlerFunc {
 		loggedInInterface, _ := c.Get("is_logged_in")
 		loggedIn := loggedInInterface.(bool)
 		if !loggedIn {
-			c.Redirect(http.StatusFound,"/")
+			c.Redirect(http.StatusFound, "/")
 		}
 	}
 }
@@ -24,7 +24,7 @@ func EnsureNotLoggedIn() gin.HandlerFunc {
 		loggedInInterface, _ := c.Get("is_logged_in")
 		loggedIn := loggedInInterface.(bool)
 		if loggedIn {
-			c.Redirect(http.StatusFound,"/")
+			c.Redirect(http.StatusFound, "/")
 		}
 	}
 }
@@ -40,12 +40,11 @@ func SetUserStatus() gin.HandlerFunc {
 	}
 }
 
-func CheckLoggedIn(c *gin.Context) bool{
-		loggedInInterface, _ := c.Get("is_logged_in")
-		_,loggedIn := loggedInInterface.(bool)
-		if loggedIn{
-			return true
-		}
+func CheckLoggedIn(c *gin.Context) bool {
+	loggedInInterface, _ := c.Get("is_logged_in")
+	loggedIn := loggedInInterface.(bool)
+	if !loggedIn {
 		return false
-
+	}
+	return true
 }

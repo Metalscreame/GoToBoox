@@ -73,9 +73,9 @@
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == XMLHttpRequest.DONE && this.status == 200) {
-                    window.location.assign("/");
+                    window.location.href = "/";
                 }else {
-                    window.location.assign("/register")
+                    window.location.href="/register";
                 }
             };
             xhr.send(data);

@@ -7,6 +7,16 @@ import (
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
 )
 
+type UserService struct {
+	UsersRepo repository.UserRepository
+}
+
+func NewUserService(repository repository.UserRepository) *UserService {
+	return &UserService{
+		UsersRepo: repository,
+	}
+}
+
 //UserGetHandler gets users data from database using unique email that is stored in cookie
 //if there is no email in coolie that means that session is over
 func (s *UserService) UserGetHandler(c *gin.Context) {
@@ -15,7 +25,7 @@ func (s *UserService) UserGetHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"status": err.Error()})
 		return
 	}
-	email:=convertEmailString(emailCookie.Value)
+	email := convertEmailString(emailCookie.Value)
 	user, err := s.UsersRepo.GetUserByEmail(email)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"status": err.Error()})
@@ -32,7 +42,7 @@ func (s *UserService) UserDeleteHandler(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"status": "ok"})
 		return
 	}
-	email:=convertEmailString(emailCookie.Value)
+	email := convertEmailString(emailCookie.Value)
 	if err := s.UsersRepo.DeleteUserByEmail(email); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"status": err.Error()})
 		return
@@ -40,7 +50,7 @@ func (s *UserService) UserDeleteHandler(c *gin.Context) {
 	c.SetCookie("email", "", -1, "", "", false, true)
 	c.SetCookie("token", "", -1, "", "", false, true)
 	c.Set("is_logged_in", false)
-	c.JSON(http.StatusOK, gin.H{"status":"ok"})
+	c.JSON(http.StatusOK, gin.H{"status": "ok"})
 	return
 }
 
@@ -62,12 +72,12 @@ func (s *UserService) UserUpdateHandler(c *gin.Context) {
 	}
 	emailCookie, err := c.Request.Cookie("email")
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"status": "unatorized"})
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "unauthorized"})
 		return
 	}
-	email:=convertEmailString(emailCookie.Value)
+	email := convertEmailString(emailCookie.Value)
 
-	if err := s.UsersRepo.UpdateUserByEmail(u,email); err != nil {
+	if err := s.UsersRepo.UpdateUserByEmail(u, email); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": err.Error()})
 		return
 	}
@@ -76,12 +86,12 @@ func (s *UserService) UserUpdateHandler(c *gin.Context) {
 	return
 }
 
-//this function was created because cookie gives '%40' instead of '@' when read the email
-func convertEmailString(email string) ( string) {
-	indexOfPercentSymb:=strings.IndexRune(email,'%')
-	runes:=[]rune(email)
-	runes[indexOfPercentSymb]='@'
-	runes=append(runes[:indexOfPercentSymb+1],runes[indexOfPercentSymb+2:]...)
-	runes=append(runes[:indexOfPercentSymb+1],runes[indexOfPercentSymb+2:]...)
+//This function was created because cookies gives '%40' instead of '@' when read the email. It converts
+func convertEmailString(email string) (string) {
+	indexOfPercentSymb := strings.IndexRune(email, '%')
+	runes := []rune(email)
+	runes[indexOfPercentSymb] = '@'
+	runes = append(runes[:indexOfPercentSymb+1], runes[indexOfPercentSymb+2:]...)//deletes 4
+	runes = append(runes[:indexOfPercentSymb+1], runes[indexOfPercentSymb+2:]...)//deletes 0
 	return string(runes)
 }

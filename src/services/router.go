@@ -7,22 +7,11 @@ import (
 	"github.com/metalscreame/GoToBoox/src/services/authentification/midlware"
 	"github.com/metalscreame/GoToBoox/src/dataBase"
 	"github.com/metalscreame/GoToBoox/src/dataBase/postgres"
-	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
 )
 
 const (
 	apiRoute = "/api/v1"
 )
-
-type UserService struct {
-	UsersRepo repository.UserRepository
-}
-
-func NewUserService(repository repository.UserRepository) *UserService {
-	return &UserService{
-		UsersRepo: repository,
-	}
-}
 
 var router *gin.Engine
 
@@ -39,13 +28,7 @@ func Start(port string) {
 	router.LoadHTMLGlob("templates/*.html")
 
 	router.GET("/", func(c *gin.Context) {
-		isLoggedIn := midlware.CheckLoggedIn(c)
-		if !isLoggedIn {
-			guest := true
-			c.HTML(http.StatusOK, "index.tmpl.html", guest)
-		} else {
 			c.HTML(http.StatusOK, "index.tmpl.html", nil)
-		}
 	})
 
 	router.GET(apiRoute, IndexHandler)
@@ -100,9 +83,13 @@ func initUserProfileRoutes() {
 	// Ensure that the user is not logged in by using the middleware
 	router.GET("/register", midlware.EnsureNotLoggedIn(), ShowRegistrPage)
 
+	// Show the user's profile page or login page
+	router.GET("/userProfile", UserProfileHandler)
+
 	// Show the user's profile page
 	// Ensure that the user is logged in by using the middleware
-	router.GET("/userProfile", midlware.EnsureLoggedIn(), ShowUsersProfilePage)
+	router.GET("/userProfilePage", midlware.EnsureLoggedIn(),ShowUsersProfilePage)
+
 }
 
 func initBooksRoutes() {

@@ -66,9 +66,9 @@
         xhr.onreadystatechange = function () {
             if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
                 var json = JSON.parse(xhr.responseText);
-                window.location.href = window.location.protocol + window.location.hostname + "/userProfile";
+                window.location.href = "/userProfile";
             } else {
-                window.location.href = window.location.protocol + window.location.hostname;
+                window.location.href ="/";
             }
         };
         var body = JSON.stringify({
@@ -85,12 +85,12 @@
         xhr.open('DELETE', "/api/v1/userProfile", false);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.send();
-        window.location.href = window.location.protocol + window.location.hostname + "/login";
+        window.location.href = "/login";
     });
 
-    <!-- goBackButton -->
     $('#goBackButton').on('click', function (e) {
-        window.location.href = window.location.protocol + window.location.hostname;
+        alert("back");
+        window.location.href = "/";
     });
 </script>
 
@@ -105,7 +105,7 @@
             $('#emailInput').val(json.email);
             $('#passwordInput').val(json.password);
         } else if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 400) {
-            window.location.assign("/login");
+            window.location.href = "/login";
         }
         else {
         }

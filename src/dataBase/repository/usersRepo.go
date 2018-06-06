@@ -1,8 +1,5 @@
 package repository
 
-
-
-
 type UserRepository interface {
 	GetUserByEmail(email string) (u User, err error)
 	UpdateUserByEmail(u User,email string) (err error)

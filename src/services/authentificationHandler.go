@@ -10,7 +10,7 @@ import (
 )
 
 //LogoutHandler is a handler function that logging out from site and clears users cookie
-// 				/api/v1/logout
+//Uses route /api/v1/logout
 func (s *UserService) LogoutHandler(c *gin.Context) {
 	c.SetCookie("email", "", -1, "", "", false, true)
 	c.SetCookie("token", "", -1, "", "", false, true)
@@ -20,7 +20,7 @@ func (s *UserService) LogoutHandler(c *gin.Context) {
 }
 
 /* UserCreateHandler is a handler function that creates new user in a database\
-/api/v1/register
+Uses route/api/v1/register
 Input example for create
 {
 	"id": 1,
@@ -47,7 +47,7 @@ func (s *UserService) UserCreateHandler(c *gin.Context) {
 }
 
 //PerformLoginHandler is a handler to handle loggining and setting cookies after success login
-// /api/v1/login
+//Uses route /api/v1/login
 func (s *UserService) PerformLoginHandler(c *gin.Context) {
 	var u repository.User
 
