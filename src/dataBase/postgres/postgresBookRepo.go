@@ -62,7 +62,8 @@ func (p booksRepositoryPG) GetAll() ([]interface{}, error) {
 	defer rows.Close()
 
 
-	books := []interface{}{[]repository.Book{}, []repository.Categories{}}
+	var books []interface{}
+	//books := []interface{}{repository.Book{}, repository.Categories{}}
 	i:=0
 	for rows.Next() {
 
