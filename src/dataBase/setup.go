@@ -21,7 +21,7 @@ type DataBaseCredentials struct {
 	DB_PASSWORD string `json:"db_password"`
 	DB_NAME     string `json:"db_name"`
 	DB_HOST     string `json:"db_host"`
-	DB_PORT     string    `json:"db_port"`
+	DB_PORT     string `json:"db_port"`
 }
 
 var Connection *sql.DB
