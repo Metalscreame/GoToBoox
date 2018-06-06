@@ -28,7 +28,7 @@ var Connection *sql.DB
 
 //Connect is a function that is used to open Connection
 //with a dataBase.
-func Connect(d DataBaseCredentials) (*sql.DB) {
+func Connect(d DataBaseCredentials) () {
 	var err error
 	dbinfo := fmt.Sprintf("user=%s password=%s host=%s port=%s dbname=%s sslmode=disable", d.DB_USER, d.DB_PASSWORD, d.DB_HOST, d.DB_PORT, d.DB_NAME)
 	Connection, err = sql.Open("postgres", dbinfo)
@@ -39,5 +39,5 @@ func Connect(d DataBaseCredentials) (*sql.DB) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return Connection
+	return
 }
