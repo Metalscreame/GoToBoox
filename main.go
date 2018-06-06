@@ -27,12 +27,12 @@ func main() {
 func getDatabaseCredentialsAndPort() (d dataBase.DataBaseCredentials, port string) {
 	runMode := os.Getenv(envVariable)
 	if runMode == "production" {
-		bytes, err := ioutil.ReadFile("productionConfig")
+		bytes, err := ioutil.ReadFile("productionConfig.json")
 		CheckForFatalError(err)
 		d = readConfigValuesFromFile(bytes)
 		port = os.Getenv("PORT")
 	} else {
-		bytes, err := ioutil.ReadFile("developmentConfig")
+		bytes, err := ioutil.ReadFile("developmentConfig.json")
 		CheckForFatalError(err)
 		d = readConfigValuesFromFile(bytes)
 		port = "8080"

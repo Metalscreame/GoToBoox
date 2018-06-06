@@ -20,6 +20,8 @@ type DataBaseCredentials struct {
 	DB_USER     string `json:"db_user"`
 	DB_PASSWORD string `json:"db_password"`
 	DB_NAME     string `json:"db_name"`
+	DB_HOST     string `json:"db_host"`
+	DB_PORT     string    `json:"db_port"`
 }
 
 var Connection *sql.DB
@@ -28,11 +30,7 @@ var Connection *sql.DB
 //with a dataBase.
 func Connect(d DataBaseCredentials) (*sql.DB) {
 	var err error
-	//temporary heroku solution
-	d.DB_USER="zrlfyamblttpom"
-	d.DB_PASSWORD="e2c0e8832ea228e6b15e553ce69f7cb2c0ff4d646ff0f284245ce77cc78b437b"
-	d.DB_NAME = "d7ckgvm53enhum"
-	dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable", d.DB_USER, d.DB_PASSWORD, d.DB_NAME)
+	dbinfo := fmt.Sprintf("user=%s password=%s host=%s port=%s dbname=%s sslmode=disable", d.DB_USER, d.DB_PASSWORD, d.DB_HOST, d.DB_PORT, d.DB_NAME)
 	Connection, err = sql.Open("postgres", dbinfo)
 	if err != nil {
 		log.Fatal(err)
