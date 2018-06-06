@@ -2,6 +2,6 @@
   "db_user": "zrlfyamblttpom",
   "db_password": "e2c0e8832ea228e6b15e553ce69f7cb2c0ff4d646ff0f284245ce77cc78b437b",
   "db_name": "d7ckgvm53enhum",
-  "db_host": "postgres://zrlfyamblttpom:e2c0e8832ea228e6b15e553ce69f7cb2c0ff4d646ff0f284245ce77cc78b437b@ec2-54-247-111-19.eu-west-1.compute.amazonaws.com:5432/d7ckgvm53enhum",
+  "db_host": "ec2-54-247-111-19.eu-west-1.compute.amazonaws.com",
   "db_port": "5432"
 }
