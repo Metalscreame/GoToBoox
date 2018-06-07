@@ -77,6 +77,7 @@ func (s *UserService) UserUpdateHandler(c *gin.Context) {
 	}
 	email := convertEmailString(emailCookie.Value)
 
+	u.Password = getMD5Hash(u.NewPassword)
 	if err := s.UsersRepo.UpdateUserByEmail(u, email); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "bad request"})
 		return

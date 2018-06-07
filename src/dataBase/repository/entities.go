@@ -7,6 +7,7 @@ type User struct {
 	Nickname     string    `json:"nickname"`
 	Email        string    `json:"email"`
 	Password     string    `json:"password"`
+	NewPassword  string    `json:"new_passwordd"`
 	RegisterDate time.Time `json:"-"`
 }
 

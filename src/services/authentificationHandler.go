@@ -7,6 +7,8 @@ import (
 	"math/rand"
 	"time"
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
+	"crypto/md5"
+	"encoding/hex"
 )
 
 //LogoutHandler is a handler function that logging out from site and clears users cookie
@@ -36,7 +38,10 @@ func (s *UserService) UserCreateHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "bad request"})
 		return
 	}
+
 	u.RegisterDate = time.Now()
+	u.Password = getMD5Hash(u.Password)
+
 	if err := s.UsersRepo.InsertUser(u); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "bad request"})
 		return
@@ -52,7 +57,7 @@ func (s *UserService) PerformLoginHandler(c *gin.Context) {
 	var u repository.User
 
 	if err := c.BindJSON(&u); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error":"bad request"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "bad request"})
 		return
 	}
 
@@ -84,4 +89,10 @@ func performLoginCookiesSetting(u repository.User, c *gin.Context) {
 	c.SetCookie("token", token, 16000, "", "", false, true)
 	c.Set("is_logged_in", true)
 	c.SetCookie("email", u.Email, 16000, "", "", false, true)
+}
+
+func getMD5Hash(text string) string {
+	hasher := md5.New()
+	hasher.Write([]byte(text))
+	return hex.EncodeToString(hasher.Sum(nil))
 }
