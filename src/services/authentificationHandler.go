@@ -33,12 +33,12 @@ Input example for create
 func (s *UserService) UserCreateHandler(c *gin.Context) {
 	var u repository.User
 	if err := c.BindJSON(&u); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"status": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"status": "bad request"})
 		return
 	}
 	u.RegisterDate = time.Now()
 	if err := s.UsersRepo.InsertUser(u); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"status": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"status": "bad request"})
 		return
 	}
 	performLoginCookiesSetting(u, c)
@@ -52,7 +52,7 @@ func (s *UserService) PerformLoginHandler(c *gin.Context) {
 	var u repository.User
 
 	if err := c.BindJSON(&u); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error":"bad request"})
 		return
 	}
 

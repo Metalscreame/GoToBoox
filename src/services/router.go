@@ -7,6 +7,7 @@ import (
 	"github.com/metalscreame/GoToBoox/src/services/authentification/midlware"
 	"github.com/metalscreame/GoToBoox/src/dataBase"
 	"github.com/metalscreame/GoToBoox/src/dataBase/postgres"
+	"os"
 )
 
 const (
@@ -16,9 +17,10 @@ const (
 var router *gin.Engine
 
 //Start is a function that starts server and initializes all the routes.
-func Start(port string) {
-	if port == "" {
-		log.Fatal("$PORT must be set")
+func Start() {
+	port, ok := os.LookupEnv("PORT")
+	if !ok {
+		log.Fatal("PORT is required\nFor localhosts setup sys env \"PORT\" as 8080")
 	}
 
 	gin.SetMode(gin.ReleaseMode)

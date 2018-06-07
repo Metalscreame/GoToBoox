@@ -1,10 +1,10 @@
 package dataBase
 
 import (
-	"fmt"
 	"database/sql"
 	"log"
 	_ "github.com/lib/pq"
+	"os"
 )
 
 const (
@@ -16,26 +16,26 @@ const (
 	DB_BOOKS_AUTHORS_TABLE = "books_authors"
 )
 
-type DataBaseCredentials struct {
-	DB_USER     string `json:"db_user"`
-	DB_PASSWORD string `json:"db_password"`
-	DB_NAME     string `json:"db_name"`
-	DB_HOST     string `json:"db_host"`
-	DB_PORT     string `json:"db_port"`
-}
 
 var Connection *sql.DB
 
 //Connect is a function that is used to open Connection
 //with a dataBase.
-func Connect(d DataBaseCredentials) () {
+//For localhosts setup sys env "POSTGRES_URL" with key "postgres://postgres:root@localhost:5432/postgres?sslmode=disable"
+//where ://username:password@host:port/dbname
+func Connect() () {
 	var err error
-	dbinfo := fmt.Sprintf("user=%s password=%s host=%s port=%s dbname=%s sslmode=disable", d.DB_USER, d.DB_PASSWORD, d.DB_HOST, d.DB_PORT, d.DB_NAME)
-	Connection, err = sql.Open("postgres", dbinfo)
+	dbUrl, ok := os.LookupEnv("POSTGRES_URL")
+	if !ok {
+		log.Fatal("$POSTGRES_URL is required\nFor localhosts setup sys env \"POSTGRES_URL\" " +
+			"with key \"postgres://postgres:root@localhost:5432/postgres?sslmode=disable\" where ://username:password@host:port/dbname")
+	}
+
+	Connection, err = sql.Open("postgres", dbUrl)
 	if err != nil {
 		log.Fatal(err)
 	}
-	Connection.Ping()
+	err=Connection.Ping()
 	if err != nil {
 		log.Fatal(err)
 	}
