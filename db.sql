@@ -5,7 +5,7 @@ id serial PRIMARY KEY,
 nickname CHARACTER VARYING (150) NOT NULL UNIQUE,
 email CHARACTER VARYING (250) NOT NULL UNIQUE ,
 password CHARACTER VARYING (250) NOT NULL,
-registrDate DATE
+register_date DATE
 );
 
 CREATE TABLE gotoboox.categories(
@@ -34,7 +34,7 @@ CREATE TABLE gotoboox.books_authors(
   CONSTRAINT book_author_pkey PRIMARY KEY (book_id, author_id)
 );
 
-INSERT INTO gotoboox.users  (nickname,email,password,registrDate)  
+INSERT INTO gotoboox.users  (nickname,email,password,register_date)
 VALUES 
 ('nick1', 'nick1@gmail.com', 'pass1', '2018-01-01'), 
 ('nick2', 'nick2@gmail.com', 'pass2', '2018-01-21'), 

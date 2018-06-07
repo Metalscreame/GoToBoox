@@ -91,7 +91,7 @@ func convertEmailString(email string) (string) {
 	indexOfPercentSymb := strings.IndexRune(email, '%')
 	runes := []rune(email)
 	runes[indexOfPercentSymb] = '@'
-	runes = append(runes[:indexOfPercentSymb+1], runes[indexOfPercentSymb+2:]...)//deletes 4
-	runes = append(runes[:indexOfPercentSymb+1], runes[indexOfPercentSymb+2:]...)//deletes 0
+	runes = append(runes[:indexOfPercentSymb+1], runes[indexOfPercentSymb+2:]...) //deletes 4
+	runes = append(runes[:indexOfPercentSymb+1], runes[indexOfPercentSymb+2:]...) //deletes 0
 	return string(runes)
 }
