@@ -21,6 +21,7 @@ func setupLogFile()  *os.File{
 		log.Fatal(err)
 	}
 	log.SetOutput(logFile)
+	println("All errors will be in the log.txt. Read it if you think that something is wrong.")
 	log.Println("Recording of the log file has started...")
 	return logFile
 }

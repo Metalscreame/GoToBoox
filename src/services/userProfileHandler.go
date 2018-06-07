@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strings"
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
+	"log"
 )
 
 type UserService struct {
@@ -28,6 +29,7 @@ func (s *UserService) UserGetHandler(c *gin.Context) {
 	email := convertEmailString(emailCookie.Value)
 	user, err := s.UsersRepo.GetUserByEmail(email)
 	if err != nil {
+		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
 		return
 	}
@@ -44,6 +46,7 @@ func (s *UserService) UserDeleteHandler(c *gin.Context) {
 	}
 	email := convertEmailString(emailCookie.Value)
 	if err := s.UsersRepo.DeleteUserByEmail(email); err != nil {
+		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
 		return
 	}
@@ -65,8 +68,8 @@ Input example for update
 }
  */
 func (s *UserService) UserUpdateHandler(c *gin.Context) {
-	var u repository.User
-	if err := c.BindJSON(&u); err != nil {
+	var userToUpdate repository.User
+	if err := c.BindJSON(&userToUpdate); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "bad request"})
 		return
 	}
@@ -77,12 +80,25 @@ func (s *UserService) UserUpdateHandler(c *gin.Context) {
 	}
 	email := convertEmailString(emailCookie.Value)
 
-	u.Password = getMD5Hash(u.NewPassword)
-	if err := s.UsersRepo.UpdateUserByEmail(u, email); err != nil {
+	userFromDb, err := s.UsersRepo.GetUserByEmail(email)
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
+		return
+	}
+	userToUpdate.Password = GetMD5Hash(userToUpdate.Password)
+	if userFromDb.Password != userToUpdate.Password {
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "passwords doesnt much"})
+		return
+	}
+	userToUpdate.Password = GetMD5Hash(userToUpdate.NewPassword)
+
+	if err := s.UsersRepo.UpdateUserByEmail(userToUpdate, email); err != nil {
+		log.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"status": "bad request"})
 		return
 	}
-	c.SetCookie("email", u.Email, 15000, "", "", false, true)
+	c.SetCookie("email", userToUpdate.Email, 15000, "", "", false, true)
 	c.JSON(http.StatusOK, gin.H{"status": "updated"})
 	return
 }

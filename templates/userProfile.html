@@ -39,10 +39,14 @@
                     <div class="col-sm-10">
                         <input type="password" placeholder="Old password" class="form-control" id="passwordInputOld">
                     </div>
+                    <label class="col-sm-2 control-label" for="textinput"></label>
+
                     <div class="col-sm-10">
                         <input type="password" placeholder="New password" class="form-control" id="passwordInputNew1">
                     </div>
                     <div class="col-sm-10">
+                        <label class="col-sm-2 control-label" for="textinput"></label>
+
                         <input type="password" placeholder="Repeat" class="form-control" id="passwordInputNew2">
                     </div>
 
@@ -82,11 +86,14 @@
         xhr.open('PUT', "/api/v1/userProfile", false);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onreadystatechange = function () {
-            if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
-                var json = JSON.parse(xhr.responseText);
-                window.location.href = "/userProfile";
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                alert("redirecting");
+                document.location.href="/";
+                return;
             } else {
-                window.location.href ="/";
+                alert("wrong old password");
+                window.location.href = "/userProfile";
+                return;
             }
         };
         var body = JSON.stringify({
@@ -107,10 +114,9 @@
         window.location.href = "/login";
     });
 
-    $('#goBackButton').on('click', function (e) {
-        alert("back");
-        window.location.href = "/";
-    });
+    // $('#goBackButton').on('click', function (e) {
+    //     window.location.href =window.location.protocol + "//" + window.location.host + "/" ;
+    // });
 </script>
 
 <script>

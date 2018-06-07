@@ -40,7 +40,7 @@ func (s *UserService) UserCreateHandler(c *gin.Context) {
 	}
 
 	u.RegisterDate = time.Now()
-	u.Password = getMD5Hash(u.Password)
+	u.Password = GetMD5Hash(u.Password)
 
 	if err := s.UsersRepo.InsertUser(u); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "bad request"})
@@ -91,7 +91,8 @@ func performLoginCookiesSetting(u repository.User, c *gin.Context) {
 	c.SetCookie("email", u.Email, 16000, "", "", false, true)
 }
 
-func getMD5Hash(text string) string {
+//GetMD5Hash generates md5 hash from input string
+func GetMD5Hash(text string) string {
 	hasher := md5.New()
 	hasher.Write([]byte(text))
 	return hex.EncodeToString(hasher.Sum(nil))
