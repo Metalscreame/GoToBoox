@@ -16,7 +16,7 @@ func main() {
 }
 
 func setupLogFile()  *os.File{
-	logFile, err := os.OpenFile("log.txt", os.O_WRONLY|os.O_CREATE, 0666)
+	logFile, err := os.OpenFile("log.txt", os.O_CREATE|os.O_TRUNC, 0666)
 	if err != nil {
 		log.Fatal(err)
 	}
