@@ -30,3 +30,10 @@ type Authors struct {
 	MiddleName string
 	LastName   string
 }
+
+type BookDescription struct {
+	BookTitle     string  `json:"bookTitle"`
+	Description   string  `json:"description"`
+	Popularity    float32 `json:"popularity"`
+	CategoryTitle string  `json:"CategoryTitle"`
+}

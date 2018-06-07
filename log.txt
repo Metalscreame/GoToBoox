@@ -1,1 +1,7 @@
 Recording of the log file has started...
+Get <nil>
+Get <nil>
+Get <nil>
+Get <nil>
+Get <nil>
+Get <nil>

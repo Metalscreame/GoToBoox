@@ -10,7 +10,6 @@ import (
 	"log"
 	"io/ioutil"
 	"encoding/json"
-
 )
 
 //envVariable is a variable that stores run mode for server. if its "production" than its a heroku server, and we need
@@ -18,9 +17,9 @@ import (
 const envVariable = "GOLANG_RUN_MODE"
 
 func main() {
-	file :=setupLogFile()
-	defer file.Close()
 
+	file := setupLogFile()
+	defer file.Close()
 	credentials, port := getDatabaseCredentialsAndPort()
 	dataBase.Connect(credentials)
 	services.Start(port)
@@ -49,7 +48,7 @@ func readConfigValuesFromFile(b []byte) (d dataBase.DataBaseCredentials) {
 	return
 }
 
-func setupLogFile()  *os.File{
+func setupLogFile() *os.File {
 	logFile, err := os.OpenFile("log.txt", os.O_WRONLY|os.O_CREATE, 0666)
 	CheckForFatalError(err)
 	log.SetOutput(logFile)

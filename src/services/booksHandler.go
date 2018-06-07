@@ -7,24 +7,23 @@ import (
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
 )
 
-
 type BookService struct {
 	BooksRepo repository.BookRepository
 }
 
-func (b *BookService) FiveMostPop (c *gin.Context) {
+func (b *BookService) FiveMostPop(c *gin.Context) {
 	FiveMostPop, _ := b.BooksRepo.GetMostPopularBooks(5)
 	if len(FiveMostPop) > 0 {
 		c.JSON(http.StatusOK, FiveMostPop)
 	} else {
-		c.JSON(http.StatusNotFound, gin.H{"message": "No books have been found"} )
+		c.JSON(http.StatusNotFound, gin.H{"message": "No books have been found"})
 	}
 }
 
 //showAllBooks is a handler for GetAll function
 func (b BookService) showAllBooks(c *gin.Context) {
-	books, err :=b.BooksRepo.GetAll()
-	if err!=nil{
+	books, err := b.BooksRepo.GetAll()
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	} else {
 		c.JSON(http.StatusOK, books)
@@ -35,49 +34,42 @@ func (b BookService) showAllBooks(c *gin.Context) {
 func (b BookService) getBooks(c *gin.Context) {
 	// Check if the categoryID is valid
 	if catID, err := strconv.Atoi(c.Param("cat_id"));
-	err == nil {
+		err != nil {
+		// If the book is not found, abort with an error
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	} else {
 		// Check if the category exists
 		if book, err := b.BooksRepo.GetByCategory(catID);
-		err == nil {
-			c.JSON(http.StatusOK, book)
-			return
-
-		} else {
-			// If the book is not found, abort with an error
+			err != nil {
+			// If an invalid category ID is specified in the URL, abort with an error
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
+		} else {
+			c.JSON(http.StatusOK, book)
+			return
 		}
-
-	} else {
-		// If an invalid category ID is specified in the URL, abort with an error
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
 	}
 }
+
 //getBook is a handler for GetByID function
-func (b BookService) getBook (c *gin.Context) {
+func (b *BookService) getBook(c *gin.Context) {
 	// Check if the bookID is valid
 	if bookID, err := strconv.Atoi(c.Param("book_id"));
-	err == nil {
-		// Check if the category exists
-		if book, err := b.BooksRepo.GetByID(bookID); err == nil {
 
-			c.JSON(http.StatusOK, book)
-			return
-
-		} else {
-			// If the book is not found, abort with an error
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-
-	} else {
-		// If an invalid book ID is specified in the URL, abort with an error
+		err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
+	} else {
+
+		// Check if the category exists
+		if book, err := b.BooksRepo.GetByID(bookID);
+			err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		} else {
+			c.JSON(http.StatusOK, book)
+			return
+		}
 	}
 }
-
-
-
-
