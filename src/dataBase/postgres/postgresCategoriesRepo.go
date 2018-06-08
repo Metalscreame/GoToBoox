@@ -26,4 +26,3 @@ func (cr CategoryRepoPq) GetAllCategories ( ) ([]repository.Categories, error) {
 	}
 	return allCategories, nil
 }
-

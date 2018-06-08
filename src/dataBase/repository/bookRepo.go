@@ -1,9 +1,8 @@
 package repository
 
 type BookRepository interface {
-	GetAll() ([]interface{}, error)
-	GetByCategory(categoryID int) ([]Book, error)
-	GetByID(bookID int) (b Book, err error)
+	GetAll() (books []BookDescription, err error)
+	GetByCategory(categoryID int) (books []Book, err error)
+	GetByID(bookID int) (book Book, err error)
 	GetMostPopularBooks(quantity int) ([]Book, error)
-}
-
+	}
