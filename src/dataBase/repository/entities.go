@@ -3,12 +3,12 @@ package repository
 import "time"
 
 type User struct {
-	ID           int       `json:"id"`
+	ID           int       `json:"-"`
 	Nickname     string    `json:"nickname"`
 	Email        string    `json:"email"`
 	Password     string    `json:"password"`
+	NewPassword  string    `json:"new_passwordd"`
 	RegisterDate time.Time `json:"-"`
-	RegTimeStr   string    `json:"registrDate"`
 }
 
 type Categories struct {

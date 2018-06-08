@@ -37,8 +37,19 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label" for="textinput">Password</label>
                     <div class="col-sm-10">
-                        <input type="text" placeholder="Youre password" class="form-control" id="passwordInput">
+                        <input type="password" placeholder="Old password" class="form-control" id="passwordInputOld">
                     </div>
+                    <label class="col-sm-2 control-label" for="textinput"></label>
+
+                    <div class="col-sm-10">
+                        <input type="password" placeholder="New password" class="form-control" id="passwordInputNew1">
+                    </div>
+                    <div class="col-sm-10">
+                        <label class="col-sm-2 control-label" for="textinput"></label>
+
+                        <input type="password" placeholder="Repeat" class="form-control" id="passwordInputNew2">
+                    </div>
+
                 </div>
 
                 <div class="form-group">
@@ -62,22 +73,34 @@
     $('#saveButton').on('click', function (e) {
         var nickname = document.getElementById("nicknameInput").value;
         var email = document.getElementById("emailInput").value;
-        var password = document.getElementById("passwordInput").value;
+        var passwordOld = document.getElementById("passwordInputOld").value;
+        var passwordNew1 = document.getElementById("passwordInputNew1").value;
+        var passwordNew2 = document.getElementById("passwordInputNew2").value;
+
+        if(passwordNew1!=passwordNew2){
+            alert("Passwords doesnt mach");
+            return
+        }
+
         var xhr = new XMLHttpRequest();
         xhr.open('PUT', "/api/v1/userProfile", false);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onreadystatechange = function () {
-            if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
-                var json = JSON.parse(xhr.responseText);
-                window.location.href = "/userProfile";
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                alert("redirecting");
+                document.location.href="/";
+                return;
             } else {
-                window.location.href ="/";
+                alert("wrong old password");
+                window.location.href = "/userProfile";
+                return;
             }
         };
         var body = JSON.stringify({
             "nickname": nickname,
             "email": email,
-            "password": password
+            "password": passwordOld,
+            "new_passwordd": passwordNew1
         });
         xhr.send(body);
     });
@@ -91,10 +114,9 @@
         window.location.href = "/login";
     });
 
-    $('#goBackButton').on('click', function (e) {
-        alert("back");
-        window.location.href = "/";
-    });
+    // $('#goBackButton').on('click', function (e) {
+    //     window.location.href =window.location.protocol + "//" + window.location.host + "/" ;
+    // });
 </script>
 
 <script>
@@ -106,7 +128,6 @@
             var json = JSON.parse(xhr.responseText);
             $('#nicknameInput').val(json.nickname);
             $('#emailInput').val(json.email);
-            $('#passwordInput').val(json.password);
         } else if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 400) {
             window.location.href = "/login";
         }

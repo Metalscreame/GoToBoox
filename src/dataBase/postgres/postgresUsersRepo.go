@@ -1,17 +1,8 @@
 package postgres
 
 import (
-	"bytes"
 	"database/sql"
-	db "github.com/metalscreame/GoToBoox/src/dataBase"
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
-)
-
-const (
-	selectQueryType = "select"
-	insertQueryType = "insert"
-	deleteQueryType = "delete"
-	updateQueryType = "update"
 )
 
 type postgresUsersRepository struct {
@@ -24,18 +15,8 @@ func NewPostgresUsersRepo(Db *sql.DB) repository.UserRepository {
 
 //GetUserByEmail gets users from users table by
 func (p *postgresUsersRepository) GetUserByEmail(email string) (u repository.User, err error) {
-
-	query := prepareQueryString(selectQueryType)
-	stmt, err := p.Db.Prepare(query)
-	if err != nil {
-		return
-	}
-	row := stmt.QueryRow(email)
-	if err != nil {
-		return
-	}
-
-	err = row.Scan(&u.ID, &u.Nickname, &u.Email, &u.Password, &u.RegisterDate)
+	row := p.Db.QueryRow("SELECT id, nickname,password,email FROM gotoboox.users where email=$1", email)
+	err = row.Scan(&u.ID, &u.Nickname, &u.Password, &u.Email)
 	if err != nil {
 		return
 	}
@@ -44,85 +25,20 @@ func (p *postgresUsersRepository) GetUserByEmail(email string) (u repository.Use
 
 //UpdateInsertUserByEmail updates a user or insert if there is no such user
 func (p *postgresUsersRepository) UpdateUserByEmail(u repository.User, oldEmail string) (err error) {
-	query := prepareQueryString(updateQueryType)
-	stmt, err := p.Db.Prepare(query)
-	if err != nil {
-		return
-	}
-	_, err = stmt.Exec(u.Nickname, u.Email, u.Password, oldEmail)
-	if err != nil {
-		return
-	}
+	_, err = p.Db.Query("UPDATE gotoboox.users set nickname=$1,email=$2,password=$3 where email=$4",
+		u.Nickname, u.Email, u.Password, oldEmail)
 	return
 }
 
 //DeleteUserByEmail deletes user from database
 func (p *postgresUsersRepository) DeleteUserByEmail(email string) (err error) {
-	query := prepareQueryString(deleteQueryType)
-	stmt, err := p.Db.Prepare(query)
-	if err != nil {
-		return
-	}
-
-	_, err = stmt.Query(email)
-	if err != nil {
-		return
-	}
+	_, err = p.Db.Query("DELETE FROM gotoboox.users WHERE email=$1", email)
 	return
 }
 
 //InsertUser is a function that inserts a user entity into a database
 func (p *postgresUsersRepository) InsertUser(u repository.User) (err error) {
-	query := prepareQueryString(insertQueryType)
-	stmt, err := p.Db.Prepare(query)
-	if err != nil {
-		return
-	}
-	err = execInsertStmtByEmail(stmt, &u)
-	if err != nil {
-		return
-	}
-	return
-}
-
-func prepareQueryString(typeOfQuery string) (string) {
-	var b bytes.Buffer
-
-	switch typeOfQuery {
-	case insertQueryType:
-		b.WriteString("insert into ")
-		b.WriteString(db.DB_SCHEMA)
-		b.WriteString(db.DB_USERS_TABLE)
-		b.WriteString("(nickname,email,password,registrDate) values($1,$2,$3,$4)")
-		return b.String()
-	case updateQueryType:
-		b.WriteString("update ")
-		b.WriteString(db.DB_SCHEMA)
-		b.WriteString(db.DB_USERS_TABLE)
-		b.WriteString(" set nickname=$1,email=$2,password=$3 where email=$4")
-		return b.String()
-	case selectQueryType:
-		b.WriteString("select * from ")
-	case deleteQueryType:
-		b.WriteString("delete from ")
-	default:
-		return ""
-	}
-
-	b.WriteString(db.DB_SCHEMA)
-	b.WriteString(db.DB_USERS_TABLE)
-	b.WriteString(" where email=$1")
-	return b.String()
-}
-
-func execInsertStmtByEmail(stmt *sql.Stmt, u *repository.User) (err error) {
-	res, err := stmt.Exec(u.Nickname, u.Email, u.Password, u.RegisterDate)
-	if err != nil {
-		return err
-	}
-	_, err = res.RowsAffected()
-	if err != nil {
-		return
-	}
+	_, err = p.Db.Query("INSERT INTO gotoboox.users (nickname,email,password,register_date) values($1,$2,$3,$4)",
+		u.Nickname, u.Email, u.Password, u.RegisterDate)
 	return
 }
