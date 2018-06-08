@@ -37,3 +37,9 @@ type BookDescription struct {
 	Popularity    float32 `json:"popularity"`
 	CategoryTitle string  `json:"CategoryTitle"`
 }
+
+type UsersBooks struct {
+	user User
+	Books []Book
+}
+

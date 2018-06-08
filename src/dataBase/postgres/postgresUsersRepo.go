@@ -42,3 +42,15 @@ func (p *postgresUsersRepository) InsertUser(u repository.User) (err error) {
 		u.Nickname, u.Email, u.Password, u.RegisterDate)
 	return
 }
+
+func (p *postgresUsersRepository)GetUsersBookByEmail(email string)(ub repository.UsersBooks,err error){
+	_, err = p.Db.Query("SELECT b.title, b.description, b.popularity, b.title FROM gotoboox.users a, gotoboox.books b where a.categories_id=b.id",
+		id SERIAL PRIMARY KEY,
+		title CHARACTER VARYING (250) NOT NULL,
+		description CHARACTER VARYING (900) NOT NULL,
+		popularity REAL NOT NULL DEFAULT 0,
+		isTaken BOOLEAN DEFAULT FALSE,
+		file_path CHARACTER VARYING (250) NOT NULL,
+		categories_id INT REFERENCES gotoboox.categories (id)
+	return
+}

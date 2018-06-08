@@ -20,6 +20,7 @@ var router *gin.Engine
 func Start() {
 	port, ok := os.LookupEnv("PORT")
 	if !ok {
+		println("PORT is required\nFor localhosts setup sys env \"PORT\" as 8080 and reload IDE")
 		log.Fatal("PORT is required\nFor localhosts setup sys env \"PORT\" as 8080")
 	}
 
