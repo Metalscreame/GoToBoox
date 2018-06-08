@@ -1,35 +1,29 @@
 package postgres
 
 import (
-	"log"
 	"github.com/metalscreame/GoToBoox/src/dataBase"
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
+	_"database/sql"
+	"errors"
 )
 
-type CategoryRepoPq struct{}
-
-var CategoryRepo repository.CategoryRepository
+type CategoryRepoPq struct {}
 
 //Function GetAllCategories creates a list of all categories currently available and order them alphabetically
 func (cr CategoryRepoPq) GetAllCategories ( ) ([]repository.Categories, error) {
-
-	rows, err := dataBase.Connection.Query("SELECT id, title FROM gotoboox.categories")
+	rows, err := dataBase.Connection.Query("SELECT id, title FROM categories LIMIT 20")
 	if err != nil {
-		log.Println("Unknown error occurred")
-		return nil, err
+		return nil, errors.New("Failed to create to get the access to the database")
 	}
 	defer rows.Close()
 	var allCategories []repository.Categories
+	var categoryRepo repository.Categories
 	for rows.Next() {
-		var id int
-		var title string
-		if err := rows.Scan(&id, &title); err != nil {
-			log.Fatal(err)
+		if err := rows.Scan(&categoryRepo.ID,&categoryRepo.Title); err != nil {
+			return nil, errors.New("Failed to create the struct/read the data")
 		}
-		category := repository.Categories{id, title}
-		allCategories = append(allCategories, category)
+		allCategories = append(allCategories, categoryRepo)
 	}
-	return allCategories, err
+	return allCategories, nil
 }
-
 
