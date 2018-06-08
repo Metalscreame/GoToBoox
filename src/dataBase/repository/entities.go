@@ -30,3 +30,9 @@ type Authors struct {
 	MiddleName string
 	LastName   string
 }
+
+type UsersBooks struct {
+	user User
+	Books []Book
+}
+

@@ -81,6 +81,5 @@ VALUES
 ('5', '4'),
 ('6', '4');
 
-INSERT INTO gotoboox.users_books (users_id,book_id,expired_date)
-VALUES
+INSERT INTO gotoboox.users_books (users_id,book_id,expired_date) VALUES
 (1,1,'2018-07-07');

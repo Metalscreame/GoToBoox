@@ -7,14 +7,6 @@ import (
 	"os"
 )
 
-const (
-	DB_SCHEMA              = "gotoboox."
-	DB_USERS_TABLE         = "users"
-	DB_BOOKS_TABLE         = "books"
-	DB_AUTHORS_TABLE       = "authors"
-	DB_CATEGORIES_TABLE    = "categories"
-	DB_BOOKS_AUTHORS_TABLE = "books_authors"
-)
 
 
 var Connection *sql.DB
