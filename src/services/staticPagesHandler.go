@@ -51,3 +51,13 @@ func ShowUsersProfilePage(c *gin.Context) {
 		},
 	)
 }
+
+func ShowBook(c *gin.Context) {
+	c.HTML(
+		http.StatusOK,
+		"book.html",
+		gin.H{
+			"title": "Book Description",
+		},
+	)
+}
