@@ -91,7 +91,7 @@ func initUserProfileRoutes() {
 
 	// Show the user's profile page
 	// Ensure that the user is logged in by using the middleware
-	router.GET("/userProfilePage", midlwares.EnsureLoggedIn(),ShowUsersProfilePage)
+	router.GET("/userProfilePage", midlwares.EnsureLoggedIn(),service.ShowUsersProfilePage)
 
 }
 

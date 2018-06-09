@@ -19,6 +19,7 @@ exchanges_number INT DEFAULT 0,
 book_id  INT REFERENCES  gotoboox.books  (id) ON UPDATE CASCADE,
 notification_get_new_books BOOLEAN DEFAULT FALSE,
 notification_get_when_book_reserved BOOLEAN DEFAULT FALSE,
+has_book_for_exchange BOOLEAN DEFAULT FALSE,
 register_date DATE
 );
 
