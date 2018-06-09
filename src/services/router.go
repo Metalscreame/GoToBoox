@@ -4,7 +4,7 @@ import (
 	"log"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"github.com/metalscreame/GoToBoox/src/services/authentification/midlware"
+	"github.com/metalscreame/GoToBoox/src/services/midlwares"
 	"github.com/metalscreame/GoToBoox/src/dataBase"
 	"github.com/metalscreame/GoToBoox/src/dataBase/postgres"
 	"os"
@@ -45,53 +45,53 @@ func initUserProfileRoutes() {
 
 	// Use the SetUserStatus middleware for every route to set a flag
 	// indicating whether the request was from an authenticated user or not
-	router.Use(midlware.SetUserStatus())
+	router.Use(midlwares.SetUserStatus())
 
 	service := NewUserService(postgres.NewPostgresUsersRepo(dataBase.Connection))
 	userRoutes := router.Group(apiRoute)
 	{
 		// Handle POST requests at /api/v1/login
 		// Ensure that the user is not logged in by using the middleware
-		userRoutes.POST("/login", midlware.EnsureNotLoggedIn(), service.PerformLoginHandler)
+		userRoutes.POST("/login", midlwares.EnsureNotLoggedIn(), service.PerformLoginHandler)
 
 		// Handle GET requests at /api/v1/logout
 		// Ensure that the user is logged in by using the middleware
-		userRoutes.GET("/logout", midlware.EnsureLoggedIn(), service.LogoutHandler)
+		userRoutes.GET("/logout", midlwares.EnsureLoggedIn(), service.LogoutHandler)
 
 		// Handle POST requests at /api/v1/register
 		// Ensure that the user is not logged in by using the middleware
-		userRoutes.POST("/register", midlware.EnsureNotLoggedIn(), service.UserCreateHandler)
+		userRoutes.POST("/register", midlwares.EnsureNotLoggedIn(), service.UserCreateHandler)
 
 		// Handle the GET requests at /api/v1/userProfile
 		// Show the user's profile page
 		// Ensure that the user is logged in by using the middleware
-		userRoutes.GET("/userProfile", midlware.EnsureLoggedIn(), service.UserGetHandler)
+		userRoutes.GET("/userProfile", midlwares.EnsureLoggedIn(), service.UserGetHandler)
 
 		// Handle the GET requests at /api/v1/register
 		// Show the user's profile page
 		// Ensure that the user is logged in by using the middleware
-		userRoutes.PUT("/userProfile", midlware.EnsureLoggedIn(), service.UserUpdateHandler)
+		userRoutes.PUT("/userProfile", midlwares.EnsureLoggedIn(), service.UserUpdateHandler)
 
 		// Handle the GET requests at /api/v1/userProfile
 		// Show the user's profile page
 		// Ensure that the user is logged in by using the middleware
-		userRoutes.DELETE("/userProfile", midlware.EnsureLoggedIn(), service.UserDeleteHandler)
+		userRoutes.DELETE("/userProfile", midlwares.EnsureLoggedIn(), service.UserDeleteHandler)
 	}
 
 	// Show the login page
 	// Ensure that the user is not logged in by using the middleware
-	router.GET("/login", midlware.EnsureNotLoggedIn(), ShowLoginPage)
+	router.GET("/login", midlwares.EnsureNotLoggedIn(), ShowLoginPage)
 
 	// Show the registration page
 	// Ensure that the user is not logged in by using the middleware
-	router.GET("/register", midlware.EnsureNotLoggedIn(), ShowRegistrPage)
+	router.GET("/register", midlwares.EnsureNotLoggedIn(), ShowRegistrPage)
 
 	// Show the user's profile page or login page
 	router.GET("/userProfile", UserProfileHandler)
 
 	// Show the user's profile page
 	// Ensure that the user is logged in by using the middleware
-	router.GET("/userProfilePage", midlware.EnsureLoggedIn(),ShowUsersProfilePage)
+	router.GET("/userProfilePage", midlwares.EnsureLoggedIn(),ShowUsersProfilePage)
 
 }
 

@@ -3,7 +3,7 @@ package services
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"github.com/metalscreame/GoToBoox/src/services/authentification/midlware"
+	"github.com/metalscreame/GoToBoox/src/services/midlwares"
 )
 
 //ShowLoginPage is a handler function that renders static login page
@@ -31,7 +31,7 @@ func ShowRegistrPage(c *gin.Context) {
 //UserProfileHandler is a handler func that handle /userProfile handler and decides whether user is logged in or not
 //If not, it redirects to login page, else - to the usersProfilePage
 func UserProfileHandler(c *gin.Context) {
-	loggedIn := midlware.CheckLoggedIn(c)
+	loggedIn := midlwares.CheckLoggedIn(c)
 	if loggedIn {
 		c.Redirect(http.StatusFound, "/userProfilePage")
 		return
