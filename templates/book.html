@@ -1,18 +1,28 @@
-
+<html>
+{{template "header.tmpl.html"}}
 <body>
-<div class="col-md-8" id="Book">
+{{template "nav.tmpl.html"}}
 
-    <script>
+<ul id="BookDescription"></ul>
 
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'http://localhost:8080/books', false);
-        xhr.send();
-        if (xhr.status != 200) {
-            alert( xhr.status + ': ' + xhr.statusText );
-        } else {
-            alert( xhr.responseText );
-        }
-    </script>
 
-</div>
+<script>
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/api/v1/book/1', false);
+    xhr.send();
+    if (xhr.status != 200) {
+        alert("error")
+        alert(xhr.status + ': ' + xhr.statusText);
+    } else {
+        var BookDescription = document.getElementById('BookDescription');
+        var data = JSON.parse(xhr.responseText)
+        console.log(data)
+        var div = document.createElement('div');
+        div.innerHTML = "<strong>Book Title - </strong>" + data.data['Book']['bookTitle'] + "<strong><p>Book description - </strong>" + data.data['Book']['description'];
+        document.body.appendChild(div);
+    }
+</script>
+{{template "footer.tmpl.html"}}
 </body>
+</html>

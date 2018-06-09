@@ -15,28 +15,32 @@ func NewBooksRepository(Db *sql.DB) repository.BookRepository {
 	return &booksRepositoryPG{Db}
 }
 
+
+
 //var Db = repository.OpenDb()
 //GetByCategory iterates over the DB using the SQL SELECT Request and return selected book by its ID
-func (p booksRepositoryPG) GetByID(bookID int) (book repository.Book, err error) {
 
-	rows := p.Db.QueryRow("SELECT title, description, popularity FROM gotoboox.books where id = $1", bookID)
+func (p booksRepositoryPG) GetByID(bookID int) (books repository.BookDescription, err error) {
+
+	row := p.Db.QueryRow("SELECT a.title, a.description, b.title ,a.popularity FROM gotoboox.books a, gotoboox.categories b where a.id = $1", bookID)
 	if err != nil {
 		log.Printf("Get %v", err)
+
 		return
 	}
-	if err != sql.ErrNoRows {
+	err = row.Scan(&books.BookTitle, &books.Description, &books.CategoryTitle, &books.Popularity)
+
+		if err != nil {
 		log.Printf("Get %v", err)
 		return
-	}
-	if err := rows.Scan(&book.Title, &book.Description, &book.Popularity);
-		err != nil {
-		log.Printf("Get %v", err)
 	}
 	//just for checking
 	//fmt.Printf("%s\n%s\n%f\n", book.Title, book.Description, book.Popularity)
-	//	fmt.Print(book)
-	return book, err
+		return
 }
+
+
+
 
 //GetAll iterates over the DB using the SQL SELECT Request and return all books from DB
 func (p booksRepositoryPG) GetAll() (books []repository.BookDescription, err error) {

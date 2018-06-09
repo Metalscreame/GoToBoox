@@ -1,4 +1,3 @@
-
 <!-- Footer hm-->
 <footer class="py-5 bg-dark footer" style="bottom: 1px;
     width: 100%;">
@@ -12,30 +11,31 @@
 <script src="/static/vendor/jquery/jquery.min.js"></script>
 <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-  <script>
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', '/api/v1', false);
-      xhr.send();
-      if (xhr.status != 200) {
-          alert( xhr.status + ': ' + xhr.statusText );
-      } else {
-            var popularBooks = document.getElementById('popularBooks');
-            var catList = document.getElementById('catList');
-            var data = JSON.parse(xhr.responseText);
-                if (popularBooks) {
-                    for (var i = 0; i < data.data['PopularBooks'].length; i++){
-                        var newLi = document.createElement('li');
-                        newLi.innerHTML = "<a href='/categories/" + data.data['PopularBooks'][i]['id'] + "/book/" + data.data['PopularBooks'][i]['id'] + "'>" + data.data['PopularBooks'][i]['title'] + "</a>";
-                        popularBooks.appendChild(newLi);
-                    }
-                }
-                for (var i = 0; i < data.data['Categories'].length; i++){
-                   var newLi = document.createElement('li');
-                      newLi.innerHTML = "<a class=\"dropdown-item\" href='/categories/" + data.data['Categories'][i]['ID'] + "'>" + data.data['Categories'][i]['Title'] + "</a>";
-                    catList.appendChild(newLi);
-                }
-      }
-  </script>
+<script>
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/api/v1', false);
+    xhr.send();
+    if (xhr.status != 200) {
+        alert(xhr.status + ': ' + xhr.statusText);
+    } else {
+        var popularBooks = document.getElementById('popularBooks');
+        var catList = document.getElementById('catList');
+        var data = JSON.parse(xhr.responseText);
+        if (popularBooks) {
+            for (var i = 0; i < data.data['PopularBooks'].length; i++) {
+                var newLi = document.createElement('li');
+                newLi.innerHTML = "<a href='/categories/" + data.data['PopularBooks'][i]['id'] + "/book/" + data.data['PopularBooks'][i]['id'] + "'>" + data.data['PopularBooks'][i]['title'] + "</a>";
+                popularBooks.appendChild(newLi);
+            }
+        }
+        for (var i = 0; i < data.data['Categories'].length; i++) {
+            var newLi = document.createElement('li');
+            newLi.innerHTML = "<a class=\"dropdown-item\" href='/categories/" + data.data['Categories'][i]['ID'] + "'>" + data.data['Categories'][i]['Title'] + "</a>";
+            catList.appendChild(newLi);
+        }
+
+    }
+</script>
 
 </body>
 

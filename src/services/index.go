@@ -23,3 +23,4 @@ func IndexHandler(c *gin.Context) {
 	output := Data{books, cats}
 	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": output})
 }
+

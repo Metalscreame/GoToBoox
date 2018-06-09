@@ -5,6 +5,8 @@ import (
 	"strconv"
 	"net/http"
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
+	"github.com/metalscreame/GoToBoox/src/dataBase/postgres"
+	"github.com/metalscreame/GoToBoox/src/dataBase"
 )
 
 type BookService struct {
@@ -53,7 +55,48 @@ func (b BookService) getBooks(c *gin.Context) {
 }
 
 //getBook is a handler for GetByID function
-func (b *BookService) getBook(c *gin.Context) {
+func (b BookService) getBook(c *gin.Context) {
+	type Data struct{
+
+		Book repository.BookDescription
+	}
+	// Check if the bookID is valid
+	if bookID, err := strconv.Atoi(c.Param("book_id"));
+
+		err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	} else {
+
+		// Check if the category exists
+
+		if book, err := b.BooksRepo.GetByID(bookID);
+			err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		} else {
+			output := Data{book}
+			c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": output})
+			return
+		}
+	}
+}
+
+func BookHandler(c *gin.Context) {
+	type Data struct{
+
+		Book repository.BookDescription
+	}
+
+	bookRepo := postgres.NewBooksRepository(dataBase.Connection)
+	books,_ := bookRepo.GetByID(2)
+
+
+	output := Data{books}
+	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": output})
+}
+
+/*func (b BookService) getBook(c *gin.Context) {
 	// Check if the bookID is valid
 	if bookID, err := strconv.Atoi(c.Param("book_id"));
 
@@ -68,8 +111,10 @@ func (b *BookService) getBook(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		} else {
+			fmt.Print(book)
 			c.JSON(http.StatusOK, book)
 			return
 		}
 	}
-}
+}*/
+
