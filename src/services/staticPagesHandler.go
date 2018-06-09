@@ -73,3 +73,14 @@ func ShowBook(c *gin.Context) {
 		},
 	)
 }
+
+//ShowLockBookPage
+func ShowLockBookPage(c *gin.Context) {
+	c.HTML(
+		http.StatusOK,
+		"lockBookPage.html",
+		gin.H{
+			"title": "Lock Book Page",
+		},
+	)
+}
