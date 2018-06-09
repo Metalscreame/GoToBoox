@@ -78,23 +78,34 @@
                 <h2 class="card-title mt-5 text-left">Operations with books</h2>
                 <h2 class="card-title mt-5 text-left"></h2>
 
-                <h4 class="card-title mt-3 text-left">Donate a book...</h4>
+                <h4 class="card-title mt-3 text-left">Donate people a book</h4>
                 <button type="submit" id="donateButton" class="btn btn-dark">Donate</button>
+                <script !src="">
+                    $('#donateButton').on('click', function (e) {
+                    var xhr = new XMLHttpRequest();
+                    xhr.send();
+                    window.location.href = "/login";
+                });</script>
 
                 <h2 class="card-title mt-5 text-left"></h2>
                 <h2 class="card-title mt-5 text-left"></h2>
 
                 <h4 class="card-title mt-3 text-left">Return previously taken book</h4>
-                <button type="submit" id="donateButton" class="btn btn-dark">Return</button>
+                <button type="submit" id="returnButton" class="btn btn-dark">Return</button>
 
                 <h2 class="card-title mt-5 text-left"></h2>
                 <h2 class="card-title mt-5 text-left"></h2>
                 <h2 class="card-title mt-5 text-left"></h2>
                 <h2 class="card-title mt-5 text-left"></h2>
-                <h4 class="card-title mt-3 text-left">Exchange previously you're reserved book</h4>
-                <button type="submit" id="donateButton" class="btn btn-dark">Return</button>
 
+                <script>
+                    $('#exchangeBookButton').on('clock', function (e) {
+                        window.location.href = "/lockPage";
+                    });
+                </script>
+                <div id="returnBookRender">
 
+                </div>
 
             </fieldset>
 
@@ -123,7 +134,6 @@
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onreadystatechange = function () {
             if (xhr.readyState == 4 && xhr.status == 200) {
-                alert("redirecting");
                 document.location.href="/";
                 return;
             } else {
@@ -133,20 +143,14 @@
             }
         };
 
-        var notification_get_new_books;
+        var notification_get_new_books=false;
         if ($('#notificationNewBooks').is(":checked")) {
             notification_get_new_books = true;
-        }else{
-            notification_get_new_books = false;
         }
-
-        var notification_get_when_book_reserved;
+        var notification_get_when_book_reserved=false;
         if ($('#notificationReservedBook').is(":checked")) {
             notification_get_when_book_reserved = true;
-        }else{
-            notification_get_when_book_reserved = false;
         }
-
         var body = JSON.stringify({
             "nickname": nickname,
             "email": email,
@@ -166,12 +170,14 @@
         xhr.send();
         window.location.href = "/login";
     });
-    $('#donateButton').on('click', function (e) {
-        window.location.href = "/lockPage";
-    });
+
     // $('#goBackButton').on('click', function (e) {
     //     window.location.href =window.location.protocol + "//" + window.location.host + "/" ;
     // });
+    $('#exchangeBookButton').on('click', function (e) {
+        window.location.href = "/login";
+    });
+
 </script>
 
 <script>
@@ -183,6 +189,17 @@
             var json = JSON.parse(xhr.responseText);
             $('#nicknameInput').val(json.nickname);
             $('#emailInput').val(json.email);
+            if(json.notification_get_new_books == true){
+                $('#notificationNewBooks').prop( "checked", true );
+            }
+            if(json.notification_get_when_book_reserved == true){
+                $('#notificationReservedBook').prop( "checked", true );
+            }
+
+            if(json.has_book_for_exchange == true){
+                document.getElementById("returnBookRender").innerHTML = '<h4 class="card-title mt-3 text-left">Exchange previously reserved book</h4> ' +
+                        '<button type="submit" id="exchangeBookButton" class="btn btn-dark">Return</button>';
+            }
         } else if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 400) {
             window.location.href = "/login";
         }

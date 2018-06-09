@@ -30,9 +30,11 @@ func ShowRegistrPage(c *gin.Context) {
 
 //UserProfileHandler is a handler func that handle /userProfile handler and decides whether user is logged in or not
 //If not, it redirects to login page, else - to the usersProfilePage
-func UserProfileHandler(c *gin.Context) {
+func  UserProfileHandler(c *gin.Context) {
 	loggedIn := midlwares.CheckLoggedIn(c)
 	if loggedIn {
+
+
 		c.Redirect(http.StatusFound, "/userProfilePage")
 		return
 	} else {
@@ -42,12 +44,22 @@ func UserProfileHandler(c *gin.Context) {
 }
 
 //ShowUsersProfilePage is a handler function that renders static userProfile page
-func ShowUsersProfilePage(c *gin.Context) {
+func(s* UserService) ShowUsersProfilePage(c *gin.Context) {
+
+	//----
+	//isLoggedIn := midlware.CheckLoggedIn(c)
+	//if !isLoggedIn {
+	//	guest := true
+	//	c.HTML(http.StatusOK, "index.tmpl.html", guest)
+	//} else {
+	//	c.HTML(http.StatusOK, "index.tmpl.html", nil)
+	//}
+	//-------
 	c.HTML(
 		http.StatusOK,
 		"userProfile.html",
 		gin.H{
-			"title": "Registration Page",
+			"title": "User's profile",
 		},
 	)
 }

@@ -24,8 +24,9 @@ type User struct {
 	Password                        string    `json:"password"`
 	NewPassword                     string    `json:"new_passwordd"`
 	ExchangesNumber                 int       `json:"-"`
+	HasBookForExchange              bool      `json:"has_book_for_exchange"`
 	Book                            Book      `json:"-"`
-	NotificationGetBewBooks         bool      `json:"notification_get_bew_books"`
+	NotificationGetBewBooks         bool      `json:"notification_get_new_books"`
 	NotificationGetWhenBookReserved bool      `json:"notification_get_when_book_reserved"`
 	RegisterDate                    time.Time `json:"-"`
 }
@@ -43,4 +44,3 @@ type BookDescription struct {
 	Popularity    float32 `json:"popularity"`
 	CategoryTitle string  `json:"CategoryTitle"`
 }
-

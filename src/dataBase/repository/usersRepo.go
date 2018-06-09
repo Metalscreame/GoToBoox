@@ -6,4 +6,6 @@ type UserRepository interface {
 	DeleteUserByEmail(email string) (err error)
 	InsertUser(u User)(err error)
 	//GetUsersBookByEmail(email string)(ub UsersBooks,err error)
+	GetUsersEmailToNotifyNewBook()(u []User, err error)
+	GetUsersEmailToNotifyReserved()(u []User, err error)
 }
