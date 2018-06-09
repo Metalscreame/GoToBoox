@@ -58,7 +58,7 @@ func (b BookService) getBooks(c *gin.Context) {
 func (b BookService) getBook(c *gin.Context) {
 	type Data struct{
 
-		Book repository.BookDescription
+		Book repository.Book
 	}
 	// Check if the bookID is valid
 	if bookID, err := strconv.Atoi(c.Param("book_id"));
@@ -85,7 +85,7 @@ func (b BookService) getBook(c *gin.Context) {
 func BookHandler(c *gin.Context) {
 	type Data struct{
 
-		Book repository.BookDescription
+		Book repository.Book
 	}
 
 	bookRepo := postgres.NewBooksRepository(dataBase.Connection)
