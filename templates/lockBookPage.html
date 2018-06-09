@@ -2,13 +2,26 @@
 {{template "header.tmpl.html"}}
 <body>
 {{template "nav.tmpl.html"}}
+<link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="/static/vendor/bootstrap/js/bootstrap.min.js"></script>
+<script src="/static/vendor/jquery/jquery.min.js"></script>
+<div class="container content">
 
 
+    <div class="file-loading">
+        <input id="input-44" name="input44[]" type="file" multiple>
+    </div>
+    <script>
+        $(document).on('ready', function() {
+            $("#input-44").fileinput({
+                uploadUrl: '/file-upload-batch/2',
+                maxFilePreviewSize: 10240
+            });
+        });
+    </script>
 
 
-
-
-
+</div>
 <!--container end.//-->
 {{template "footer.tmpl.html"}}
 </body>
