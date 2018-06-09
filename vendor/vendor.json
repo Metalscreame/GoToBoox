@@ -116,15 +116,15 @@
 			"revision": "40e4aedc8fabf8c23e040057540867186712faa5"
 		},
 		{
+			"checksumSHA1": "I/0TsOMVWnRhtrivU4FMjA30eUM=",
+			"path": "github.com/mattn/go-isatty",
+			"revision": "7fcbc72f853b92b5720db4a6b8482be612daef24"
+		},
+		{
 			"checksumSHA1": "rCNfFpeYqd2Tpi5qOFX8ckaQcMU=",
 			"path": "github.com/mattn/go-isatty",
 			"revision": "57fdcb988a5c543893cc61bce354a6e24ab70022",
 			"revisionTime": "2017-03-07T16:30:44Z"
-		},
-		{
-			"checksumSHA1": "I/0TsOMVWnRhtrivU4FMjA30eUM=",
-			"path": "github.com/mattn/go-isatty",
-			"revision": "7fcbc72f853b92b5720db4a6b8482be612daef24"
 		},
 		{
 			"checksumSHA1": "R3yk3OJzuq4MVfVGX5AhkkYv1ko=",
@@ -164,17 +164,18 @@
 			"revision": "adbae1b6b6fb4b02448a0fc0dbbc9ba2b95b294d",
 			"revisionTime": "2017-06-19T06:03:41Z"
 		},
-		{
-			"checksumSHA1": "hKZGpbFuCrkE4s1vxubKK1aFlfI=",
-			"path": "golang.org/x/net/context",
-			"revision": "d9558e5c97f85372afee28cf2b6059d7d3818919"
-		},
+
 		{
 			"checksumSHA1": "9jjO5GjLa0XF/nfWihF02RoH4qc=",
 			"comment": "release-branch.go1.7",
 			"path": "golang.org/x/net/context",
 			"revision": "d4c55e66d8c3a2f3382d264b08e3e3454a66355a",
 			"revisionTime": "2016-10-18T08:54:36Z"
+		},
+		{
+			"checksumSHA1": "hKZGpbFuCrkE4s1vxubKK1aFlfI=",
+			"path": "golang.org/x/net/context",
+			"revision": "d9558e5c97f85372afee28cf2b6059d7d3818919"
 		},
 		{
 			"checksumSHA1": "Fxh2bhyDOSLGYJAY73976JVMys0=",
