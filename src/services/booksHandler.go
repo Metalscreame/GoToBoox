@@ -7,6 +7,7 @@ import (
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
 	"github.com/metalscreame/GoToBoox/src/dataBase/postgres"
 	"github.com/metalscreame/GoToBoox/src/dataBase"
+	"log"
 )
 
 type BookService struct {
@@ -56,8 +57,7 @@ func (b BookService) getBooks(c *gin.Context) {
 
 //getBook is a handler for GetByID function
 func (b BookService) getBook(c *gin.Context) {
-	type Data struct{
-
+	type Data struct {
 		Book repository.BookDescription
 	}
 	// Check if the bookID is valid
@@ -83,14 +83,12 @@ func (b BookService) getBook(c *gin.Context) {
 }
 
 func BookHandler(c *gin.Context) {
-	type Data struct{
-
+	type Data struct {
 		Book repository.BookDescription
 	}
 
 	bookRepo := postgres.NewBooksRepository(dataBase.Connection)
-	books,_ := bookRepo.GetByID(2)
-
+	books, _ := bookRepo.GetByID(2)
 
 	output := Data{books}
 	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": output})
@@ -118,3 +116,15 @@ func BookHandler(c *gin.Context) {
 	}
 }*/
 
+func (b *BookService) insertNewBook(c *gin.Context) {
+	var book repository.Book
+	if err := c.BindJSON(&book); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"status": "bad request"})
+		return
+	}
+	if err := b.BooksRepo.InsertNewBook(book); err != nil {
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
+		return
+	}
+}
