@@ -10,6 +10,7 @@ import (
 	"log"
 	"encoding/base64"
 	"strings"
+	"github.com/metalscreame/GoToBoox/src/services/commonFunctions"
 )
 
 type BookService struct {
@@ -140,4 +141,5 @@ func (b *BookService) insertNewBook(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
 		return
 	}
+	go commonFunctions.NotifyAllNewBook(book.Title,book.Description)
 }
