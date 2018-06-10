@@ -159,7 +159,13 @@
         };
 
     });
-
+    $('#returnPreviosly').on('click', function (e) {
+        var url_string = window.location.href;
+        var len = url_string.length;
+        var param = url_string[len-1];
+        xhr.open('GET', '/takenBooks/'+param,false);
+        xhr.send();
+    });
 
 </script>
 

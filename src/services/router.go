@@ -90,7 +90,7 @@ func initUserProfileRoutes() {
 	router.GET("/userProfile", UserProfileHandler)
 
 	//Shows the lock page
-	router.GET("/uploadPage/:book_id", ShowUploadBookPage)
+	router.GET("/uploadPage/:book_id", midlwares.EnsureLoggedIn(),ShowUploadBookPage)
 
 	// Show the user's profile page
 	// Ensure that the user is logged in by using the middleware
@@ -110,7 +110,7 @@ func initBooksRoutes() {
 
 	router.GET("/api/v1/book/:book_id", bookService.getBook)
 	router.GET("/book/:book_id", ShowBook)
-	router.POST("/api/v1/insertNewBook/:book_id", bookService.insertNewBook)
+	router.POST("/api/v1/insertNewBook/:book_id", midlwares.EnsureLoggedIn(),bookService.insertNewBook)
 	router.GET("/api/v1/updateBookStatus/:email", bookService.UpdateBookStatusToTaken)
 	router.GET("/api/v1/updateBookStatusReturn/:book_id/:reserved_book_id", bookService.UpdateBookStatusToReturning)
 
