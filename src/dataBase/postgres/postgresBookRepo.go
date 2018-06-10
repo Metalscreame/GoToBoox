@@ -104,3 +104,9 @@ func (p booksRepositoryPG) GetMostPopularBooks (quantity int) ([]repository.Book
 	}
 	return popularBooks, nil
 }
+
+func (p booksRepositoryPG) InsertNewBook(b repository.Book) (err error){
+	_, err = p.Db.Query("INSERT INTO gotoboox.books (title,description,image) values($1,$2,$3)",
+		b.Title, b.Description, b.Image)
+	return
+}

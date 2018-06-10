@@ -89,10 +89,12 @@ func initUserProfileRoutes() {
 	// Show the user's profile page or login page
 	router.GET("/userProfile", UserProfileHandler)
 
+	//Shows the lock page
+	router.GET("/lockPage",ShowLockBookPage)
+
 	// Show the user's profile page
 	// Ensure that the user is logged in by using the middleware
 	router.GET("/userProfilePage", midlwares.EnsureLoggedIn(),service.ShowUsersProfilePage)
-
 }
 
 func initBooksRoutes() {
@@ -107,6 +109,9 @@ func initBooksRoutes() {
 
 	router.GET("/api/v1/book/:book_id", bookService.getBook)
 	router.GET("/book/:book_id", ShowBook)
+	router.POST("/api/v1/insertNewBook", bookService.insertNewBook)
+
+
 }
 
 func initCategoriesRoutes() {
