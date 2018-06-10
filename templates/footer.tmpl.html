@@ -18,20 +18,25 @@
     if (xhr.status != 200) {
         alert(xhr.status + ': ' + xhr.statusText);
     } else {
-        var popularBooks = document.getElementById('popularBooks');
-        var catList = document.getElementById('catList');
+        var popularBooks = document.getElementById('books');
         var data = JSON.parse(xhr.responseText);
+        console.log(data.data);
         if (popularBooks) {
-            for (var i = 0; i < data.data['PopularBooks'].length; i++) {
+            for (var i = 0; i < data.data['Books'].length; i++) {
                 var newLi = document.createElement('li');
-                newLi.innerHTML = "<a href='/categories/" + data.data['PopularBooks'][i]['id'] + "/book/" + data.data['PopularBooks'][i]['id'] + "'>" + data.data['PopularBooks'][i]['title'] + "</a>";
+                var status;
+                switch (data.data['Books'][i]['state']){
+                    case 'FREE' : status = '/static/img/available.svg';
+                        break;
+                    case 'TAKEN' : status = '/static/img/taken.svg';
+                        break;
+                    case 'RESERVED' : status = '/static/img/reserved.svg';
+                    break;
+                }
+                newLi.innerHTML = "<a href='/book/" + data.data['Books'][i]['id'] + "'>" + data.data['Books'][i]['title'] + "</a>"
+                + "<img src='" + status + "'> ";
                 popularBooks.appendChild(newLi);
             }
-        }
-        for (var i = 0; i < data.data['Categories'].length; i++) {
-            var newLi = document.createElement('li');
-            newLi.innerHTML = "<a class=\"dropdown-item\" href='/categories/" + data.data['Categories'][i]['ID'] + "'>" + data.data['Categories'][i]['Title'] + "</a>";
-            catList.appendChild(newLi);
         }
 
     }
