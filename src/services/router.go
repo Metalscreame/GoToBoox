@@ -31,7 +31,7 @@ func Start() {
 	router.LoadHTMLGlob("templates/*.html")
 
 	router.GET("/", func(c *gin.Context) {
-			c.HTML(http.StatusOK, "index.tmpl.html", nil)
+		c.HTML(http.StatusOK, "index.tmpl.html", nil)
 	})
 
 	router.GET(apiRoute, IndexHandler)
@@ -91,7 +91,7 @@ func initUserProfileRoutes() {
 
 	// Show the user's profile page
 	// Ensure that the user is logged in by using the middleware
-	router.GET("/userProfilePage", midlwares.EnsureLoggedIn(),service.ShowUsersProfilePage)
+	router.GET("/userProfilePage", midlwares.EnsureLoggedIn(), service.ShowUsersProfilePage)
 
 }
 
@@ -115,4 +115,3 @@ func initCategoriesRoutes() {
 		router.GET("/categories", categoriesService.AllCategories)
 	}
 }
-

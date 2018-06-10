@@ -5,7 +5,6 @@ import (
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
 	"database/sql"
 	"errors"
-	"fmt"
 )
 
 type booksRepositoryPG struct {
@@ -42,7 +41,6 @@ func (p booksRepositoryPG) GetByID(bookID int) (books repository.Book, err error
 		return
 }
 
-
 func (p booksRepositoryPG) GetTakenBooks(bookID int) (books repository.Book, err error) {
 
 	row := p.Db.QueryRow("SELECT title, description, image  FROM gotoboox.books where state = $1", takenState)
@@ -58,11 +56,9 @@ func (p booksRepositoryPG) GetTakenBooks(bookID int) (books repository.Book, err
 		return
 	}
 	//just for checking
-	fmt.Printf("%s\n%s\n%f\n", books.Title, books.Description, books.Image)
+	//fmt.Printf("%s\n%s\n%f\n", books.Title, books.Description, books.Image)
 	return
 }
-
-
 
 //GetAll iterates over the DB using the SQL SELECT Request and return all books from DB
 func (p booksRepositoryPG) GetAll() (books []repository.Book, err error) {
