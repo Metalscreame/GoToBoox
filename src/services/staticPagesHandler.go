@@ -74,13 +74,13 @@ func ShowBook(c *gin.Context) {
 	)
 }
 
-//ShowLockBookPage
-func ShowLockBookPage(c *gin.Context) {
+//ShowUploadBookPage
+func ShowUploadBookPage(c *gin.Context) {
 	c.HTML(
 		http.StatusOK,
-		"lockBookPage.html",
+		"uploadBookPage.html",
 		gin.H{
-			"title": "Lock Book Page",
+			"title": "Upload Book Page",
 		},
 	)
 }

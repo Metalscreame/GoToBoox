@@ -80,12 +80,6 @@
 
                 <h4 class="card-title mt-3 text-left">Donate people a book</h4>
                 <button type="submit" id="donateButton" class="btn btn-dark">Donate</button>
-                <script !src="">
-                    $('#donateButton').on('click', function (e) {
-                    var xhr = new XMLHttpRequest();
-                    xhr.send();
-                    window.location.href = "/login";
-                });</script>
 
                 <h2 class="card-title mt-5 text-left"></h2>
                 <h2 class="card-title mt-5 text-left"></h2>
@@ -99,8 +93,12 @@
                 <h2 class="card-title mt-5 text-left"></h2>
 
                 <script>
-                    $('#exchangeBookButton').on('clock', function (e) {
-                        window.location.href = "/lockPage";
+                    $('#exchangeBookButton').on('click', function (e) {
+                        var xhr = new XMLHttpRequest();
+                        var email = document.getElementById("emailInput").value;
+                        xhr.open('GET', '/api/v1/updateBookStatus/'+email,false);
+                        xhr.setRequestHeader("Content-Type", "application/json");
+                        window.location.href = "/usersPofile";
                     });
                 </script>
                 <div id="returnBookRender">
@@ -177,6 +175,11 @@
     $('#exchangeBookButton').on('click', function (e) {
         window.location.href = "/login";
     });
+
+    $('#donateButton').on('click',function (e) {
+        window.location.href = "/uploadPage/0";
+    });
+
 
 </script>
 

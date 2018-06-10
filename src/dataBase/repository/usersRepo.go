@@ -8,4 +8,6 @@ type UserRepository interface {
 	//GetUsersBookByEmail(email string)(ub UsersBooks,err error)
 	GetUsersEmailToNotifyNewBook()(u []User, err error)
 	GetUsersEmailToNotifyReserved()(u []User, err error)
+	SetUsersBookAsNullByBookId(id int)(err error)
+	GetAllUsers()(u []User,err error)
 }

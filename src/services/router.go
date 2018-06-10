@@ -90,18 +90,17 @@ func initUserProfileRoutes() {
 	router.GET("/userProfile", UserProfileHandler)
 
 	//Shows the lock page
-	router.GET("/lockPage",ShowLockBookPage)
+	router.GET("/uploadPage/:book_id", ShowUploadBookPage)
 
 	// Show the user's profile page
 	// Ensure that the user is logged in by using the middleware
-
 	router.GET("/userProfilePage", midlwares.EnsureLoggedIn(), service.ShowUsersProfilePage)
 
 
 }
 
 func initBooksRoutes() {
-	bookService := BookService{postgres.NewBooksRepository(dataBase.Connection)}
+	bookService := NewBookService(postgres.NewBooksRepository(dataBase.Connection),postgres.NewPostgresUsersRepo(dataBase.Connection))
 	//get all books in certain category
 	router.GET("categories/:cat_id/books", bookService.getBooks)
 	//get all books
@@ -112,8 +111,8 @@ func initBooksRoutes() {
 
 	router.GET("/api/v1/book/:book_id", bookService.getBook)
 	router.GET("/book/:book_id", ShowBook)
-	router.POST("/api/v1/insertNewBook", bookService.insertNewBook)
-
+	router.POST("/api/v1/insertNewBook/:book_id", bookService.insertNewBook)
+	router.GET("/api/v1/updateBookStatus/:email",bookService.updateBookStatusToTaken)
 
 }
 

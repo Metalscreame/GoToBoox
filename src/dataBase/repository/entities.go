@@ -7,6 +7,12 @@ type Categories struct {
 	Title string
 }
 
+const (
+	BookStateFree = "FREE"
+	BookStateReserved = "RESERVED"
+	BookStateTaken = "TAKEN"
+)
+
 type Book struct {
 	ID             int     `json:"id,omitempty"`
 	Title          string  `json:"title"`

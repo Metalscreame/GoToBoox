@@ -10,11 +10,19 @@ import (
 	"log"
 	"encoding/base64"
 	"strings"
-
+	"time"
 )
 
 type BookService struct {
 	BooksRepo repository.BookRepository
+	UsersRepo repository.UserRepository
+}
+
+func NewBookService(repository repository.BookRepository, usersRepo repository.UserRepository) *BookService {
+	return &BookService{
+		BooksRepo: repository,
+		UsersRepo:usersRepo,
+	}
 }
 
 func (b *BookService) FiveMostPop(c *gin.Context) {
@@ -145,10 +153,70 @@ func (b *BookService) insertNewBook(c *gin.Context) {
 		return
 	}
 
+	reservedBookId, err := strconv.Atoi(c.Param("book_id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	if reservedBookId != 0{
+		b.BooksRepo.UpdateBookState(reservedBookId,repository.BookStateReserved)
+	}
+
 	if err := b.BooksRepo.InsertNewBook(book); err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
 		return
 	}
 	go NotifyAllNewBook(book.Title,book.Description)
+	go b.ReservedTimer(reservedBookId)
+	return
+}
+
+func(b *BookService) updateBookStatusToTaken(c *gin.Context) {
+	email := c.Param("email")
+	user,err:=b.UsersRepo.GetUserByEmail(email)
+	if err!=nil{
+		log.Println(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err=b.BooksRepo.UpdateBookState(user.Book.ID,repository.BookStateTaken)
+	if err != nil{
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"status": "ok"})
+	return
+}
+
+const preReservedTimeAllowedSecs = 1000
+
+//PreReservedTimer is a funtion that changes the status of a book to free if user didnt propose book to exchange
+//must be started from "go PreReservedTimer"
+func (b * BookService)ReservedTimer(bookId int){
+	if bookId!=0{
+		time.Sleep(preReservedTimeAllowedSecs*time.Minute)
+		book,err:=b.BooksRepo.GetByID(bookId)
+		if err!=nil{
+			log.Println(err)
+			return
+		}
+
+		if book.State == repository.BookStateReserved{
+			err = b.BooksRepo.UpdateBookState(bookId,repository.BookStateFree)
+			if err!=nil{
+				log.Println(err)
+				return
+			}
+			err=b.UsersRepo.SetUsersBookAsNullByBookId(bookId)
+			if err!=nil{
+				log.Println(err)
+				return
+			}
+			return
+		}
+	}
+	return
 }
