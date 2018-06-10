@@ -50,11 +50,11 @@
                 <form method="POST" action="#" enctype="multipart/form-data" >
 
                     <div class="form-group">
-                        <div class="input-group input-file" name="Fichier1" id="fileChooser">
+                        <div class="input-group input-file" name="Fichier1">
 			                <span class="input-group-btn">
         		                <button class="btn btn-default btn-choose" type="button">Choose</button>
     		                </span>
-                            <input type="text" class="form-control" placeholder='Choose a file...' />
+                            <input type="text" class="form-control" id="fileChooser" placeholder='Choose a file...' />
                             <span class="input-group-btn">
        			             <button class="btn btn-warning btn-light" type="button">Reset</button>
     	                	</span>
@@ -63,7 +63,38 @@
                 </form>
             </div>
             <div class="form-group">
+                <div>
+                    <h4>Documents</h4>
+                    <div class="input-group">
+                <span class="input-group-btn">
+                    <span class="btn btn-primary btn-file">
+                        Browse&hellip; <input type="file" id="fileInpt2" single>
+                    </span>
+                </span>
+                        <input type="text" class="form-control"  readonly>
+                    </div>
+                </div>
+
+                <input type="file" id="fileInpt3" single>
             </div>
+            {{/*<script>*/}}
+                {{/*$(document).on('change', '.btn-file :file', function() {*/}}
+                    {{/*var input = $(this),*/}}
+                            {{/*numFiles = input.get(0).files ? input.get(0).files.length : 1,*/}}
+                            {{/*label = input.val().replace(/\\/g, '/').replace(/.*\//, '');*/}}
+                    {{/*input.trigger('fileselect', [numFiles, label]);*/}}
+                {{/*});*/}}
+                {{/*$(document).ready( function() {*/}}
+                    {{/*$('.btn-file :file').on('fileselect', function(event, numFiles, label) {*/}}
+                        {{/*var input = $(this).parents('.input-group').find(':text'), log = numFiles > 1 ? numFiles + ' files selected' : label;*/}}
+                        {{/*if( input.length ) {*/}}
+                            {{/*input.val(log);*/}}
+                        {{/*} else {*/}}
+                            {{/*if( log ) alert(log);*/}}
+                        {{/*}*/}}
+                    {{/*});*/}}
+                {{/*});*/}}
+            {{/*</script>*/}}
             <div class="form-group">
             </div>
             <div class="form-group">
@@ -77,7 +108,7 @@
                     $(".input-file").before(
                             function() {
                                 if ( ! $(this).prev().hasClass('input-ghost') ) {
-                                    var element = $("<input type='file' class='input-ghost' style='visibility:hidden; height:0'>");
+                                    var element = $("<input type='file' class='input-ghost' id='fileInpt1' style='visibility:hidden; height:0'>");
                                     element.attr("name",$(this).attr("name"));
                                     element.change(function(){
                                         element.next(element).find('input').val((element.val()).split('\\').pop());
@@ -109,7 +140,8 @@
 
 <script>
     $('#submitBtn').on('click', function (e) {
-        var file = $("#fileChooser").files[0]; //this is the input where I can choose the file
+        var file = document.getElementById("fileInpt1").files[0]; //this is the input where I can choose the file
+        alert(file);
         var title = $("#titleText").val();
         if(title==""){
             alert("Title cant be empty");
@@ -120,11 +152,13 @@
             alert("Description cant be empty");
             return;
         }
-
-        //deprecated for now
-        // var formData = new FormData();
-        // formData.append('file', file);
-
+        // var reader = new FileReader();
+        // var fileBase64 =  reader.readAsDataURL(file);
+        //
+        // if(fileBase64==""){
+        //     alert("You must upload a picture first");
+        //     return;
+        // }
         function getBase64(file) {
             var reader = new FileReader();
             reader.readAsDataURL(file);
@@ -134,16 +168,11 @@
             reader.onerror = function (error) {
                 console.log('Error: ', error);
             };
-            return reader.result;
-        }
-        var fileBase64=getBase64(file); // prints the base64 string
-        if(fileBase64==""){
-            alert("You must upload a picture first");
-            return;
         }
 
+        var fileBase64 = getBase64(file);
+        alert(fileBase64);
         var xhr = new XMLHttpRequest();
-        alert("post")
         xhr.open('POST', '/api/v1/insertNewBook',false);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onload = function () {
@@ -152,14 +181,14 @@
         xhr.onreadystatechange = function () {
             if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
                 alert("Success!");
-                window.location.href = "/userProfile";
+                window.location.href = "/";
             }
         };
 
         var data = JSON.stringify({
             "title": title,
             "description": descr,
-            "image":fileBase64
+            "base_64_img":fileBase64
         });
         xhr.send(data);
     });

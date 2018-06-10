@@ -109,7 +109,7 @@ func initBooksRoutes() {
 
 	router.GET("/api/v1/book/:book_id", bookService.getBook)
 	router.GET("/book/:book_id", ShowBook)
-	router.GET("/api/v1/insertNewBook", bookService.insertNewBook)
+	router.POST("/api/v1/insertNewBook", bookService.insertNewBook)
 
 
 }

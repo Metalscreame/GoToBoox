@@ -15,6 +15,7 @@ type Book struct {
 	EvaluateNumber int     `json:"-"`
 	State          string  `json:"state,omitempty"`
 	Image          []byte  `json:"image,omitempty"`
+	base64Img		string `json:"base_64_img"`
 }
 
 type User struct {
