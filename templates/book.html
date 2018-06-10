@@ -3,13 +3,72 @@
 <body>
 {{template "nav.tmpl.html"}}
 
-<ul id="BookDescription"></ul>
+<!-- Web Fonts-->
+<link href="https://fonts.googleapis.com/css?family=Pacifico%7CSource+Sans+Pro:200,200i,300,300i,400,400i,600,600i,700,700i,900,900i&amp;amp;subset=latin-ext,vietnamese" rel="stylesheet">
+
+<!-- Vendor CSS-->
+<link rel="stylesheet" type="text/css" href="/static/libs/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="/static/libs/font-awesome/css/font-awesome.css">
 
 
+<div class="div-box mb mt">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="single-product-photo">
+                    <div id="sync1" class="owl-carousel owl-template">
+                        <div class="item">
+                            <figure id="image"><img src="/static/images/Fantasy.jpg" width="280" height="280"/></figure>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-7">
+                <div class="single-product-content">
+                    <div class="summary-product entry-summary">
+                        <h2 id="title"></h2>
+
+                        <div class="description" id="description">
+                            <p></p>
+                        </div>
+
+                        <button type="submit" class="single_add_to_cart_button button alt">I want to BooX it!</button>
+                        <div class="add-to-wishlist">
+                            <div class="add-button show"> <p><a href="#" class="add_to_wishlist"><i class="fa fa-heart-o"></i> Add to Wishlist </a>  </p></div>
+                        </div>
+
+                        <div class="product_meta"><span class="product-stock-status-wrapper">
+                            <p> <label >State: </label> <span class="product-stock-status" id="state"></span></span><span class="posted_in">
+                            <p><label>Categories: </label><a href="#"> Book that wants to become your new best friend </a> </p> </span><span class="tagged_as">
+                            <p>  <label>Tag: </label><a href="#"> Bookcrossing/</a><a href="#">GoToBooX/</a><a href="#">Books</a> </p> </span></div>
+                        <span class="popularity">
+                            <p>  <label>BooXMark: </label><a href="#" id="popularity"> </a> </p></span></div>
+                        <div class="social-share-wrap">
+                            <label><i class="fa fa-share-alt"></i>Share:</label>
+                            <ul class="social-share">
+                                <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                                <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+                                <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+                                <li><a href="#"><i class="fa fa-tumblr"></i></a></li>
+                                <li><a href="#"><i class="fa fa-pinterest"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
 
+    var url_string = window.location.href
+    var len = url_string.length
+    var param = url_string[len-1]
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/api/v1/book/1', false);
+    xhr.open('GET', '/api/v1/book/' +param, false);
     xhr.send();
     if (xhr.status != 200) {
         alert("error")
@@ -18,11 +77,16 @@
         var BookDescription = document.getElementById('BookDescription');
         var data = JSON.parse(xhr.responseText)
         console.log(data)
-        var div = document.createElement('div');
-        div.innerHTML = "<strong>Book Title - </strong>" + data.data['Book']['bookTitle'] + "<strong><p>Book description - </strong>" + data.data['Book']['description'];
-        document.body.appendChild(div);
+        document.getElementById('title').innerHTML = "<div class='four'><h1>" + data.data['Book']['title'] + "</h1></div>";
+        document.getElementById('description').innerHTML = data.data['Book']['description'];
+        document.getElementById('state').innerHTML = data.data['Book']['state'];
+        document.getElementById('popularity').innerHTML = data.data['Book']['popularity'];
+        document.getElementById('image').innerHTML = data.data['Book']['image'];
     }
 </script>
-{{template "footer.tmpl.html"}}
+
 </body>
+{{template "footer.tmpl.html"}}
 </html>
+
+
