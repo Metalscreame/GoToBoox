@@ -1,0 +1,118 @@
+<html>
+{{template "header.tmpl.html"}}
+
+<style type='text/css'>
+    body
+    {
+        background-image:url("https://tabloid.informator.news/wp-content/uploads/sites/3/2017/11/123334.jpg");
+        background-size: cover;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+    }
+</style>
+
+<body >
+{{template "nav.tmpl.html"}}
+<link href="https://fonts.googleapis.com/css?family=Pacifico%7CSource+Sans+Pro:200,200i,300,300i,400,400i,600,600i,700,700i,900,900i&amp;amp;subset=latin-ext,vietnamese" rel="stylesheet">
+
+<!-- Vendor CSS-->
+<link rel="stylesheet" type="text/css" href="/static/libs/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="/static/libs/font-awesome/css/font-awesome.css">
+
+
+
+
+<div class="div-box mb mt">
+    <div class="foo">
+        <span class="letter" data-letter="T">T</span>
+        <span class="letter" data-letter="H">H</span>
+        <span class="letter" data-letter="A">A</span>
+        <span class="letter" data-letter="N">N</span>
+        <span class="letter" data-letter="K">K</span>
+        <span class="letter" data-letter="S">S</span>
+    </div>
+    <p align="center"> <strong> <font size="5" color="black" face="Arial"> for returning booXie to its family</font></strong></p>
+    <p align="center"> <strong><font size="4.5" color="black" face="Arial"> Please, choose which one: </font></strong></p>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="single-product-photo">
+                    <div id="sync1" class="owl-carousel owl-template">
+                        <div class="item">
+                            <ul class="list1a" id="takenBooks">
+
+                            </ul>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+
+
+
+<div class="col-md-7">
+    <div class="single-product-content">
+        <div class="summary-product entry-summary">
+            <h2 id="title"></h2>
+
+            <div class="description" id="description">
+                <p></p>
+            </div>
+
+
+            <div class="add-to-wishlist">
+                <div class="add-button show">
+                </div>
+            </div>
+
+            <div class="product_meta"><span class="product-stock-status-wrapper">
+            </span>
+        <div class="social-share-wrap">
+
+
+        </div>
+    </div>
+</div>
+        </div>
+    </div>
+</div>
+    </div>
+</div>
+
+
+
+
+
+
+<script>
+    var url_string = window.location.href;
+    var len = url_string.length;
+    var param = url_string[len-1];
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/api/v1/books/taken', false);
+    xhr.send();
+    if (xhr.status != 200) {
+        alert(xhr.status + ': ' + xhr.statusText);
+    } else {
+        var takenBooks = document.getElementById('takenBooks');
+        var data = JSON.parse(xhr.responseText);
+        var i = 0;
+        for (i; i < data.data['Book'].length; i++) {
+            console.log(data.data['Book'][i]['id']);
+           // alert(data.data['Book'][i]['id']);
+            var newLi = document.createElement('li');
+            newLi.innerHTML = "<a href='/api/v1/updateBookStatusReturn/" + data.data['Book'][i]['id'] + "/"+ param + "'>" + data.data['Book'][i]['title'] + "</a>";
+            takenBooks.appendChild(newLi)
+
+           // document.getElementById('takenBookList').innerHTML = "<a href='/api/v1/updateBookStatus/" + data.data['Book'][i]['id'] + "'>" + data.data['Book'][i]['title'] + "</a>" ;
+
+        }
+    }
+</script>
+
+</body>
+
+
+
+</html>
+{{template "footer.tmpl.html"}}
+

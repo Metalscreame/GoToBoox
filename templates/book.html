@@ -18,7 +18,8 @@
                 <div class="single-product-photo">
                     <div id="sync1" class="owl-carousel owl-template">
                         <div class="item">
-                            <figure id="image"><img src="/static/images/Fantasy.jpg" width="280" height="280"/></figure>
+                            <figure id="image"> </figure>
+
                         </div>
                     </div>
                 </div>
@@ -81,7 +82,7 @@
         document.getElementById('description').innerHTML = data.data['Book']['description'];
         document.getElementById('state').innerHTML = data.data['Book']['state'];
         document.getElementById('popularity').innerHTML = data.data['Book']['popularity'];
-        document.getElementById('image').innerHTML = data.data['Book']['image'];
+        document.getElementById('image').innerHTML = "<img src='data:image/jpg;base64," + data.data['Book']['image'] + " 'width=\"400\" height=\"400\"/>";
     }
 </script>
 

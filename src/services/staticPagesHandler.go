@@ -72,3 +72,13 @@ func ShowUploadBookPage(c *gin.Context) {
 		},
 	)
 }
+
+func ShowTakenBooksPage(c *gin.Context) {
+	c.HTML(
+		http.StatusOK,
+		"takenBooksPage.html",
+		gin.H{
+			"title": "Taken books",
+		},
+	)
+}
