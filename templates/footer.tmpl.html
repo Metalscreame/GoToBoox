@@ -19,6 +19,8 @@
         alert(xhr.status + ': ' + xhr.statusText);
     } else {
         var popularBooks = document.getElementById('books');
+        var users = document.getElementById('users');
+
         var data = JSON.parse(xhr.responseText);
         console.log(data.data);
         if (popularBooks) {
@@ -38,10 +40,15 @@
                 popularBooks.appendChild(newLi);
             }
         }
-
+        if (users) {
+            for (var i = 0; i < data.data['Users'].length; i++) {
+                var newLi = document.createElement('li');
+                newLi.innerHTML = "<p>" + data.data['Users'][i]['nickname'] + "</p>"
+                users.appendChild(newLi);
+            }
+        }
     }
 </script>
 
 </body>
-
 </html>
