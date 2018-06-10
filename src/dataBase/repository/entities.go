@@ -8,13 +8,14 @@ type Categories struct {
 }
 
 type Book struct {
-	ID             int     `json:"id"`
+	ID             int     `json:"id,omitempty"`
 	Title          string  `json:"title"`
 	Description    string  `json:"description"`
-	Popularity     float32 `json:"popularity"`
+	Popularity     float32 `json:"popularity,omitempty"`
 	EvaluateNumber int     `json:"-"`
-	State          string  `json:"state"`
-	Image          []byte  `json:"image"`
+	State          string  `json:"state,omitempty"`
+	Image          []byte  `json:"image,omitempty"`
+	Base64Img	    string `json:"base_64_img"`
 }
 
 type User struct {

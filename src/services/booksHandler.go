@@ -4,7 +4,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"strconv"
 	"net/http"
-	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
+	"github.com/metalscreame/GoToBoox/src/dataBase/postgres"
+	"github.com/metalscreame/GoToBoox/src/dataBase"
+	"log"
+	"encoding/base64"
+	"strings"
+
 )
 
 type BookService struct {
@@ -87,6 +92,21 @@ func (b *BookService) getBook(c *gin.Context) {
 }
 
 
+
+func BookHandler(c *gin.Context) {
+	type Data struct{
+
+		Book repository.Book
+	}
+
+	bookRepo := postgres.NewBooksRepository(dataBase.Connection)
+	books, _ := bookRepo.GetByID(2)
+
+	output := Data{books}
+	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": output})
+}
+
+
 /*func (b BookService) getBook(c *gin.Context) {
 	// Check if the bookID is valid
 	if bookID, err := strconv.Atoi(c.Param("book_id"));
@@ -109,3 +129,25 @@ func (b *BookService) getBook(c *gin.Context) {
 	}
 }*/
 
+func (b *BookService) insertNewBook(c *gin.Context) {
+	var book repository.Book
+	var err error
+
+	if err = c.BindJSON(&book); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"status": "bad request"})
+		return
+	}
+	book.Base64Img =book.Base64Img[strings.IndexByte(book.Base64Img, ',')+1:]
+	if  book.Image, err =base64.StdEncoding.DecodeString(book.Base64Img); err!=nil{
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
+		return
+	}
+
+	if err := b.BooksRepo.InsertNewBook(book); err != nil {
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
+		return
+	}
+	go NotifyAllNewBook(book.Title,book.Description)
+}

@@ -1,0 +1,188 @@
+<html>
+{{template "header.tmpl.html"}}
+<body>
+{{template "nav.tmpl.html"}}
+
+
+<link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="/static/vendor/bootstrap/js/bootstrap.min.js"></script>
+<script src="/static/vendor/jquery/jquery.min.js"></script>
+<h1>&#160</h1>
+
+<h2>&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160 You're book proposition </h2>
+
+<div class="wrapper">
+
+    <div class="form-group">
+    </div>
+    <div class="form-group">
+    </div>
+    <div class="form-group">
+    </div>
+    <div class="form-group">
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-1 col-md-offset-1">
+        </div>
+        <div class="col-md-6 col-md-offset-6">
+            <div class="form-group">
+                <label for="exampleFormControlTextarea1">Title of new book</label>
+                <textarea class="form-control" id="titleText"  rows="1"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="exampleFormControlTextarea1">Enter the description of a book</label>
+                <textarea class="form-control" id="descriptionText"  rows="12"></textarea>
+            </div>
+            <div class="form-group">
+                <button class="btn btn btn-dark" id="submitBtn" type="button">&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160Save this and reserve chosen book&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160</button>
+                <label for="exampleFormControlTextarea1">&#160&#160&#160&#160or you can... &#160&#160&#160&#160</label>
+                <button class="btn btn btn-dark" id="returnPreviosly" type="button">Return previously taken book</button>
+            </div>
+
+        </div>
+        <div class="col-md-3 col-md-offset-6">
+
+            <div class="form-group">
+                <label for="exampleFormControlTextarea1">Upload a picture for the new book</label>
+                <form method="POST" action="#" enctype="multipart/form-data" >
+
+                    <div class="form-group">
+                        <div class="input-group input-file" name="Fichier1">
+			                <span class="input-group-btn">
+        		                <button class="btn btn-default btn-choose" type="button">Choose</button>
+    		                </span>
+                            <input type="text" class="form-control" id="fileChooser" placeholder='Choose a file...' />
+                            <span class="input-group-btn">
+       			             <button class="btn btn-warning btn-light" type="button">Reset</button>
+    	                	</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="form-group">
+            </div>
+
+            <div class="form-group">
+            </div>
+            <div class="form-group">
+            </div>
+            <div class="form-group">
+            </div>
+
+
+            <script>
+                function bs_input_file() {
+                    $(".input-file").before(
+                            function() {
+                                if ( ! $(this).prev().hasClass('input-ghost') ) {
+                                    var element = $("<input type='file' class='input-ghost' id='fileInpt1' style='visibility:hidden; height:0'>");
+                                    element.attr("name",$(this).attr("name"));
+                                    element.change(function(){
+                                        element.next(element).find('input').val((element.val()).split('\\').pop());
+                                    });
+                                    $(this).find("button.btn-choose").click(function(){
+                                        element.click();
+                                    });
+                                    $(this).find("button.btn-reset").click(function(){
+                                        element.val(null);
+                                        $(this).parents(".input-file").find('input').val('');
+                                    });
+                                    $(this).find('input').css("cursor","pointer");
+                                    $(this).find('input').mousedown(function() {
+                                        $(this).parents('.input-file').prev().click();
+                                        return false;
+                                    });
+                                    return element;
+                                }
+                            }
+                    );
+                }
+                $(function() {
+                    bs_input_file();
+                });
+            </script>
+        </div>
+        </div>
+</div>
+
+<script>
+    $('#submitBtn').on('click', function (e) {
+        var file = document.getElementById("fileInpt1").files[0]; //this is the input where I can choose the file
+        alert(file);
+        var title = $("#titleText").val();
+        if(title==""){
+            alert("Title cant be empty");
+            return;
+        }
+        var descr = $("#descriptionText").val();
+        if(descr==""){
+            alert("Description cant be empty");
+            return;
+        }
+        // var reader = new FileReader();
+        // var fileBase64 =  reader.readAsDataURL(file);
+        //
+        // if(fileBase64==""){
+        //     alert("You must upload a picture first");
+        //     return;
+        // }
+        // function getBase64(file) {
+        //     var reader = new FileReader();
+        //     reader.readAsDataURL(file);
+        //     reader.onload = function () {
+        //         console.log(reader.result);
+        //         alert(reader.result);
+        //     };
+        //     reader.onerror = function (error) {
+        //         console.log('Error: ', error);
+        //     };
+        // }
+
+        var fileBase64;
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+
+
+
+        // var fileBase64 = getBase64(file);
+        // alert(fileBase64);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/api/v1/insertNewBook',false);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onload = function () {
+            //TODO show the progress
+        };
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
+                alert("Success!");
+                window.location.href = "/";
+            }
+        };
+
+
+
+        reader.onload = function () {
+            fileBase64=reader.result;
+            // alert(fileBase64);
+            console.log(reader.result);
+            var data = JSON.stringify({
+                "title": title,
+                "description": descr,
+                "base_64_img": fileBase64.toString()
+            });
+            xhr.send(data);
+        };
+
+    });
+
+
+</script>
+
+
+<!--container end.//-->
+{{template "footer.tmpl.html"}}
+</body>
+</html>
