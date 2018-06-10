@@ -15,7 +15,9 @@ func NewBooksRepository(Db *sql.DB) repository.BookRepository {
 	return &booksRepositoryPG{Db}
 }
 
-
+const(
+	takenState = "TAKEN"
+)
 
 //var Db = repository.OpenDb()
 //GetByCategory iterates over the DB using the SQL SELECT Request and return selected book by its ID
@@ -39,20 +41,36 @@ func (p booksRepositoryPG) GetByID(bookID int) (books repository.Book, err error
 		return
 }
 
+func (p booksRepositoryPG) GetTakenBooks(bookID int) (books repository.Book, err error) {
 
+	row := p.Db.QueryRow("SELECT title, description, image  FROM gotoboox.books where state = $1", takenState)
+	if err != nil {
+		log.Printf("Get %v", err)
 
+		return
+	}
+	err = row.Scan(&books.Title, &books.Description, &books.Image)
+
+	if err != nil {
+		log.Printf("Get %v", err)
+		return
+	}
+	//just for checking
+	//fmt.Printf("%s\n%s\n%f\n", books.Title, books.Description, books.Image)
+	return
+}
 
 //GetAll iterates over the DB using the SQL SELECT Request and return all books from DB
-func (p booksRepositoryPG) GetAll() (books []repository.BookDescription, err error) {
-	rows, err := p.Db.Query("SELECT a.title, a.description, a.popularity, b.title FROM gotoboox.books a, gotoboox.categories b where a.categories_id=b.id")
+func (p booksRepositoryPG) GetAll() (books []repository.Book, err error) {
+	rows, err := p.Db.Query("SELECT title, description, state  FROM gotoboox.books ")
 	if err != nil {
 		log.Printf("Get %v", err)
 	}
 	defer rows.Close()
-	var book repository.BookDescription
+	var book repository.Book
 	for rows.Next() {
 
-		if err := rows.Scan(&book.BookTitle, &book.Description, &book.Popularity, &book.CategoryTitle);
+		if err := rows.Scan(&book.Title, &book.Description, &book.State);
 			err != nil {
 			log.Printf("Get %v", err)
 		}
@@ -72,8 +90,9 @@ func (p booksRepositoryPG) GetByCategory(categoryID int) (books []repository.Boo
 		log.Printf("Get %v", err)
 	}
 	defer rows.Close()
+	var book repository.Book
 	for rows.Next() {
-		var book repository.Book
+
 		if err := rows.Scan(&book.Title);
 			err != nil {
 			log.Printf("Get %v", err)
