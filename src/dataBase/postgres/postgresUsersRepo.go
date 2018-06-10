@@ -91,7 +91,7 @@ func (p * postgresUsersRepository)SetUsersBookAsNullByBookId(id int)(err error){
 
 func (p * postgresUsersRepository) GetAllUsers()(u []repository.User,err error){
 	rows,err := p.Db.Query(
-		"SELECT id,email,nickname,exchanges_number FROM gotoboox.users")
+		"SELECT id,email,nickname,exchanges_number FROM gotoboox.users LIMIT 2000")
 	i:=0
 	for rows.Next(){
 		err = rows.Scan(&u[i].ID,&u[i].Email,&u[i].Nickname,&u[i].ExchangesNumber)

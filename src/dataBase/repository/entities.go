@@ -11,6 +11,7 @@ const (
 	BookStateFree = "FREE"
 	BookStateReserved = "RESERVED"
 	BookStateTaken = "TAKEN"
+	BookStateReturningToShelf = "RETURNING"
 )
 
 type Book struct {
