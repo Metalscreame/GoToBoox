@@ -132,6 +132,6 @@ func (p booksRepositoryPG) InsertNewBook(b repository.Book) (err error){
 
 func (p booksRepositoryPG) UpdateBookState(bookId int,state string) (err error) {
 	_, err = p.Db.Query("UPDATE gotoboox.books set state=$1 where id=$2",
-		bookId,state)
+		state,bookId)
 	return
 }

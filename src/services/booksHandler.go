@@ -169,7 +169,7 @@ func (b *BookService) insertNewBook(c *gin.Context) {
 	}
 	go NotifyAllNewBook(book.Title,book.Description)
 	go b.ReservedTimer(reservedBookId)
-	return 
+	return
 }
 
 func(b *BookService) updateBookStatusToTaken(c *gin.Context) {
