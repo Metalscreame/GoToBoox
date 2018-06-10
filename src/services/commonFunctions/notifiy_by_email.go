@@ -81,9 +81,9 @@ func prepareMsgNewBook(bookTitle, bookDescription string) string {
 	b.WriteString("Hello from GoToBooX!\nTWe have a new book at GoToBooX for you!\n")
 	b.WriteString(bookTitle)
 	b.WriteString("n\n\n")
-	b.WriteString("Descrition:\n\n")
+	b.WriteString("Description\n\n")
 	b.WriteString(bookDescription)
-	b.WriteString("\n\nHave a nice day! Dont forget to read the BooX :)")
+	b.WriteString("\n\nHave a nice day! Don't forget to read the BooX :)")
 	return b.String()
 }
 
@@ -92,8 +92,8 @@ func prepareMsgBookReserved(bookTitle, bookDescription string) string {
 	b.WriteString("Hello from GoToBooX!\nThis book has been reserved!\n")
 	b.WriteString(bookTitle)
 	b.WriteString("n\n\n")
-	b.WriteString("Descrition:\n\n")
+	b.WriteString("Description\n\n")
 	b.WriteString(bookDescription)
-	b.WriteString("\n\nHave a nice day! Dont forget to read the BooX :)")
+	b.WriteString("\n\nHave a nice day! Don't forget to read the BooX :)")
 	return b.String()
 }
