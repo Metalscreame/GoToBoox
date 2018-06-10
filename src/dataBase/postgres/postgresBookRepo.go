@@ -136,7 +136,7 @@ func (p * booksRepositoryPG) UpdateBookState(bookId int,state string) (err error
 }
 
 func (p *booksRepositoryPG)	UpdateBookStateAndUsersBookIdByUserEmail(email string, state string, bookId int) (err error)  {
-	_, err = p.Db.Query("UPDATE gotoboox.books as b,gotoboox.users as u set  b.state=$1, u.book_id=$2 where u.email=$3 AND b.id=$4",
+	_, err = p.Db.Query("UPDATE gotoboox.books as b,gotoboox.users as u set  b.state=$1, u.book_id=$2, u.has_book_for_exchange=TRUE where u.email=$3 AND b.id=$4",
 		state,bookId,email,bookId)
 	return
 }

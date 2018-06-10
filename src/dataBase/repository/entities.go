@@ -8,9 +8,9 @@ type Categories struct {
 }
 
 const (
-	BookStateFree = "FREE"
-	BookStateReserved = "RESERVED"
-	BookStateTaken = "TAKEN"
+	BookStateFree             = "FREE"
+	BookStateReserved         = "RESERVED"
+	BookStateTaken            = "TAKEN"
 	BookStateReturningToShelf = "RETURNING"
 )
 
@@ -22,7 +22,7 @@ type Book struct {
 	EvaluateNumber int     `json:"-"`
 	State          string  `json:"state,omitempty"`
 	Image          []byte  `json:"image,omitempty"`
-	Base64Img	    string `json:"base_64_img"`
+	Base64Img      string  `json:"base_64_img"`
 }
 
 type User struct {
@@ -37,6 +37,7 @@ type User struct {
 	NotificationGetBewBooks         bool      `json:"notification_get_new_books"`
 	NotificationGetWhenBookReserved bool      `json:"notification_get_when_book_reserved"`
 	RegisterDate                    time.Time `json:"-"`
+	Returning_book_id               int       `json:"-"`
 }
 
 type Authors struct {

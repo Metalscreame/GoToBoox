@@ -96,9 +96,10 @@
                     $('#exchangeBookButton').on('click', function (e) {
                         var xhr = new XMLHttpRequest();
                         var email = document.getElementById("emailInput").value;
-                        xhr.open('GET', '/api/v1/updateBookStatus/'+email,false);
+                        xhr.open('GET', '/api/v1/makeBookCross',false);
                         xhr.setRequestHeader("Content-Type", "application/json");
-                        window.location.href = "/usersPofile";
+                        xhr.send();
+                        window.location.href = "/";
                     });
                 </script>
                 <div id="returnBookRender">
@@ -172,12 +173,12 @@
     // $('#goBackButton').on('click', function (e) {
     //     window.location.href =window.location.protocol + "//" + window.location.host + "/" ;
     // });
-    $('#exchangeBookButton').on('click', function (e) {
-        window.location.href = "/login";
-    });
+
 
     $('#donateButton').on('click',function (e) {
-        window.location.href = "/uploadPage/0";
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', "/uploadPage/0", false);
+        xhr.send();
     });
 
 

@@ -111,10 +111,10 @@ func initBooksRoutes() {
 	router.GET("/api/v1/book/:book_id", bookService.getBook)
 	router.GET("/book/:book_id", ShowBook)
 	router.POST("/api/v1/insertNewBook/:book_id", midlwares.EnsureLoggedIn(),bookService.insertNewBook)
-	router.GET("/api/v1/updateBookStatus/:email", bookService.UpdateBookStatusToTaken)
+	router.GET("/api/v1/updateBookStatus/:book_id", bookService.UpdateBookStatusToReturningFromTaken)
 	router.GET("/api/v1/updateBookStatusReturn/:book_id/:reserved_book_id", bookService.UpdateBookStatusToReturning)
-
-}
+	router.GET("/api/v1/makeBookCross",bookService.ExchangeBook)
+	}
 
 func initCategoriesRoutes() {
 	categoriesService := NewCategoriesService(postgres.CategoryRepoPq{})
