@@ -90,7 +90,7 @@ func initUserProfileRoutes() {
 	router.GET("/userProfile", UserProfileHandler)
 
 	//Shows the lock page
-	router.GET("/lockPage",ShowLockBookPage)
+	router.GET("/uploadPage/:book_id", ShowUploadBookPage)
 
 	// Show the user's profile page
 	// Ensure that the user is logged in by using the middleware
