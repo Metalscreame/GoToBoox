@@ -1,0 +1,36 @@
+Recording of the log file has started...
+Get read tcp 192.168.1.224:19784->54.247.111.19:5432: wsarecv: An existing connection was forcibly closed by the remote host.
+http: panic serving [::1]:21492: runtime error: invalid memory address or nil pointer dereference
+goroutine 90 [running]:
+net/http.(*conn).serve.func1(0xc042054820)
+	C:/Go/src/net/http/server.go:1726 +0xd7
+panic(0x99aa80, 0xd677d0)
+	C:/Go/src/runtime/panic.go:502 +0x237
+database/sql.(*Rows).close(0x0, 0x0, 0x0, 0x0, 0x0)
+	C:/Go/src/database/sql/sql.go:2907 +0x72
+database/sql.(*Rows).Close(0x0, 0x1, 0x1)
+	C:/Go/src/database/sql/sql.go:2903 +0x3a
+panic(0x99aa80, 0xd677d0)
+	C:/Go/src/runtime/panic.go:502 +0x237
+database/sql.(*Rows).Next(0x0, 0xc04211a070)
+	C:/Go/src/database/sql/sql.go:2599 +0x37
+github.com/metalscreame/GoToBoox/src/dataBase/postgres.booksRepositoryPG.GetAll(0xc0421d6320, 0x0, 0x0, 0x0, 0xaca640, 0xc042094280)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/src/dataBase/postgres/postgresBookRepo.go:71 +0x157
+github.com/metalscreame/GoToBoox/src/services.IndexHandler(0xc0420a8580)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/src/services/index.go:19 +0x7f
+github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin.(*Context).Next(0xc0420a8580)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin/context.go:108 +0x4a
+github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin.LoggerWithWriter.func1(0xc0420a8580)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin/logger.go:83 +0xd3
+github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin.(*Context).Next(0xc0420a8580)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin/context.go:108 +0x4a
+github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin.(*Engine).handleHTTPRequest(0xc042093440, 0xc0420a8580)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin/gin.go:359 +0x58d
+github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin.(*Engine).ServeHTTP(0xc042093440, 0xace440, 0xc04226c460, 0xc04232a600)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin/gin.go:326 +0x15a
+net/http.serverHandler.ServeHTTP(0xc0421a52b0, 0xace440, 0xc04226c460, 0xc04232a600)
+	C:/Go/src/net/http/server.go:2694 +0xc3
+net/http.(*conn).serve(0xc042054820, 0xaceb00, 0xc042058300)
+	C:/Go/src/net/http/server.go:1830 +0x658
+created by net/http.(*Server).Serve
+	C:/Go/src/net/http/server.go:2795 +0x282

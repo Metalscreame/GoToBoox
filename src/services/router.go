@@ -34,10 +34,6 @@ func Start() {
 		c.HTML(http.StatusOK, "index.tmpl.html", nil)
 	})
 
-	router.GET("/location", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "location.html", nil)
-	})
-
 	router.GET(apiRoute, IndexHandler)
 	initUserProfileRoutes()
 	initBooksRoutes()
