@@ -175,7 +175,17 @@ func (b *BookService) insertNewBook(c *gin.Context) {
 		return
 	}
 	if reservedBookId != 0{
-		b.BooksRepo.UpdateBookState(reservedBookId,repository.BookStateReserved)
+		emailCookie, err := c.Request.Cookie("email")
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"status": "bad request"})
+			return
+		}
+		err=b.BooksRepo.UpdateBookStateAndUsersBookIdByUserEmail(emailCookie.String(),repository.BookStateReserved, reservedBookId)
+		if err != nil{
+			log.Println(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
+			return
+		}
 	}
 
 	if err := b.BooksRepo.InsertNewBook(book); err != nil {
@@ -188,16 +198,16 @@ func (b *BookService) insertNewBook(c *gin.Context) {
 	return
 }
 
-func(b *BookService) updateBookStatusToTaken(c *gin.Context) {
-	email := c.Param("email")
-	user,err:=b.UsersRepo.GetUserByEmail(email)
-	if err!=nil{
-		log.Println(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+//UpdateBookStatusToReturningFromTaken is a handler func that sets up state from taken to returned if user want this book
+func(b *BookService) UpdateBookStatusToReturningFromTaken(c *gin.Context) {
+
+	bookID,err := strconv.Atoi(c.Param("book_id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error":"bad request"})
 		return
 	}
 
-	err=b.BooksRepo.UpdateBookState(user.Book.ID,repository.BookStateTaken)
+	err=b.BooksRepo.UpdateBookState(bookID,repository.BookStateReturningToShelf)
 	if err != nil{
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
@@ -206,6 +216,99 @@ func(b *BookService) updateBookStatusToTaken(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "ok"})
 	return
 }
+
+//ExchangeBook is a handler func that make a bookcross feature, sets all the values and clears everything
+func (b *BookService) ExchangeBook(c * gin.Context)  {
+	emailCookie, err := c.Request.Cookie("email")
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "bad request"})
+		return
+	}
+	email := emailCookie.String()
+
+	err=b.UsersRepo.MakeBookCross(email)
+	if err != nil{
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
+		return
+	}
+
+	user,err:=b.UsersRepo.GetUserByEmail(email)
+	if err!=nil{
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
+		return
+	}
+
+	if user.Returning_book_id>0{
+		err=b.UsersRepo.ClearReturningBookIdByEmail(email)
+		if err!=nil{
+			log.Println(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
+			return
+		}
+		err=b.BooksRepo.UpdateBookState(user.Returning_book_id,repository.BookStateFree)
+		if err!=nil{
+			log.Println(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
+			return
+		}
+	}
+	return
+}
+
+//UpdateBookStatusToReturning is a handler func that handled route of taken books that wants to be back, when user
+//reserves s new book but have previoysly registered at the system one
+func(b *BookService) UpdateBookStatusToReturning(c *gin.Context) {
+	takenBookId,err := strconv.Atoi(c.Param("book_id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "bad request"})
+		return
+	}
+	reservedBookId,err := strconv.Atoi(c.Param("reserved_book_id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "bad request"})
+		return
+	}
+
+	emailCookie, err := c.Request.Cookie("email")
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "bad request"})
+		return
+	}
+	email:=emailCookie.String()
+
+	err=b.BooksRepo.UpdateBookStateAndUsersBookIdByUserEmail(email,repository.BookStateReserved, reservedBookId)
+	if err != nil{
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
+		return
+	}
+
+	err=b.BooksRepo.UpdateBookState(takenBookId,repository.BookStateReturningToShelf)
+	if err != nil{
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
+		return
+	}
+	err= b.UsersRepo.SetReturningBookIdByEmail(takenBookId,email)
+	if err != nil{
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"status": "ok"})
+	book,err:=b.BooksRepo.GetByID(reservedBookId)
+	if err != nil{
+		log.Println(err)
+		return
+	}
+	go b.ReservedTimer(reservedBookId)
+	go NofityAllBookReserved(book.Title,book.Description)
+	return
+}
+
 
 const preReservedTimeAllowedSecs = 1000
 

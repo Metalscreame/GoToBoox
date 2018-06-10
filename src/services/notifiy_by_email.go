@@ -7,9 +7,55 @@ import (
 	"gopkg.in/gomail.v2"
 	"crypto/tls"
 	"bytes"
+	"time"
+	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
 )
 
 var d = gomail.NewDialer("smtp.gmail.com", 587, "GoToBooX", "hjvfhekbn")
+
+//DailyEmailNotifications is a functions that sends emails every 24 hours with lists of
+func DailyEmailNotifications() {
+	s:=NewBookService(postgres.NewBooksRepository(dataBase.Connection),postgres.NewPostgresUsersRepo(dataBase.Connection))
+	for true{
+		time.Sleep(24*time.Hour)
+
+		users,err:=s.UsersRepo.GetAllUsers()
+		if err!=nil{
+			log.Println(err)
+			continue
+		}
+
+		books,err:=s.BooksRepo.GetAll()
+		if err!=nil{
+			log.Println(err)
+			continue
+		}
+
+		sendCloser, err := d.Dial()
+		if err != nil {
+			log.Println(err)
+			continue
+		}
+		prepearedMsg := prepareMsgAllAvailebleBooksEveryDay(books)
+		msg := gomail.NewMessage()
+		for _, user := range users {
+			d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
+
+			msg.SetHeader("From", "GoToBooX@gmail.com")
+			msg.SetAddressHeader("To", user.Email, user.Nickname)
+			msg.SetHeader("Subject", "A book has been reserved")
+			msg.SetBody("text/html", prepearedMsg)
+			msg.Attach("/static/images/logo.png")
+
+			if err := gomail.Send(sendCloser, msg); err != nil {
+				log.Printf("Could not send email to %q: %v", user.Email, err)
+			}
+			msg.Reset()
+		}
+	}
+}
+
+
 
 func NofityAllBookReserved(bookTitle, bookDescription string) {
 	s := NewUserService(postgres.NewPostgresUsersRepo(dataBase.Connection))
@@ -72,14 +118,13 @@ func NotifyAllNewBook(bookTitle, bookDescription string) {
 		}
 		m.Reset()
 	}
-
 }
 
 func prepareMsgNewBook(bookTitle, bookDescription string) string {
 	var b bytes.Buffer
 	b.WriteString("Hello from GoToBooX!\nTWe have a new book at GoToBooX for you!\n")
 	b.WriteString(bookTitle)
-	b.WriteString("n\n\n")
+	b.WriteString("\n\n\n")
 	b.WriteString("Description\n\n")
 	b.WriteString(bookDescription)
 	b.WriteString("\n\nHave a nice day! Don't forget to read the BooX :)")
@@ -90,9 +135,22 @@ func prepareMsgBookReserved(bookTitle, bookDescription string) string {
 	var b bytes.Buffer
 	b.WriteString("Hello from GoToBooX!\nThis book has been reserved!\n")
 	b.WriteString(bookTitle)
-	b.WriteString("n\n\n")
+	b.WriteString("\n\n\n")
 	b.WriteString("Description\n\n")
 	b.WriteString(bookDescription)
+	b.WriteString("\n\nHave a nice day! Don't forget to read the BooX :)")
+	return b.String()
+}
+
+func prepareMsgAllAvailebleBooksEveryDay(books []repository.Book) string {
+	var b bytes.Buffer
+	b.WriteString("Hello from GoToBooX!\nThere are the list of books that can be read!\n")
+	b.WriteString("\n\n")
+	b.WriteString("Take a look: \n\n")
+	for _, book := range books {
+		b.WriteString(book.Title)
+		b.WriteString("\n")
+	}
 	b.WriteString("\n\nHave a nice day! Don't forget to read the BooX :)")
 	return b.String()
 }

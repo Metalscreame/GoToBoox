@@ -69,7 +69,7 @@ func (p booksRepositoryPG) GetAllTakenBooks() (books []repository.Book, err erro
 
 //GetAll iterates over the DB using the SQL SELECT Request and return all books from DB
 func (p booksRepositoryPG) GetAll() (books []repository.Book, err error) {
-	rows, err := p.Db.Query("SELECT id, title, description, state  FROM gotoboox.books ")
+	rows, err := p.Db.Query("SELECT id, title, description, state  FROM gotoboox.books LIMIT 1000")
 	if err != nil {
 		log.Printf("Get %v", err)
 		return
@@ -89,7 +89,6 @@ func (p booksRepositoryPG) GetAll() (books []repository.Book, err error) {
 
 	}
 	return books, nil
-
 }
 
 //GetByCategory iterates over the DB using the SQL SELECT Request and return books from chosen category
@@ -133,14 +132,44 @@ func (p booksRepositoryPG) GetMostPopularBooks(quantity int) ([]repository.Book,
 	return popularBooks, nil
 }
 
-func (p booksRepositoryPG) InsertNewBook(b repository.Book) (err error) {
+
+func (p * booksRepositoryPG) InsertNewBook(b repository.Book) (err error){
 	_, err = p.Db.Query("INSERT INTO gotoboox.books (title,description,image) values($1,$2,$3)",
 		b.Title, b.Description, b.Image)
 	return
 }
 
-func (p booksRepositoryPG) UpdateBookState(bookId int, state string) (err error) {
+
+func (p * booksRepositoryPG) UpdateBookState(bookId int,state string) (err error) {
 	_, err = p.Db.Query("UPDATE gotoboox.books set state=$1 where id=$2",
 		state, bookId)
 	return
 }
+
+
+func (p *booksRepositoryPG)	UpdateBookStateAndUsersBookIdByUserEmail(email string, state string, bookId int) (err error)  {
+	_, err = p.Db.Query("UPDATE gotoboox.books as b,gotoboox.users as u set  b.state=$1, u.book_id=$2, u.has_book_for_exchange=TRUE where u.email=$3 AND b.id=$4",
+		state,bookId,email,bookId)
+	return
+}
+
+func (p * booksRepositoryPG) GetFreeBooks(books []repository.Book)([]repository.Book, error)  {
+	rows, err := p.Db.Query("SELECT id, title, description FROM gotoboox.books WHERE state='FREE' LIMIT 1000")
+	if err != nil {
+		log.Printf("Get %v", err)
+	}
+
+	var book repository.Book
+	for rows.Next() {
+		if err := rows.Scan(&book.ID, &book.Title, &book.Description, &book.State);
+			err != nil {
+			log.Printf("Get %v", err)
+		}
+		books = append(books, book)
+	}
+	if err := rows.Err(); err != nil {
+		log.Printf("Get %v", err)
+	}
+	return books, nil
+}
+

@@ -57,48 +57,65 @@ func (p *postgresUsersRepository) InsertUser(u repository.User) (err error) {
 //}
 
 func (p *postgresUsersRepository) GetUsersEmailToNotifyNewBook() (u []repository.User, err error) {
-	rows,err := p.Db.Query(
+	rows, err := p.Db.Query(
 		"SELECT email,nickname FROM gotoboox.users where notification_get_new_books='true'")
-	i:=0
-	for rows.Next(){
-		err = rows.Scan(&u[i].Email,&u[i].Nickname)
+	for rows.Next() {
+		var user repository.User
+		err = rows.Scan(&user.Email, &user.Nickname)
 		if err != nil {
 			return
 		}
-		i++
+		u = append(u, user)
 	}
 	return
 }
 
 func (p *postgresUsersRepository) GetUsersEmailToNotifyReserved() (u []repository.User, err error) {
-	rows,err := p.Db.Query(
+	rows, err := p.Db.Query(
 		"SELECT email,nickname FROM gotoboox.users where notification_get_when_book_reserved='true'")
-	i:=0
-	for rows.Next(){
-		err = rows.Scan(&u[i].Email,&u[i].Nickname)
+	for rows.Next() {
+		var user repository.User
+		err = rows.Scan(&user.Email, &user.Nickname)
 		if err != nil {
 			return
 		}
-		i++
+		u = append(u, user)
 	}
 	return
 }
 
-func (p * postgresUsersRepository)SetUsersBookAsNullByBookId(id int)(err error){
-	_, err = p.Db.Query("UPDATE gotoboox.users set book_id=NULL where book_id=$1",id)
+func (p *postgresUsersRepository) SetUsersBookAsNullByBookId(id int) (err error) {
+	_, err = p.Db.Query("UPDATE gotoboox.users set book_id=NULL where book_id=$1", id)
 	return
 }
 
-func (p * postgresUsersRepository) GetAllUsers()(u []repository.User,err error){
-	rows,err := p.Db.Query(
-		"SELECT id,email,nickname,exchanges_number FROM gotoboox.users")
-	i:=0
-	for rows.Next(){
-		err = rows.Scan(&u[i].ID,&u[i].Email,&u[i].Nickname,&u[i].ExchangesNumber)
+func (p *postgresUsersRepository) GetAllUsers() (u []repository.User, err error) {
+	rows, err := p.Db.Query(
+		"SELECT id,email,nickname,exchanges_number FROM gotoboox.users LIMIT 2000")
+
+	for rows.Next() {
+		var user repository.User
+		err = rows.Scan(&user.ID, &user.Email, &user.Nickname, &user.ExchangesNumber)
 		if err != nil {
 			return
 		}
-		i++
+		u = append(u, user)
 	}
+	return
+}
+
+func (p *postgresUsersRepository) SetReturningBookIdByEmail(id int, email string) (err error) {
+	_, err = p.Db.Query("UPDATE gotoboox.users set returning_book_id=$1 where email=$2", id, email)
+	return
+}
+
+func (p *postgresUsersRepository) ClearReturningBookIdByEmail(email string) (err error) {
+	_, err = p.Db.Query("UPDATE gotoboox.users set returning_book_id=NULL where email=$2", email)
+	return
+}
+
+func (p *postgresUsersRepository) MakeBookCross(email string) (err error) {
+	_, err = p.Db.Query("UPDATE gotoboox.books AS b, gotoboox.users AS u SET  b.state=$1, u.book_id=NULL, u.has_book_for_exchange=FALSE where u.email=$2 AND b.id=u.book_id",
+		repository.BookStateTaken, email)
 	return
 }

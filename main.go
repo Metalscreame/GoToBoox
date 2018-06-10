@@ -15,7 +15,7 @@ func main() {
 	dataBase.Connect()
 	postgres.NewBooksRepository(dataBase.Connection).GetByID(1)
 	services.Start()
-
+	go services.DailyEmailNotifications()
 }
 
 func setupLogFile()  *os.File{

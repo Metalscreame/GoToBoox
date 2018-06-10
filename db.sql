@@ -20,6 +20,7 @@ book_id  INT REFERENCES  gotoboox.books  (id) ON UPDATE CASCADE,
 notification_get_new_books BOOLEAN DEFAULT FALSE,
 notification_get_when_book_reserved BOOLEAN DEFAULT FALSE,
 has_book_for_exchange BOOLEAN DEFAULT FALSE,
+returning_book_id INT REFERENCES gotoboox.books (id) DEFAULT 0,
 register_date DATE
 );
 
@@ -48,3 +49,8 @@ VALUES
 ('Big History: Examines Our Past, Explains Our Present, Imagines Our Future', 'Featuring a foreword by the father of Big History, David Christian, and produced in association with the Big History Institute, Big History provides a comprehensive understanding of the major events that have changed the nature and course of life on the planet we call home. This first fully integrated visual reference on Big History for general readers places humans in the context of our universe, from the Big Bang to virtual reality.', '6', '3'),
 ('Big History: Between Nothing and Everything', 'Big History: Between Nothing and Everything surveys the past not just of humanity, or even of planet Earth, but of the entire universe. In reading this book instructors and students will retrace a voyage that began 13.7 billion years ago with the Big Bang and the appearance of the universe. Big history incorporates findings from cosmology, earth and life sciences, and human history, and assembles them into a single, universal historical narrative of our universe and of our place within it.', '8', '3');
 
+INSERT INTO gotoboox.books (title, description, popularity,evaluation_number,state)
+VALUES
+  ('Feel for Love', 'Joe Cantrell, owner of the Gansett Island Ferry Company, has been in love with Janey McCarthy for as long as he can remember. At the same time, Janey has been dating or engaged to doctor-in-training David Lawrence. When things go horribly wrong between David and Janey, she calls her fifth brother', '9', '1','TAKEN'),
+  ('Tekken taken game', 'Joe Cantrell, owner of the Gansett Island Ferry Company, has been in love with Janey McCarthy for as long as he can remember. At the same time, Janey has been dating or engaged to doctor-in-training David Lawrence. When things go horribly wrong between David and Janey, she calls her fifth brother', '9', '1','TAKEN'),
+  ('What a pretty bookkie', 'Joe Cantrell, owner of the Gansett Island Ferry Company, has been in love with Janey McCarthy for as long as he can remember. At the same time, Janey has been dating or engaged to doctor-in-training David Lawrence. When things go horribly wrong between David and Janey, she calls her fifth brother', '9', '1','RESERVED');
