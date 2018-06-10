@@ -10,6 +10,7 @@ import (
 	"log"
 	"encoding/base64"
 	"strings"
+	"time"
 )
 
 type BookService struct {
@@ -147,4 +148,23 @@ func (b *BookService) insertNewBook(c *gin.Context) {
 		return
 	}
 	go NotifyAllNewBook(book.Title,book.Description)
+}
+
+const preReservedTimeAllowedSecs = 1000
+
+//PreReservedTimer is a funtion that changes the status of a book to free if user didnt propose book to exchange
+//must be started from "go PreReservedTimer"
+func (b * BookService)PreReservedTimer(bookId int){
+	time.Sleep(preReservedTimeAllowedSecs)
+	book,err:=b.BooksRepo.GetByID(bookId)
+	if err!=nil{
+		log.Println(err)
+		return
+	}
+
+	if book.State == repository.BookStatePreReserved{
+		b.BooksRepo.UpdateBookState(bookId,repository.BookStateFree)
+		return
+	}
+	return
 }
