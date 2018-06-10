@@ -63,38 +63,8 @@
                 </form>
             </div>
             <div class="form-group">
-                <div>
-                    <h4>Documents</h4>
-                    <div class="input-group">
-                <span class="input-group-btn">
-                    <span class="btn btn-primary btn-file">
-                        Browse&hellip; <input type="file" id="fileInpt2" single>
-                    </span>
-                </span>
-                        <input type="text" class="form-control"  readonly>
-                    </div>
-                </div>
-
-                <input type="file" id="fileInpt3" single>
             </div>
-            {{/*<script>*/}}
-                {{/*$(document).on('change', '.btn-file :file', function() {*/}}
-                    {{/*var input = $(this),*/}}
-                            {{/*numFiles = input.get(0).files ? input.get(0).files.length : 1,*/}}
-                            {{/*label = input.val().replace(/\\/g, '/').replace(/.*\//, '');*/}}
-                    {{/*input.trigger('fileselect', [numFiles, label]);*/}}
-                {{/*});*/}}
-                {{/*$(document).ready( function() {*/}}
-                    {{/*$('.btn-file :file').on('fileselect', function(event, numFiles, label) {*/}}
-                        {{/*var input = $(this).parents('.input-group').find(':text'), log = numFiles > 1 ? numFiles + ' files selected' : label;*/}}
-                        {{/*if( input.length ) {*/}}
-                            {{/*input.val(log);*/}}
-                        {{/*} else {*/}}
-                            {{/*if( log ) alert(log);*/}}
-                        {{/*}*/}}
-                    {{/*});*/}}
-                {{/*});*/}}
-            {{/*</script>*/}}
+
             <div class="form-group">
             </div>
             <div class="form-group">
@@ -159,19 +129,26 @@
         //     alert("You must upload a picture first");
         //     return;
         // }
-        function getBase64(file) {
-            var reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = function () {
-                console.log(reader.result);
-            };
-            reader.onerror = function (error) {
-                console.log('Error: ', error);
-            };
-        }
+        // function getBase64(file) {
+        //     var reader = new FileReader();
+        //     reader.readAsDataURL(file);
+        //     reader.onload = function () {
+        //         console.log(reader.result);
+        //         alert(reader.result);
+        //     };
+        //     reader.onerror = function (error) {
+        //         console.log('Error: ', error);
+        //     };
+        // }
 
-        var fileBase64 = getBase64(file);
-        alert(fileBase64);
+        var fileBase64;
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+
+
+
+        // var fileBase64 = getBase64(file);
+        // alert(fileBase64);
         var xhr = new XMLHttpRequest();
         xhr.open('POST', '/api/v1/insertNewBook',false);
         xhr.setRequestHeader("Content-Type", "application/json");
@@ -185,12 +162,20 @@
             }
         };
 
-        var data = JSON.stringify({
-            "title": title,
-            "description": descr,
-            "base_64_img":fileBase64
-        });
-        xhr.send(data);
+
+
+        reader.onload = function () {
+            fileBase64=reader.result;
+            // alert(fileBase64);
+            console.log(reader.result);
+            var data = JSON.stringify({
+                "title": title,
+                "description": descr,
+                "base_64_img": fileBase64.toString()
+            });
+            xhr.send(data);
+        };
+
     });
 
 

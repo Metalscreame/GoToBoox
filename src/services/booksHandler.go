@@ -8,6 +8,8 @@ import (
 	"github.com/metalscreame/GoToBoox/src/dataBase/postgres"
 	"github.com/metalscreame/GoToBoox/src/dataBase"
 	"log"
+	"encoding/base64"
+	"strings"
 )
 
 type BookService struct {
@@ -120,10 +122,19 @@ func BookHandler(c *gin.Context) {
 
 func (b *BookService) insertNewBook(c *gin.Context) {
 	var book repository.Book
-	if err := c.BindJSON(&book); err != nil {
+	var err error
+
+	if err = c.BindJSON(&book); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "bad request"})
 		return
 	}
+	book.Base64Img =book.Base64Img[strings.IndexByte(book.Base64Img, ',')+1:]
+	if  book.Image, err =base64.StdEncoding.DecodeString(book.Base64Img); err!=nil{
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
+		return
+	}
+
 	if err := b.BooksRepo.InsertNewBook(book); err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
