@@ -111,7 +111,6 @@
 <script>
     $('#submitBtn').on('click', function (e) {
         var file = document.getElementById("fileInpt1").files[0]; //this is the input where I can choose the file
-        alert(file);
         var title = $("#titleText").val();
         if(title==""){
             alert("Title cant be empty");
@@ -122,35 +121,18 @@
             alert("Description cant be empty");
             return;
         }
-        // var reader = new FileReader();
-        // var fileBase64 =  reader.readAsDataURL(file);
-        //
-        // if(fileBase64==""){
-        //     alert("You must upload a picture first");
-        //     return;
-        // }
-        // function getBase64(file) {
-        //     var reader = new FileReader();
-        //     reader.readAsDataURL(file);
-        //     reader.onload = function () {
-        //         console.log(reader.result);
-        //         alert(reader.result);
-        //     };
-        //     reader.onerror = function (error) {
-        //         console.log('Error: ', error);
-        //     };
-        // }
 
         var fileBase64;
         var reader = new FileReader();
         reader.readAsDataURL(file);
 
+        var url_string = window.location.href;
+        var len = url_string.length;
+        var param = url_string[len-1];
 
 
-        // var fileBase64 = getBase64(file);
-        // alert(fileBase64);
         var xhr = new XMLHttpRequest();
-        xhr.open('POST', '/api/v1/insertNewBook',false);
+        xhr.open('POST', '/api/v1/insertNewBook/'+param,false);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onload = function () {
             //TODO show the progress

@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"github.com/metalscreame/GoToBoox/src/services/midlwares"
-	"strconv"
 )
 
 //ShowLoginPage is a handler function that renders static login page
@@ -77,17 +76,11 @@ func ShowBook(c *gin.Context) {
 
 //ShowUploadBookPage
 func ShowUploadBookPage(c *gin.Context) {
-	if bookID, err := strconv.Atoi(c.Param("book_id"));
-		err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
 	c.HTML(
 		http.StatusOK,
-		"lockBookPage.html",
+		"uploadBookPage.html",
 		gin.H{
-			"title": "Lock Book Page",
+			"title": "Upload Book Page",
 		},
 	)
 }

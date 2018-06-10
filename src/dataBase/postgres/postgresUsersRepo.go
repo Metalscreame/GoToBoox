@@ -83,3 +83,22 @@ func (p *postgresUsersRepository) GetUsersEmailToNotifyReserved() (u []repositor
 	}
 	return
 }
+
+func (p * postgresUsersRepository)SetUsersBookAsNullByBookId(id int)(err error){
+	_, err = p.Db.Query("UPDATE gotoboox.users set book_id=NULL where book_id=$1",id)
+	return
+}
+
+func (p * postgresUsersRepository) GetAllUsers()(u []repository.User,err error){
+	rows,err := p.Db.Query(
+		"SELECT id,email,nickname,exchanges_number FROM gotoboox.users")
+	i:=0
+	for rows.Next(){
+		err = rows.Scan(&u[i].ID,&u[i].Email,&u[i].Nickname,&u[i].ExchangesNumber)
+		if err != nil {
+			return
+		}
+		i++
+	}
+	return
+}
