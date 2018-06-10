@@ -62,7 +62,7 @@ func (p booksRepositoryPG) GetTakenBooks(bookID int) (books repository.Book, err
 
 //GetAll iterates over the DB using the SQL SELECT Request and return all books from DB
 func (p booksRepositoryPG) GetAll() (books []repository.Book, err error) {
-	rows, err := p.Db.Query("SELECT title, description, state  FROM gotoboox.books ")
+	rows, err := p.Db.Query("SELECT id, title, description, state  FROM gotoboox.books ")
 	if err != nil {
 		log.Printf("Get %v", err)
 	}
@@ -70,7 +70,7 @@ func (p booksRepositoryPG) GetAll() (books []repository.Book, err error) {
 	var book repository.Book
 	for rows.Next() {
 
-		if err := rows.Scan(&book.Title, &book.Description, &book.State);
+		if err := rows.Scan(&book.ID, &book.Title, &book.Description, &book.State);
 			err != nil {
 			log.Printf("Get %v", err)
 		}
