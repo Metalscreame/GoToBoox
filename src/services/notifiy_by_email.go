@@ -1,7 +1,6 @@
-package commonFunctions
+package services
 
 import (
-	"github.com/metalscreame/GoToBoox/src/services"
 	"github.com/metalscreame/GoToBoox/src/dataBase/postgres"
 	"github.com/metalscreame/GoToBoox/src/dataBase"
 	"log"
@@ -13,7 +12,7 @@ import (
 var d = gomail.NewDialer("smtp.gmail.com", 587, "GoToBooX", "hjvfhekbn")
 
 func NofityAllBookReserved(bookTitle, bookDescription string) {
-	s := services.NewUserService(postgres.NewPostgresUsersRepo(dataBase.Connection))
+	s := NewUserService(postgres.NewPostgresUsersRepo(dataBase.Connection))
 	listOfUsersEmails, err := s.UsersRepo.GetUsersEmailToNotifyReserved()
 	if err != nil {
 		log.Println(err)
@@ -45,7 +44,7 @@ func NofityAllBookReserved(bookTitle, bookDescription string) {
 }
 
 func NotifyAllNewBook(bookTitle, bookDescription string) {
-	s := services.NewUserService(postgres.NewPostgresUsersRepo(dataBase.Connection))
+	s := NewUserService(postgres.NewPostgresUsersRepo(dataBase.Connection))
 	listOfUsersEmails, err := s.UsersRepo.GetUsersEmailToNotifyNewBook()
 	if err != nil {
 		log.Println(err)
