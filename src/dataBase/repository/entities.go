@@ -7,6 +7,13 @@ type Categories struct {
 	Title string
 }
 
+const (
+	BookStateFree = "FREE"
+	BookStateReserved = "RESERVED"
+	BookStateTaken = "TAKEN"
+	BookStatePreReserved = "PRE_RESERVED" //means that the book is added to reserve list but the user didnt propose his book
+)
+
 type Book struct {
 	ID             int     `json:"id,omitempty"`
 	Title          string  `json:"title"`

@@ -16,6 +16,12 @@ type BookService struct {
 	BooksRepo repository.BookRepository
 }
 
+func NewBookService(repository repository.BookRepository) *BookService {
+	return &BookService{
+		BooksRepo: repository,
+	}
+}
+
 func (b *BookService) FiveMostPop(c *gin.Context) {
 	FiveMostPop, _ := b.BooksRepo.GetMostPopularBooks(5)
 	if len(FiveMostPop) > 0 {

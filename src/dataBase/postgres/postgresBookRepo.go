@@ -5,6 +5,7 @@ import (
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
 	"database/sql"
 	"errors"
+	"time"
 )
 
 type booksRepositoryPG struct {
@@ -108,5 +109,11 @@ func (p booksRepositoryPG) GetMostPopularBooks (quantity int) ([]repository.Book
 func (p booksRepositoryPG) InsertNewBook(b repository.Book) (err error){
 	_, err = p.Db.Query("INSERT INTO gotoboox.books (title,description,image) values($1,$2,$3)",
 		b.Title, b.Description, b.Image)
+	return
+}
+
+func (p booksRepositoryPG) UpdateBookState(bookId int,state string) (err error) {
+	_, err = p.Db.Query("UPDATE gotoboox.books set state=$1 where id=$2",
+		bookId,state)
 	return
 }

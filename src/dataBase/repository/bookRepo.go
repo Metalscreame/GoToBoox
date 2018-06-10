@@ -6,4 +6,5 @@ type BookRepository interface {
 	GetByID(bookID int) (books Book, err error)
 	GetMostPopularBooks(quantity int) ([]Book, error)
 	InsertNewBook(b Book)(err error)
+	UpdateBookState(bookId int,state string) (err error)
 }
