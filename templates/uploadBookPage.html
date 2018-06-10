@@ -11,7 +11,12 @@
 
 <h2>&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160 You're book proposition </h2>
 
-<div class="wrapper">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
+
+{{/*<div class="wrapper">*/}}
+
+    <div class="container content">
+        <hr>
 
     <div class="form-group">
     </div>
@@ -21,32 +26,29 @@
     </div>
     <div class="form-group">
     </div>
-
-
     <div class="row">
-        <div class="col-md-1 col-md-offset-1">
-        </div>
-        <div class="col-md-6 col-md-offset-6">
+
+        <div class="col-md-8 col-md-offset-1">
             <div class="form-group">
-                <label for="exampleFormControlTextarea1">Title of new book</label>
+                <label for="exampleFormControlTextarea1">Title of a new book *</label>
                 <textarea class="form-control" id="titleText"  rows="1"></textarea>
             </div>
 
             <div class="form-group">
-                <label for="exampleFormControlTextarea1">Enter the description of a book</label>
+                <label for="exampleFormControlTextarea1">Enter the description of a new book*</label>
                 <textarea class="form-control" id="descriptionText"  rows="12"></textarea>
             </div>
             <div class="form-group">
-                <button class="btn btn btn-dark" id="submitBtn" type="button">&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160Save this and reserve chosen book&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160&#160</button>
-                <label for="exampleFormControlTextarea1">&#160&#160&#160&#160or you can... &#160&#160&#160&#160</label>
+                <button class="btn btn btn-dark" id="submitBtn" type="button">&#160&#160&#160&#160&#160&#160&#160Save this and reserve chosen book&#160&#160&#160&#160&#160&#160&#160&#160</button>
+                <label for="exampleFormControlTextarea1">&#160&#160&#160or you can... &#160&#160&#160</label>
                 <button class="btn btn btn-dark" id="returnPreviosly" type="button">Return previously taken book</button>
             </div>
 
         </div>
-        <div class="col-md-3 col-md-offset-6">
+        <div class="col-md-4 col-md-offset-1">
 
             <div class="form-group">
-                <label for="exampleFormControlTextarea1">Upload a picture for the new book</label>
+                <label for="exampleFormControlTextarea1">Upload a picture for the new book*</label>
                 <form method="POST" action="#" enctype="multipart/form-data" >
 
                     <div class="form-group">
@@ -62,17 +64,6 @@
                     </div>
                 </form>
             </div>
-            <div class="form-group">
-            </div>
-
-            <div class="form-group">
-            </div>
-            <div class="form-group">
-            </div>
-            <div class="form-group">
-            </div>
-
-
             <script>
                 function bs_input_file() {
                     $(".input-file").before(
@@ -169,7 +160,11 @@
 
 </script>
 
-
+<hr>
+<p>&#160</p>
+<p>&#160</p>
+<p>&#160</p>
+<p>&#160</p>
 <!--container end.//-->
 {{template "footer.tmpl.html"}}
 </body>
