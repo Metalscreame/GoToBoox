@@ -45,7 +45,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
                     </div>
-                    <input class="form-control" placeholder="Repeat password" type="password">
+                    <input class="form-control" placeholder="Repeat password" type="password" id="passwordInput2">
                 </div> <!-- form-group// -->
                 <div class="form-group">
                     <button type="submit" id="createButton" class="btn btn-primary btn-block"> Create Account</button>
@@ -59,7 +59,12 @@
         $('#createButton').on('click', function (e) {
             var email = document.getElementById("inputEmail").value;
             var password = document.getElementById("passwordInput").value;
+            var password2 = document.getElementById("passwordInput2").value;
             var nickname = document.getElementById("inputNickname").value;
+            if(password!=password2){
+                alert("Passwords are not equal!");
+                return;
+            }
 
             var xhr = new XMLHttpRequest();
 
@@ -75,6 +80,7 @@
                 if (xhr.readyState == XMLHttpRequest.DONE && this.status == 200) {
                     window.location.href = "/";
                 }else {
+                    alert("Nickname or email is already registered!");
                     window.location.href="/register";
                 }
             };
