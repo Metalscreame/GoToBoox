@@ -21,7 +21,7 @@ func Start() {
 	port, ok := os.LookupEnv("PORT")
 	if !ok {
 		println("PORT is required\nFor localhosts setup sys env \"PORT\" as 8080 and reload IDE")
-		log.Fatal("PORT is required\nFor localhosts setup sys env \"PORT\" as 8080")
+		log.Fatal("PORT is required\nFor localhosts setup sys env \"PORT\" as 8080 and reload IDE")
 	}
 
 	gin.SetMode(gin.ReleaseMode)
