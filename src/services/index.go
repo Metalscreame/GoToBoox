@@ -20,6 +20,7 @@ func IndexHandler(c *gin.Context) {
 
 	userRepo := postgres.NewPostgresUsersRepo(dataBase.Connection)
 	users, _ := userRepo.GetAllUsers()
+
 	output := Data{books, users}
 	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": output})
 }

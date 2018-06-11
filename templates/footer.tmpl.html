@@ -18,10 +18,11 @@
     if (xhr.status != 200) {
         alert(xhr.status + ': ' + xhr.statusText);
     } else {
-        var popularBooks = document.getElementById('books');
+        var books = document.getElementById('books');
+        var users = document.getElementById('users');
+
         var data = JSON.parse(xhr.responseText);
-        console.log(data.data);
-        if (popularBooks) {
+        if (books) {
             for (var i = 0; i < data.data['Books'].length; i++) {
                 var newLi = document.createElement('li');
                 var status;
@@ -35,7 +36,14 @@
                 }
                 newLi.innerHTML = "<a href='/book/" + data.data['Books'][i]['id'] + "'>" + data.data['Books'][i]['title'] + "</a>"
                 + "<img src='" + status + "'> ";
-                popularBooks.appendChild(newLi);
+                books.appendChild(newLi);
+            }
+        }
+        if (users) {
+            for (var i = 0; i < data.data['Users'].length; i++) {
+                var newLi = document.createElement('li');
+                newLi.innerHTML = "<p>" + data.data['Users'][i]['nickname'] + "</p>";
+                users.appendChild(newLi);
             }
         }
 
