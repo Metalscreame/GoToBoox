@@ -1,72 +1,26 @@
-<html>
-  {{template "header.tmpl.html"}}
-<body>
-  {{template "nav.tmpl.html" }}
-  <header>
-      <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-          <ol class="carousel-indicators">
-              <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-              <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-              <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-          </ol>
-          <div class="carousel-inner" role="listbox">
-              <!-- Slide One - Set the background image for this slide in the line below -->
-              <div class="carousel-item active" style="background-image: url('/static/bg.jpg')">
-                  <div class="carousel-caption d-none d-md-block">
-                      <h3>First Slide</h3>
-                      <p>This is a description for the first slide.</p>
-                  </div>
-              </div>
-              <!-- Slide Two - Set the background image for this slide in the line below -->
-              <div class="carousel-item" style="background-image: url('/static/slide-1.png')">
-                  <a href="/location"> <div class="carousel-caption d-none d-md-block">
-                      <h3>Second Slide</h3>
-                      <p>This is a description for the second slide.</p>
-                  </div></a>
-              </div>
-          <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-              <span class="sr-only">Previous</span>
-          </a>
-          <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-              <span class="carousel-control-next-icon" aria-hidden="true"></span>
-              <span class="sr-only">Next</span>
-          </a>
-      </div>
-      </div>
-  </header>
-<hr>
-  <!-- Page Content -->
+{{template "header" .}}
+{{template "nav" .}}
   <div class="wrapper">
   <div class="container content">
       <div class="row">
-          <div class="col-lg-6">
-              <h2>Books: </h2>
-                <ul id="books">
-                </ul>
-          </div>
-          <div class="col-lg-6">
-              <h2>Most activity readers: (TOP-5)</h2>
-              <div class="row mb-4" style="display: block">
-                  <div class="col-md-8">
-                      <ul id="users">
-                      </ul>
-
-                  </div>
-                  <div class="col-md-4">
-                  </div>
-              </div>
-          </div>
+      {{if eq .page "main"}}
+        {{template "main"}}
+      {{end}}
+      {{if eq .page "location"}}
+        {{template "location"}}
+      {{end}}
+      {{if eq .page "book"}}
+        {{template "book"}}
+      {{end}}
+      {{if eq .page "login"}}
+        {{template "login"}}
+      {{end}}
+      {{if eq .page "registration"}}
+        {{template "registration"}}
+      {{end}}
+      {{if eq .page "userprofile"}}
+        {{template "userprofile"}}
+      {{end}}
       </div>
-      <!-- /.row -->
-
-      <hr>
-
-      <!-- Call to Action Section -->
-
   </div>
-  <!-- /.container -->
-  {{template "footer.tmpl.html"}}
-  </div>
-</body>
-</html>
+  {{template "footer" .}}

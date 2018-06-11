@@ -13,7 +13,6 @@ import (
 const (
 	apiRoute = "/api/v1"
 )
-
 var router *gin.Engine
 
 //Start is a function that starts server and initializes all the routes.
@@ -30,13 +29,21 @@ func Start() {
 	router.Static("/static", "./static")
 	router.LoadHTMLGlob("templates/*.html")
 
+
 	router.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.tmpl.html", nil)
+		c.HTML(http.StatusOK, "index.tmpl.html", gin.H{
+			"title": "GoToBooX",
+			"page" : "main",
+		})
+	})
+	router.GET("/location", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.tmpl.html", gin.H{
+			"title": "GoToBooX - location",
+			"page" : "location",
+		})
 	})
 
-	router.GET("/location", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "location.html", nil)
-	})
+
 
 	router.GET(apiRoute, IndexHandler)
 	initUserProfileRoutes()
@@ -44,8 +51,12 @@ func Start() {
 	router.Run(":" + port)
 }
 
-func initUserProfileRoutes() {
 
+
+
+
+
+func initUserProfileRoutes() {
 	// Use the SetUserStatus middleware for every route to set a flag
 	// indicating whether the request was from an authenticated user or not
 	router.Use(midlwares.SetUserStatus())

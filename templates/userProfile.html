@@ -1,16 +1,4 @@
-<html>
-{{template "header.tmpl.html"}}
-<body>
-{{template "navLogout.tmpl.html"}}
-
-<link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="/static/js/jquery-1.11.1.js"></script>
-
-<!------ Include the above in your HEAD tag ---------->
-      <div class="wrapper">
-<div class="container content">
-<div class="row">
-
+{{define "userprofile"}}
     <div class="col-md-6 col-md-offset-6">
         <form class="form-horizontal" role="form">
             <fieldset>
@@ -60,7 +48,6 @@
                             <label class="form-check-label" for="exampleCheck1">Receive daily notifications</label>
                         </div>
                     </div>
-
                 </div>
 
                 <div class="form-group">
@@ -73,10 +60,7 @@
                 </div>
             </fieldset>
         </form>
-
-
-    </div><!-- /.col-lg-12 -->
-
+    </div>
     <div class="col-md-6 col-md-offset-6">
         <form class="form-horizontal" role="form">
             <fieldset>
@@ -140,115 +124,8 @@
                         xhr.send();
                     }
                 </script>
-                <div id="returnBookRender">
-
-                </div>
-
+                <div id="returnBookRender"></div>
             </fieldset>
-
         </form>
-
     </div>
-</div><!-- /.row -->
-          </div>
-
-<script>
-
-    $('#saveButton').on('click', function (e) {
-        var nickname = document.getElementById("nicknameInput").value;
-        var email = document.getElementById("emailInput").value;
-        var passwordOld = document.getElementById("passwordInputOld").value;
-        var passwordNew1 = document.getElementById("passwordInputNew1").value;
-        var passwordNew2 = document.getElementById("passwordInputNew2").value;
-
-        if(passwordNew1!=passwordNew2){
-            alert("Passwords doesnt mach");
-            return
-        }
-
-        var xhr = new XMLHttpRequest();
-        xhr.open('PUT', "/api/v1/userProfile", false);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                document.location.href="/";
-                return;
-            } else {
-                alert("wrong old password");
-                window.location.href = "/userProfile";
-                return;
-            }
-        };
-
-        var notification_get_new_books=false;
-        if ($('#notificationNewBooks').is(":checked")) {
-            notification_get_new_books = true;
-        }
-        var notification_get_when_book_reserved=false;
-        if ($('#notificationReservedBook').is(":checked")) {
-            notification_get_when_book_reserved = true;
-        }
-        var notificationDailyy=false;
-        if ($('#notificationDaily').is(":checked")) {
-            notificationDailyy = true;
-        }
-        var body = JSON.stringify({
-            "nickname": nickname,
-            "email": email,
-            "password": passwordOld,
-            "new_passwordd": passwordNew1,
-            "notification_get_new_books":notification_get_new_books,
-            "notification_get_when_book_reserved":notification_get_when_book_reserved,
-            "notification_daily":notificationDailyy
-        });
-        xhr.send(body);
-    });
-
-    <!-- deleteButton -->
-    $('#deleteButton').on('click', function (e) {
-        var xhr = new XMLHttpRequest();
-        xhr.open('DELETE', "/api/v1/userProfile", false);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.send();
-        window.location.href = "/login";
-    });
-
-</script>
-
-<script>
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', "/api/v1/userProfile", false);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
-            var json = JSON.parse(xhr.responseText);
-            $('#nicknameInput').val(json.nickname);
-            $('#emailInput').val(json.email);
-            if(json.notification_get_new_books == true){
-                $('#notificationNewBooks').prop( "checked", true );
-            }
-            if(json.notification_get_when_book_reserved == true){
-                $('#notificationReservedBook').prop( "checked", true );
-            }
-            if(json.notification_daily == true){
-
-                $('#notificationDaily').prop( "checked", true );
-            }
-
-            if(json.has_book_for_exchange == true){
-                document.getElementById("returnBookRender").innerHTML = '<h4 class="card-title mt-3 text-left">Exchange previously reserved book</h4> ' +
-                        '<button type="submit" id="exchangeBookButton" onclick="exchange()" class="btn btn-dark">Return</button>';
-            }
-        } else if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 400) {
-            window.location.href = "/login";
-        }
-        else {
-        }
-    };
-    xhr.send();
-</script>
-
-{{template "footer.tmpl.html"}}
-
-</body>
-</html>
+{{end}}

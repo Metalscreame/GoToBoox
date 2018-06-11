@@ -1,4 +1,4 @@
-<!-- Navigation -->
+{{define "nav"}}
 <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark fixed-top" style="opacity:0.95; position: fixed;">
     <div class="container">
         <a class="navbar-brand" href="/">GoToBooX</a>
@@ -17,16 +17,46 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/books">Books</a>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownBlog" data-toggle="dropdown"
-                       aria-haspopup="true" aria-expanded="false">
-                        Categories
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownBlog" id="catList">
-
-                    </div>
-                </li>
             </ul>
         </div>
     </div>
 </nav>
+
+{{if eq .page "main"}}
+<header>
+    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+        <ol class="carousel-indicators">
+            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+        </ol>
+        <div class="carousel-inner" role="listbox">
+            <!-- Slide One - Set the background image for this slide in the line below -->
+            <div class="carousel-item active" style="background-image: url('/static/bg.jpg')">
+                <div class="carousel-caption d-none d-md-block">
+                    <h3>First Slide</h3>
+                    <p>This is a description for the first slide.</p>
+                </div>
+            </div>
+            <!-- Slide Two - Set the background image for this slide in the line below -->
+            <div class="carousel-item" style="background-image: url('/static/slide-1.png')">
+                <a href="/location"> <div class="carousel-caption d-none d-md-block">
+                    <h3>Second Slide</h3>
+                    <p>This is a description for the second slide.</p>
+                </div></a>
+            </div>
+            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    </div>
+</header>
+<hr>
+{{end}}
+
+{{end}}

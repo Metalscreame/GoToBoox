@@ -1,13 +1,5 @@
-<html>
-{{template "header.tmpl.html" }}
-<body>
-{{template "nav.tmpl.html"}}
-<!-- Page Content -->
-{{ .title }}
-<div class="wrapper">
-    <div class="container content">
-        <div class="row">
-            <h2>Bookcrossing point location: </h2>
+{{define "location"}}
+<h2>Bookcrossing point location: </h2>
             <div id="map" style="height: 550px; width: 100%; margin-top: 5%"></div>
             <script>function initMap() {
                     var uluru = {lat: 48.465, lng: 35.0443};
@@ -24,10 +16,4 @@
             <script async defer
                     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_9Plv4RiP5lu8AKV5BX_iooZSDNiXycQ&callback=initMap">
             </script>
-        </div>
-    </div>
-    <!-- /.container -->
-{{template "footer.tmpl.html"}}
-</div>
-</body>
-</html>
+{{end}}

@@ -1,27 +1,4 @@
-<html>
 {{template "header.tmpl.html"}}
-
-<style type='text/css'>
-    body
-    {
-        background-image:url("https://tabloid.informator.news/wp-content/uploads/sites/3/2017/11/123334.jpg");
-        background-size: cover;
-        background-attachment: fixed;
-        background-repeat: no-repeat;
-    }
-</style>
-
-<body >
-{{template "nav.tmpl.html"}}
-<link href="https://fonts.googleapis.com/css?family=Pacifico%7CSource+Sans+Pro:200,200i,300,300i,400,400i,600,600i,700,700i,900,900i&amp;amp;subset=latin-ext,vietnamese" rel="stylesheet">
-
-<!-- Vendor CSS-->
-<link rel="stylesheet" type="text/css" href="/static/libs/bootstrap/css/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="/static/libs/font-awesome/css/font-awesome.css">
-
-
-
-
 <div class="div-box mb mt">
     <div class="foo">
         <span class="letter" data-letter="T">T</span>
@@ -46,9 +23,6 @@
                     </div>
                     </div>
                 </div>
-
-
-
 <div class="col-md-7">
     <div class="single-product-content">
         <div class="summary-product entry-summary">
@@ -58,7 +32,6 @@
                 <p></p>
             </div>
 
-
             <div class="add-to-wishlist">
                 <div class="add-button show">
                 </div>
@@ -66,10 +39,7 @@
 
             <div class="product_meta"><span class="product-stock-status-wrapper">
             </span>
-        <div class="social-share-wrap">
-
-
-        </div>
+        <div class="social-share-wrap"></div>
     </div>
 </div>
         </div>
@@ -77,11 +47,6 @@
 </div>
     </div>
 </div>
-
-
-
-
-
 
 <script>
     var url_string = window.location.href;
@@ -102,17 +67,10 @@
             var newLi = document.createElement('li');
             newLi.innerHTML = "<a href='/api/v1/updateBookStatusReturn/" + data.data['Book'][i]['id'] + "/"+ param + "'>" + data.data['Book'][i]['title'] + "</a>";
             takenBooks.appendChild(newLi)
-
            // document.getElementById('takenBookList').innerHTML = "<a href='/api/v1/updateBookStatus/" + data.data['Book'][i]['id'] + "'>" + data.data['Book'][i]['title'] + "</a>" ;
-
         }
     }
 </script>
-
 </body>
-
-
-
 </html>
-{{template "footer.tmpl.html"}}
 

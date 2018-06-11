@@ -1,17 +1,4 @@
-<html>
-{{template "header.tmpl.html"}}
-<body>
-{{template "nav.tmpl.html"}}
-
-<!-- Web Fonts-->
-<link href="https://fonts.googleapis.com/css?family=Pacifico%7CSource+Sans+Pro:200,200i,300,300i,400,400i,600,600i,700,700i,900,900i&amp;amp;subset=latin-ext,vietnamese" rel="stylesheet">
-
-<!-- Vendor CSS-->
-<link rel="stylesheet" type="text/css" href="/static/libs/bootstrap/css/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="/static/libs/font-awesome/css/font-awesome.css">
-<script src="/static/vendor/jquery/jquery.min.js"></script>
-
-
+{{define "book"}}
 <div class="div-box mb mt">
     <div class="container">
         <div class="row">
@@ -65,51 +52,7 @@
         </div>
     </div>
 </div>
-<script>
+{{end}}
 
-    var url_string = window.location.href;
-    var len = url_string.length;
-    var param = url_string.substr(url_string.lastIndexOf('/')+1);
-    console.log(param);
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/api/v1/book/' +param, false);
-    xhr.send();
-    if (xhr.status != 200) {
-        alert("error")
-        alert(xhr.status + ': ' + xhr.statusText);
-    } else {
-        var BookDescription = document.getElementById('BookDescription');
-        var data = JSON.parse(xhr.responseText)
-        console.log(data)
-        document.getElementById('title').innerHTML = "<div class='four'><h1>" + data.data['Book']['title'] + "</h1></div>";
-        document.getElementById('description').innerHTML = data.data['Book']['description'];
-        document.getElementById('state').innerHTML = data.data['Book']['state'];
-        document.getElementById('popularity').innerHTML = data.data['Book']['popularity'];
-        document.getElementById('image').innerHTML = "<img src='data:image/jpg;base64," + data.data['Book']['image'] + " 'width=\"400\" height=\"400\"/>";
-    }
-</script>
-
-<script>
-    $('#booxIt').on('click', function (e) {
-        var url_string = window.location.href;
-        var len = url_string.length;
-        var param = url_string.substr(url_string.lastIndexOf('/'));
-        console.log(param)
-        
-
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', "/uploadPage/"+param, false);
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState == XMLHttpRequest.DONE && this.status == 200) {
-                window.location.href= "/uploadPage/"+param;
-            }
-        };
-        xhr.send();
-    });
-</script>
-
-</body>
-{{template "footer.tmpl.html"}}
-</html>
 
 

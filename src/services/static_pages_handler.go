@@ -10,9 +10,10 @@ import (
 func ShowLoginPage(c *gin.Context) {
 	c.HTML(
 		http.StatusOK,
-		"login.html",
+		"index.tmpl.html",
 		gin.H{
 			"title": "Login Page",
+			"page": "login",
 		},
 	)
 }
@@ -21,9 +22,10 @@ func ShowLoginPage(c *gin.Context) {
 func ShowRegistrPage(c *gin.Context) {
 	c.HTML(
 		http.StatusOK,
-		"registration.html",
+		"index.tmpl.html",
 		gin.H{
 			"title": "Registration Page",
+			"page": "registration",
 		},
 	)
 }
@@ -45,24 +47,21 @@ func  UserProfileHandler(c *gin.Context) {
 func(s* UserService) ShowUsersProfilePage(c *gin.Context) {
 	c.HTML(
 		http.StatusOK,
-		"userProfile.html",
+		"index.tmpl.html",
 		gin.H{
-			"title": "User's profile",
+			"title": "User's profile page",
+			"page": "userprofile",
 		},
 	)
 }
 
 func ShowBook(c *gin.Context) {
-	c.HTML(
-		http.StatusOK,
-		"book.html",
-		gin.H{
-			"title": "Book Description",
-		},
-	)
+	c.HTML(http.StatusOK, "index.tmpl.html", gin.H{
+		"title": "Book - Description",
+		"page" : "book",
+	})
 }
 
-//ShowUploadBookPage
 func ShowUploadBookPage(c *gin.Context) {
 	c.HTML(
 		http.StatusOK,

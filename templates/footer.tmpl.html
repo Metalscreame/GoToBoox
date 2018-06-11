@@ -1,16 +1,17 @@
-<!-- Footer hm-->
+{{define "footer"}}
 <footer class="py-5 bg-dark footer" style="bottom: 1px;
     width: 100%;">
     <div class="container">
         <p class="m-0 text-center text-white">Copyright &copy; GoToBooX 2018</p>
     </div>
-    <!-- /.container -->
 </footer>
 </div>
-<!-- Bootstrap core JavaScript -->
 <script src="/static/vendor/jquery/jquery.min.js"></script>
+<script src="/static/vendor/bootstrap/js/bootstrap.min.js"></script>
 <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
+
+{{if eq .page "main"}}
 <script>
     var xhr = new XMLHttpRequest();
     xhr.open('GET', '/api/v1', false);
@@ -19,8 +20,6 @@
         alert(xhr.status + ': ' + xhr.statusText);
     } else {
         var books = document.getElementById('books');
-        var users = document.getElementById('users');
-
         var data = JSON.parse(xhr.responseText);
         if (books) {
             for (var i = 0; i < data.data['Books'].length; i++) {
@@ -39,17 +38,232 @@
                 books.appendChild(newLi);
             }
         }
-        if (users) {
-            for (var i = 0; i < data.data['Users'].length; i++) {
-                var newLi = document.createElement('li');
-                newLi.innerHTML = "<p>" + data.data['Users'][i]['nickname'] + "</p>";
-                users.appendChild(newLi);
-            }
-        }
+    }
+</script>
+{{end}}
 
+{{if eq .page "book"}}
+<script>
+    var url_string = window.location.href;
+    var param = url_string.substr(url_string.lastIndexOf('/')+1);
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/api/v1/book/' +param, false);
+    xhr.send();
+    if (xhr.status != 200) {
+        alert("error")
+        alert(xhr.status + ': ' + xhr.statusText);
+    } else {
+        var BookDescription = document.getElementById('BookDescription');
+        var data = JSON.parse(xhr.responseText)
+        document.getElementById('title').innerHTML = "<div class='four'><h1>" + data.data['Book']['title'] + "</h1></div>";
+        document.getElementById('description').innerHTML = data.data['Book']['description'];
+        document.getElementById('state').innerHTML = data.data['Book']['state'];
+        document.getElementById('popularity').innerHTML = data.data['Book']['popularity'];
+        document.getElementById('image').innerHTML = "<img src='data:image/jpg;base64," + data.data['Book']['image'] + " 'width=\"400\" height=\"400\"/>";
     }
 </script>
 
-</body>
+<script>
+    $('#booxIt').on('click', function (e) {
+        var url_string = window.location.href;
+        var param = url_string.substr(url_string.lastIndexOf('/')+1);
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', "/uploadPage/"+param, false);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == XMLHttpRequest.DONE && this.status == 200) {
+                window.location.href= "/uploadPage/"+param;
+            }
+        };
+        xhr.send();
+    });
+</script>
+{{end}}
 
+{{if eq .page "login"}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-Flip/1.0.18/jquery.flip.js"></script>
+<script type="text/javascript">
+    $().ready(function () {
+        $("#card").flip({
+            trigger: 'manual'
+        });
+    });
+
+    $(".signup_link").click(function () {
+        window.location.href = "/register";
+    });
+
+    $("#unflip-btn").click(function () {
+
+    });
+
+    $('#submt').on('click', function (e) {
+        var email = document.getElementById("inputEmail").value;
+        var password = document.getElementById("inputPassword").value;
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', "/api/v1/login", false);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
+                window.location.href = "/userProfile";
+            }
+            else {
+                alert("Wrong email or password");
+                window.location.href =  "/login";
+            }
+        };
+        var data = JSON.stringify({
+            "email": email,
+            "password": password
+        });
+        xhr.send(data);
+    });
+</script>
+{{end}}
+
+{{if eq .page "registration"}}
+<script>
+    $('#createButton').on('click', function (e) {
+        var email = document.getElementById("inputEmail").value;
+        var password = document.getElementById("passwordInput").value;
+        var password2 = document.getElementById("passwordInput2").value;
+        var nickname = document.getElementById("inputNickname").value;
+        if (password != password2) {
+            alert("Passwords are not equal!");
+            return;
+        }
+
+        function validateEmail(email) {
+            var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(email);
+        }
+
+        if (!validateEmail(email)) {
+            $result.text(email + " is valid :)");
+            $result.css("color", "green");
+            return;
+        }
+
+
+        var xhr = new XMLHttpRequest();
+
+        var data = JSON.stringify({
+            "email": email,
+            "nickname": nickname,
+            "password": password
+        });
+
+        xhr.open('POST', "/api/v1/register", false);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == XMLHttpRequest.DONE && this.status == 200) {
+                window.location.href = "/";
+            } else {
+                alert("Nickname or email is already registered!");
+                window.location.href = "/register";
+            }
+        };
+        xhr.send(data);
+    });
+</script>
+{{end}}
+
+
+{{if eq .page "userprofile"}}
+        <script>
+            $('#saveButton').on('click', function (e) {
+                var nickname = document.getElementById("nicknameInput").value;
+                var email = document.getElementById("emailInput").value;
+                var passwordOld = document.getElementById("passwordInputOld").value;
+                var passwordNew1 = document.getElementById("passwordInputNew1").value;
+                var passwordNew2 = document.getElementById("passwordInputNew2").value;
+
+                if(passwordNew1!=passwordNew2){
+                    alert("Passwords doesnt mach");
+                    return
+                }
+
+                var xhr = new XMLHttpRequest();
+                xhr.open('PUT', "/api/v1/userProfile", false);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        document.location.href="/";
+                        return;
+                    } else {
+                        alert("wrong old password");
+                        window.location.href = "/userProfile";
+                        return;
+                    }
+                };
+
+                var notification_get_new_books=false;
+                if ($('#notificationNewBooks').is(":checked")) {
+                    notification_get_new_books = true;
+                }
+                var notification_get_when_book_reserved=false;
+                if ($('#notificationReservedBook').is(":checked")) {
+                    notification_get_when_book_reserved = true;
+                }
+                var notificationDailyy=false;
+                if ($('#notificationDaily').is(":checked")) {
+                    notificationDailyy = true;
+                }
+                var body = JSON.stringify({
+                    "nickname": nickname,
+                    "email": email,
+                    "password": passwordOld,
+                    "new_passwordd": passwordNew1,
+                    "notification_get_new_books":notification_get_new_books,
+                    "notification_get_when_book_reserved":notification_get_when_book_reserved,
+                    "notification_daily":notificationDailyy
+                });
+                xhr.send(body);
+            });
+
+            <!-- deleteButton -->
+            $('#deleteButton').on('click', function (e) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('DELETE', "/api/v1/userProfile", false);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.send();
+                window.location.href = "/login";
+            });
+
+        </script>
+        <script>
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', "/api/v1/userProfile", false);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
+                    var json = JSON.parse(xhr.responseText);
+                    $('#nicknameInput').val(json.nickname);
+                    $('#emailInput').val(json.email);
+                    if(json.notification_get_new_books == true){
+                        $('#notificationNewBooks').prop( "checked", true );
+                    }
+                    if(json.notification_get_when_book_reserved == true){
+                        $('#notificationReservedBook').prop( "checked", true );
+                    }
+                    if(json.notification_daily == true){
+
+                        $('#notificationDaily').prop( "checked", true );
+                    }
+
+                    if(json.has_book_for_exchange == true){
+                        document.getElementById("returnBookRender").innerHTML = '<h4 class="card-title mt-3 text-left">Exchange previously reserved book</h4> ' +
+                                '<button type="submit" id="exchangeBookButton" onclick="exchange()" class="btn btn-dark">Return</button>';
+                    }
+                } else if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 400) {
+                    window.location.href = "/login";
+                }
+                else {
+                }
+            };
+            xhr.send();
+        </script>
+{{end}}
+
+</body>
 </html>
+{{end}}
