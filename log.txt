@@ -1,7 +1,1 @@
 Recording of the log file has started...
-pq: не удалось определить тип данных параметра $1
-dial tcp: lookup smtp.gmail.com: no such host
-sql: no rows in result set
-dial tcp: lookup smtp.gmail.com: no such host
-sql: no rows in result set
-dial tcp: lookup smtp.gmail.com: no such host
