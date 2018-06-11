@@ -54,6 +54,11 @@
                             <input type="checkbox" class="form-check-input" id="notificationReservedBook">
                             <label class="form-check-label" for="exampleCheck1">Receive notification when the book is reserved</label>
                         </div>
+                        <label for="space"></label>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="notificationDaily">
+                            <label class="form-check-label" for="exampleCheck1">Receive daily notifications</label>
+                        </div>
                     </div>
 
                 </div>
@@ -150,13 +155,18 @@
         if ($('#notificationReservedBook').is(":checked")) {
             notification_get_when_book_reserved = true;
         }
+        var notificationDailyy=false;
+        if ($('#notificationDaily').is(":checked")) {
+            notificationDailyy = true;
+        }
         var body = JSON.stringify({
             "nickname": nickname,
             "email": email,
             "password": passwordOld,
             "new_passwordd": passwordNew1,
             "notification_get_new_books":notification_get_new_books,
-            "notification_get_when_book_reserved":notification_get_when_book_reserved
+            "notification_get_when_book_reserved":notification_get_when_book_reserved,
+            "notification_daily":notificationDailyy
         });
         xhr.send(body);
     });
@@ -198,6 +208,10 @@
             }
             if(json.notification_get_when_book_reserved == true){
                 $('#notificationReservedBook').prop( "checked", true );
+            }
+            if(json.notification_daily == true){
+
+                $('#notificationDaily').prop( "checked", true );
             }
 
             if(json.has_book_for_exchange == true){

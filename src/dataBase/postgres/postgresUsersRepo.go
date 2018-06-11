@@ -16,8 +16,8 @@ func NewPostgresUsersRepo(Db *sql.DB) repository.UserRepository {
 //GetUserByEmail gets users from users table by
 func (p *postgresUsersRepository) GetUserByEmail(email string) (u repository.User, err error) {
 	row := p.Db.QueryRow(
-		"SELECT id, nickname,password,email,notification_get_new_books,notification_get_when_book_reserved FROM gotoboox.users where email=$1", email)
-	err = row.Scan(&u.ID, &u.Nickname, &u.Password, &u.Email, &u.NotificationGetBewBooks, &u.NotificationGetWhenBookReserved)
+		"SELECT id, nickname,password,email,notification_get_new_books,notification_get_when_book_reserved,notification_daily FROM gotoboox.users where email=$1", email)
+	err = row.Scan(&u.ID, &u.Nickname, &u.Password, &u.Email, &u.NotificationGetBewBooks, &u.NotificationGetWhenBookReserved,&u.NotificationDaily)
 	if err != nil {
 		return
 	}
@@ -26,8 +26,8 @@ func (p *postgresUsersRepository) GetUserByEmail(email string) (u repository.Use
 
 //UpdateInsertUserByEmail updates a user or insert if there is no such user
 func (p *postgresUsersRepository) UpdateUserByEmail(u repository.User, oldEmail string) (err error) {
-	_, err = p.Db.Query("UPDATE gotoboox.users set nickname=$1,email=$2,password=$3,notification_get_new_books=$4, notification_get_when_book_reserved=$5  where email=$6",
-		u.Nickname, u.Email, u.Password, u.NotificationGetBewBooks, u.NotificationGetWhenBookReserved, oldEmail)
+	_, err = p.Db.Query("UPDATE gotoboox.users set nickname=$1,email=$2,password=$3,notification_get_new_books=$4, notification_get_when_book_reserved=$5,notification_daily=$6  where email=$7",
+		u.Nickname, u.Email, u.Password, u.NotificationGetBewBooks, u.NotificationGetWhenBookReserved,u.NotificationDaily, oldEmail)
 	return
 }
 

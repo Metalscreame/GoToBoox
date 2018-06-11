@@ -146,8 +146,16 @@
         var url_string = window.location.href;
         var len = url_string.length;
         var param = url_string[len-1];
+
+        var xhr = new XMLHttpRequest();
         xhr.open('GET', '/books/taken/'+param,false);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == XMLHttpRequest.DONE && this.status == 200) {
+                window.location.href= '/books/taken/'+param;
+            }
+        };
         xhr.send();
+
     });
 
 </script>

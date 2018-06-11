@@ -109,17 +109,14 @@ func (s *UserService) UserUpdateHandler(c *gin.Context) {
 }
 
 //This function was created because cookies gives '%40' instead of '@' when read the email. It converts
-func convertEmailString(email string) (string) {
-	indexOfPercentSymb := strings.IndexRune(email, '%')
-	runes := []rune(email)
+func convertEmailString(emailCookie string) (string) {
+	indexOfPercentSymb := strings.IndexRune(emailCookie, '%')
+	runes := []rune(emailCookie)
 	runes[indexOfPercentSymb] = '@'
 	runes = append(runes[:indexOfPercentSymb+1], runes[indexOfPercentSymb+2:]...) //deletes 4
 	runes = append(runes[:indexOfPercentSymb+1], runes[indexOfPercentSymb+2:]...) //deletes 0
 	return string(runes)
 }
-
-
-
 
 //LogoutHandler is a handler function that logging out from site and clears users cookie
 //Uses route /api/v1/logout

@@ -36,6 +36,7 @@ type User struct {
 	Book                            Book      `json:"-"`
 	NotificationGetBewBooks         bool      `json:"notification_get_new_books"`
 	NotificationGetWhenBookReserved bool      `json:"notification_get_when_book_reserved"`
+	NotificationDaily               bool      `json:"notification_daily"`
 	RegisterDate                    time.Time `json:"-"`
 	Returning_book_id               int       `json:"-"`
 }
