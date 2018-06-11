@@ -24,9 +24,14 @@ func (p *postgresUsersRepository) GetUserByEmail(email string) (u repository.Use
 
 	if !n1.Valid {
 		u.Returning_book_id = 0
+	}else{
+		u.Returning_book_id=int(n1.Int64)
 	}
+
 	if !n2.Valid {
 		u.Book.ID = 0
+	}else{
+		u.Book.ID=int(n2.Int64)
 	}
 	return
 }

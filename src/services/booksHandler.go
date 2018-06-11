@@ -146,48 +146,46 @@ func BookHandler(c *gin.Context) {
 }*/
 
 func (b *BookService) insertNewBook(c *gin.Context) {
-	var book repository.Book
+	var bookToAdd repository.Book
 	var err error
 
-	if err = c.BindJSON(&book); err != nil {
+	if err = c.BindJSON(&bookToAdd); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "bad request"})
 		return
 	}
-	book.Base64Img = book.Base64Img[strings.IndexByte(book.Base64Img, ',')+1:]
-	if book.Image, err = base64.StdEncoding.DecodeString(book.Base64Img); err != nil {
+	bookToAdd.Base64Img = bookToAdd.Base64Img[strings.IndexByte(bookToAdd.Base64Img, ',')+1:]
+	if bookToAdd.Image, err = base64.StdEncoding.DecodeString(bookToAdd.Base64Img); err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
 		return
 	}
 
-	reservedBookId, err := strconv.Atoi(c.Param("book_id"))
+	bookIdToReserve, err := strconv.Atoi(c.Param("book_id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	if reservedBookId != 0 {
-		emailCookie, err := c.Request.Cookie("email")
-		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"status": "bad request"})
-			return
-		}
-
-		email := convertEmailString(emailCookie.Value)
-		err = b.BooksRepo.UpdateBookStateAndUsersBookIdByUserEmail(email, repository.BookStateReserved, reservedBookId)
-		if err != nil {
-			log.Println(err)
-			c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
-			return
-		}
+	emailCookie, err := c.Request.Cookie("email")
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "bad request"})
+		return
 	}
 
-	if err := b.BooksRepo.InsertNewBook(book); err != nil {
+	email := convertEmailString(emailCookie.Value)
+	err = b.BooksRepo.UpdateBookStateAndUsersBookIdByUserEmail(email, repository.BookStateReserved, bookIdToReserve)
+	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
 		return
 	}
-	go NotifyAllNewBook(book.Title, book.Description)
-	go b.ReservedTimer(reservedBookId)
+
+	if err := b.BooksRepo.InsertNewBook(bookToAdd); err != nil {
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
+		return
+	}
+	go NotifyAllNewBook(bookToAdd.Title, bookToAdd.Description)
+	go b.ReservedTimer(bookIdToReserve)
 	return
 }
 
