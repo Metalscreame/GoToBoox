@@ -41,7 +41,6 @@ func Start() {
 	router.GET(apiRoute, IndexHandler)
 	initUserProfileRoutes()
 	initBooksRoutes()
-	initCategoriesRoutes()
 	router.Run(":" + port)
 }
 
@@ -122,11 +121,4 @@ func initBooksRoutes() {
 	router.GET("/api/v1/updateBookStatus/:book_id", bookService.UpdateBookStatusToReturningFromTaken)
 	router.GET("/api/v1/updateBookStatusReturn/:book_id/:reserved_book_id", bookService.UpdateBookStatusToReturning)
 	router.GET("/api/v1/makeBookCross", bookService.ExchangeBook)
-}
-
-func initCategoriesRoutes() {
-	categoriesService := NewCategoriesService(postgres.CategoryRepoPq{})
-	{
-		router.GET("/categories", categoriesService.AllCategories)
-	}
 }

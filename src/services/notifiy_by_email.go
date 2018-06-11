@@ -55,8 +55,7 @@ func DailyEmailNotifications() {
 	}
 }
 
-
-
+//NofityAllBookReserved is a func that notifies by email everyone when the book is reserved
 func NofityAllBookReserved(bookTitle, bookDescription string) {
 	s := NewUserService(postgres.NewPostgresUsersRepo(dataBase.Connection))
 	listOfUsersEmails, err := s.UsersRepo.GetUsersEmailToNotifyReserved()

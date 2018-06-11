@@ -29,9 +29,9 @@ func (p *postgresUsersRepository) GetUserByEmail(email string) (u repository.Use
 	}
 
 	if !n2.Valid {
-		u.Book.ID = 0
+		u.BookId = 0
 	}else{
-		u.Book.ID=int(n2.Int64)
+		u.BookId=int(n2.Int64)
 	}
 	return
 }
@@ -138,6 +138,6 @@ func (p *postgresUsersRepository) MakeBookCross(email string) (err error) {
 	if err != nil {
 		return
 	}
-	_, err = p.Db.Query("UPDATE gotoboox.books SET  state=$1 where id=$2", repository.BookStateTaken, u.Book.ID)
+	_, err = p.Db.Query("UPDATE gotoboox.books SET  state=$1 where id=$2", repository.BookStateTaken, u.BookId)
 	return
 }
