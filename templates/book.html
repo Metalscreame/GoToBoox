@@ -92,7 +92,9 @@
     $('#booxIt').on('click', function (e) {
         var url_string = window.location.href;
         var len = url_string.length;
-        var param = url_string[len-1];
+        var param = url_string.substr(url_string.lastIndexOf('/'));
+        console.log(param)
+        
 
         var xhr = new XMLHttpRequest();
         xhr.open('GET', "/uploadPage/"+param, false);
