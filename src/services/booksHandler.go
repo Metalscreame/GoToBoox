@@ -49,6 +49,20 @@ func (b *BookService) showAllBooks(c *gin.Context) {
 		return
 	}
 }
+func(b *BookService) showTakenBooks(c *gin.Context) {
+	type Data struct{
+
+		Book []repository.Book
+	}
+	books, err := b.BooksRepo.GetAllTakenBooks()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	} else {
+		output := Data{books}
+		c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": output})
+		return
+	}
+}
 
 //getBooks is a handler for GetByCategory function
 func (b *BookService) getBooks(c *gin.Context) {
@@ -114,6 +128,8 @@ func BookHandler(c *gin.Context) {
 	output := Data{books}
 	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": output})
 }
+
+
 
 
 /*func (b BookService) getBook(c *gin.Context) {
