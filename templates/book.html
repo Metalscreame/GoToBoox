@@ -67,11 +67,11 @@
 </div>
 <script>
 
-    var url_string = window.location.href
-    var len = url_string.length
-
-        var param = url_string.substr(url_string.lastIndexOf('/'));
-        console.log(param)    var xhr = new XMLHttpRequest();
+    var url_string = window.location.href;
+    var len = url_string.length;
+    var param = url_string.substr(url_string.lastIndexOf('/'));
+    console.log(param);
+    var xhr = new XMLHttpRequest();
     xhr.open('GET', '/api/v1/book/' +param, false);
     xhr.send();
     if (xhr.status != 200) {
