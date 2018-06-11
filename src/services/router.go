@@ -94,7 +94,7 @@ func initUserProfileRoutes() {
 	router.GET("/userProfile", UserProfileHandler)
 
 	//Shows the lock page
-	router.GET("/uploadPage/:book_id", midlwares.EnsureLoggedIn(),ShowUploadBookPage)
+	router.GET("/uploadPage/:book_id", midlwares.EnsureLoggedIn(), ShowUploadBookPage)
 
 	// Show the user's profile page
 	// Ensure that the user is logged in by using the middleware
@@ -115,15 +115,14 @@ func initBooksRoutes() {
 	router.GET("/api/v1/book/:book_id", bookService.getBook)
 	router.GET("/book/:book_id", ShowBook)
 
-	router.GET("/api/v1/books/taken",bookService.showTakenBooks)
-	router.GET("/books/taken/:id",ShowTakenBooksPage)
+	router.GET("/api/v1/books/taken", bookService.showTakenBooks)
+	router.GET("/books/taken/:id", ShowTakenBooksPage)
 
-	router.POST("/api/v1/insertNewBook/:book_id", midlwares.EnsureLoggedIn(),bookService.insertNewBook)
+	router.POST("/api/v1/insertNewBook/:book_id", midlwares.EnsureLoggedIn(), bookService.insertNewBook)
 	router.GET("/api/v1/updateBookStatus/:book_id", bookService.UpdateBookStatusToReturningFromTaken)
 	router.GET("/api/v1/updateBookStatusReturn/:book_id/:reserved_book_id", bookService.UpdateBookStatusToReturning)
-	router.GET("/api/v1/makeBookCross",bookService.ExchangeBook)
-	}
-
+	router.GET("/api/v1/makeBookCross", bookService.ExchangeBook)
+}
 
 func initCategoriesRoutes() {
 	categoriesService := NewCategoriesService(postgres.CategoryRepoPq{})

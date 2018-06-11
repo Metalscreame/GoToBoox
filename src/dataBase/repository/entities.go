@@ -38,19 +38,5 @@ type User struct {
 	NotificationGetWhenBookReserved bool      `json:"notification_get_when_book_reserved"`
 	NotificationDaily               bool      `json:"notification_daily"`
 	RegisterDate                    time.Time `json:"-"`
-	Returning_book_id               int       `json:"-"`
-}
-
-type Authors struct {
-	ID         int
-	FirstName  string
-	MiddleName string
-	LastName   string
-}
-
-type BookDescription struct {
-	BookTitle     string  `json:"bookTitle"`
-	Description   string  `json:"description"`
-	Popularity    float32 `json:"popularity"`
-	CategoryTitle string  `json:"CategoryTitle"`
+	ReturningBookId                 int       `json:"-"`
 }

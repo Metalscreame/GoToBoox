@@ -156,24 +156,3 @@ func (p *booksRepositoryPG)	UpdateBookStateAndUsersBookIdByUserEmail(email strin
 	_, err = p.Db.Query("UPDATE gotoboox.books set  state=$1 where id=$2",state,bookId)
 	return
 }
-
-func (p * booksRepositoryPG) GetFreeBooks(books []repository.Book)([]repository.Book, error)  {
-	rows, err := p.Db.Query("SELECT id, title, description FROM gotoboox.books WHERE state='FREE' LIMIT 1000")
-	if err != nil {
-		log.Printf("Get %v", err)
-	}
-
-	var book repository.Book
-	for rows.Next() {
-		if err := rows.Scan(&book.ID, &book.Title, &book.Description, &book.State);
-			err != nil {
-			log.Printf("Get %v", err)
-		}
-		books = append(books, book)
-	}
-	if err := rows.Err(); err != nil {
-		log.Printf("Get %v", err)
-	}
-	return books, nil
-}
-

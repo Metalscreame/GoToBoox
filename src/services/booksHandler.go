@@ -4,8 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"strconv"
 	"net/http"
-	"github.com/metalscreame/GoToBoox/src/dataBase/postgres"
-	"github.com/metalscreame/GoToBoox/src/dataBase"
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
 	"log"
 	"encoding/base64"
@@ -48,6 +46,7 @@ func (b *BookService) showAllBooks(c *gin.Context) {
 		return
 	}
 }
+
 func (b *BookService) showTakenBooks(c *gin.Context) {
 	type Data struct {
 		Book []repository.Book
@@ -110,40 +109,6 @@ func (b *BookService) getBook(c *gin.Context) {
 		}
 	}
 }
-
-func BookHandler(c *gin.Context) {
-	type Data struct {
-		Book repository.Book
-	}
-
-	bookRepo := postgres.NewBooksRepository(dataBase.Connection)
-	books, _ := bookRepo.GetByID(2)
-
-	output := Data{books}
-	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": output})
-}
-
-/*func (b BookService) getBook(c *gin.Context) {
-	// Check if the bookID is valid
-	if bookID, err := strconv.Atoi(c.Param("book_id"));
-
-		err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	} else {
-
-		// Check if the category exists
-		if book, err := b.BooksRepo.GetByID(bookID);
-			err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		} else {
-			fmt.Print(book)
-			c.JSON(http.StatusOK, book)
-			return
-		}
-	}
-}*/
 
 func (b *BookService) insertNewBook(c *gin.Context) {
 	var bookToAdd repository.Book
@@ -231,14 +196,14 @@ func (b *BookService) ExchangeBook(c *gin.Context) {
 		return
 	}
 
-	if user.Returning_book_id != 0 {
+	if user.ReturningBookId != 0 {
 		err = b.UsersRepo.ClearReturningBookIdByEmail(email)
 		if err != nil {
 			log.Println(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
 			return
 		}
-		err = b.BooksRepo.UpdateBookState(user.Returning_book_id, repository.BookStateFree)
+		err = b.BooksRepo.UpdateBookState(user.ReturningBookId, repository.BookStateFree)
 		if err != nil {
 			log.Println(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
