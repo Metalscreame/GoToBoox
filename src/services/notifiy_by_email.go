@@ -80,7 +80,7 @@ func NofityAllBookReserved(bookTitle, bookDescription string) {
 		m.SetAddressHeader("To", user.Email, user.Nickname)
 		m.SetHeader("Subject", "A book has been reserved")
 		m.SetBody("text/html", msg)
-		m.Attach("/static/images/logo.png")
+		m.Attach("/static/images/logo.jpg")
 
 		if err := gomail.Send(sc, m); err != nil {
 			log.Printf("Could not send email to %q: %v", user.Email, err)
@@ -111,7 +111,7 @@ func NotifyAllNewBook(bookTitle, bookDescription string) {
 		m.SetAddressHeader("To", user.Email, user.Nickname)
 		m.SetHeader("Subject", "A book has been reserved")
 		m.SetBody("text/html", msg)
-		m.Attach("/static/images/logo.png")
+		m.Attach("/static/images/logo.jpg")
 
 		if err := gomail.Send(sc, m); err != nil {
 			log.Printf("Could not send email to %q: %v", user.Email, err)

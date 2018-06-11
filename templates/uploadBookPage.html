@@ -125,8 +125,10 @@
         var xhr = new XMLHttpRequest();
         xhr.open('POST', '/api/v1/insertNewBook/'+param,false);
         xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.onload = function () {
-            //TODO show the progress
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == XMLHttpRequest.DONE && this.status == 200) {
+                window.location.href= '/userProfile';
+            }
         };
 
         reader.onload = function () {

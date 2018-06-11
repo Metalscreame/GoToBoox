@@ -15,11 +15,18 @@ func NewPostgresUsersRepo(Db *sql.DB) repository.UserRepository {
 
 //GetUserByEmail gets users from users table by
 func (p *postgresUsersRepository) GetUserByEmail(email string) (u repository.User, err error) {
-	row := p.Db.QueryRow(
-		"SELECT id, nickname,password,email,notification_get_new_books,notification_get_when_book_reserved,notification_daily FROM gotoboox.users where email=$1", email)
-	err = row.Scan(&u.ID, &u.Nickname, &u.Password, &u.Email, &u.NotificationGetBewBooks, &u.NotificationGetWhenBookReserved,&u.NotificationDaily)
+	var n1, n2 sql.NullInt64
+	row := p.Db.QueryRow("SELECT id, nickname,password,email,notification_get_new_books,notification_get_when_book_reserved,notification_daily,has_book_for_exchange,returning_book_id,book_id FROM gotoboox.users where email=$1", email)
+	err = row.Scan(&u.ID, &u.Nickname, &u.Password, &u.Email, &u.NotificationGetBewBooks, &u.NotificationGetWhenBookReserved, &u.NotificationDaily, &u.HasBookForExchange, &n1, &n2)
 	if err != nil {
 		return
+	}
+
+	if !n1.Valid {
+		u.Returning_book_id = 0
+	}
+	if !n2.Valid {
+		u.Book.ID = 0
 	}
 	return
 }
@@ -27,7 +34,7 @@ func (p *postgresUsersRepository) GetUserByEmail(email string) (u repository.Use
 //UpdateInsertUserByEmail updates a user or insert if there is no such user
 func (p *postgresUsersRepository) UpdateUserByEmail(u repository.User, oldEmail string) (err error) {
 	_, err = p.Db.Query("UPDATE gotoboox.users set nickname=$1,email=$2,password=$3,notification_get_new_books=$4, notification_get_when_book_reserved=$5,notification_daily=$6  where email=$7",
-		u.Nickname, u.Email, u.Password, u.NotificationGetBewBooks, u.NotificationGetWhenBookReserved,u.NotificationDaily, oldEmail)
+		u.Nickname, u.Email, u.Password, u.NotificationGetBewBooks, u.NotificationGetWhenBookReserved, u.NotificationDaily, oldEmail)
 	return
 }
 
@@ -114,8 +121,18 @@ func (p *postgresUsersRepository) ClearReturningBookIdByEmail(email string) (err
 	return
 }
 
+//_, err = p.Db.Query("UPDATE gotoboox.books AS b, gotoboox.users AS u SET  b.state=$1, u.book_id=NULL, u.has_book_for_exchange=FALSE where u.email=$2 AND b.id=u.book_id",
+
 func (p *postgresUsersRepository) MakeBookCross(email string) (err error) {
-	_, err = p.Db.Query("UPDATE gotoboox.books AS b, gotoboox.users AS u SET  b.state=$1, u.book_id=NULL, u.has_book_for_exchange=FALSE where u.email=$2 AND b.id=u.book_id",
-		repository.BookStateTaken, email)
+	u, err := p.GetUserByEmail(email)
+	if err != nil {
+		return
+	}
+
+	_, err = p.Db.Query("UPDATE gotoboox.users SET  book_id=NULL,has_book_for_exchange=FALSE where email=$1", email)
+	if err != nil {
+		return
+	}
+	_, err = p.Db.Query("UPDATE gotoboox.books SET  state=$1 where id=$2", repository.BookStateTaken, u.Book.ID)
 	return
 }
