@@ -181,7 +181,8 @@ func (s *UserService) PerformLoginHandler(c *gin.Context) {
 
 func isUserValid(email string, password string, repository repository.UserRepository) bool {
 	user, err := repository.GetUserByEmail(email)
-	if err != nil || user.Password != password {
+
+	if err != nil || user.Password !=GetMD5Hash(password) {
 		return false
 	}
 	return true
