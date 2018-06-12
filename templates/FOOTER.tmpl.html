@@ -318,21 +318,25 @@
             } else {
                 var data = JSON.parse(xhr.responseText);
                 console.log(data.data);
-                if(data.data['Books'].length >= 1){
-                    var takenBooks = document.getElementById('takenBooks');
-                    var i = 0;
-                    for (i; i < data.data['Books'].length; i++) {
-                        console.log(data.data['Books'][i]['id']);
-                        var newLi = document.createElement('li');
-                        newLi.innerHTML = "<a href='/api/v1/updateBookStatusReturn/" + data.data['Books'][i]['id'] + "/" + "'>" + data.data['Books'][i]['title'] + "</a>";
-                        takenBooks.appendChild(newLi)
-                    }
-                    if(i==0){
-                        var newLi = document.createElement('li');
-                        newLi.innerHTML = "<a href='&#160" + data.data['Books'][i]['id'] + "/" + "'>" + data.data['Books'][i]['title'] + "</a>";
-                        takenBooks.appendChild(newLi)
-                    }
-                }
+                var newLi = document.createElement('li');
+                newLi.innerHTML = "<a href='/book/" + data.id  + "'>" + data.title + "</a>";
+                takenBooks.appendChild(newLi)
+
+                // if(data.data['Books'].length >= 1){
+                //     var takenBooks = document.getElementById('takenBooks');
+                //     var i = 0;
+                //     for (i; i < data.data['Books'].length; i++) {
+                //         console.log(data.data['Books'][i]['id']);
+                //         var newLi = document.createElement('li');
+                //         newLi.innerHTML = "<a href='/api/v1/updateBookStatusReturn/" + data.data['Books'][i]['id'] + "/" + "'>" + data.data['Books'][i]['title'] + "</a>";
+                //         takenBooks.appendChild(newLi)
+                //     }
+                //     if(i==0){
+                //         var newLi = document.createElement('li');
+                //         newLi.innerHTML = "<a href='/api/v1/updateBookStatusReturn/" + data.id + "/"+ param + "'>" + data.title + "</a>";
+                //         takenBooks.appendChild(newLi)
+                //     }
+                // }
             }
         </script>
 

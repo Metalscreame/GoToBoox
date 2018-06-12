@@ -91,14 +91,19 @@
             var takenBooks = document.getElementById('takenBooks');
             var data = JSON.parse(xhr.responseText);
             var i = 0;
-            for (i; i < data.data['Book'].length; i++) {
-                console.log(data.data['Book'][i]['id']);
-                // alert(data.data['Book'][i]['id']);
-                var newLi = document.createElement('li');
-                newLi.innerHTML = "<a href='/api/v1/updateBookStatusReturn/" + data.data['Book'][i]['id'] + "/"+ param + "'>" + data.data['Book'][i]['title'] + "</a>";
-                takenBooks.appendChild(newLi)
-                // document.getElementById('takenBookList').innerHTML = "<a href='/api/v1/updateBookStatus/" + data.data['Book'][i]['id'] + "'>" + data.data['Book'][i]['title'] + "</a>" ;
-            }
+            var newLi = document.createElement('li');
+            newLi.innerHTML = "<a href='/api/v1/updateBookStatusReturn/" + data.id + "/"+ param + "'>" + data.title + "</a>";
+            takenBooks.appendChild(newLi)
+
+            // for (i; i < data.data['Book'].length; i++) {
+            //     alert("render");
+            //     console.log(data.data['Book'][i]['id']);
+            //     // alert(data.data['Book'][i]['id']);
+            //     var newLi = document.createElement('li');
+            //     newLi.innerHTML = "<a href='/api/v1/updateBookStatusReturn/" + data.data['Book'][i]['id'] + "/"+ param + "'>" + data.data['Book'][i]['title'] + "</a>";
+            //     takenBooks.appendChild(newLi)
+            //     // document.getElementById('takenBookList').innerHTML = "<a href='/api/v1/updateBookStatus/" + data.data['Book'][i]['id'] + "'>" + data.data['Book'][i]['title'] + "</a>" ;
+            // }
         }
     }
 
