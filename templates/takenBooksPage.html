@@ -58,16 +58,15 @@
         var matches = document.cookie.match(new RegExp(
                 "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
         ));
-        return matches ? decodeURIComponent(matches[1]) : undefined;
+        return matches ? decodeURIComponent(matches[1]) : 'undefined';
     }
-    alert("before");
 
-    var isLoggedInCookie= getCookie("is_logged_in");
-    alert(isLoggedInCookie);
+    var isLoggedInCookie = getCookie("is_logged_in");
+    console.log(isLoggedInCookie);
     if(isLoggedInCookie !="true"){
         xhr.open('GET', '/api/v1/books/taken', false);
         xhr.send();
-        alert("notlogged");
+        console.log("notlogged");
         if (xhr.status != 200) {
             alert(xhr.status + ': ' + xhr.statusText);
         } else {

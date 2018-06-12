@@ -189,10 +189,10 @@ func isUserValid(email string, password string, repository repository.UserReposi
 
 func performLoginCookiesSetting(u repository.User, c *gin.Context) {
 	token := generateSessionToken()
-	c.SetCookie("token", token, 16000, "", "", false, true)
+	c.SetCookie("token", token, 16000, "", "", false, false)
 	c.Set("is_logged_in", true)
-	c.SetCookie("email", u.Email, 16000, "", "", false, true)
-	c.SetCookie("is_logged_in", "true", 16000, "", "", false, true)
+	c.SetCookie("email", u.Email, 16000, "", "", false, false)
+	c.SetCookie("is_logged_in", "true", 16000, "", "", false, false)
 }
 
 //GetMD5Hash generates md5 hash from input string
