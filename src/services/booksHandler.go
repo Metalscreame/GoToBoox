@@ -88,9 +88,6 @@ func (b *BookService) showReservedBooksByUser(c *gin.Context) {
 }
 
 func (b *BookService) showTakenBookByUser(c *gin.Context){
-	type Data struct {
-		Books []repository.Book
-	}
 
 	emailCookie, err := c.Request.Cookie("email")
 	if err != nil {
@@ -109,9 +106,9 @@ func (b *BookService) showTakenBookByUser(c *gin.Context){
 	if err!= nil{
 		
 	}
-	var output Data
-	output.Books = append(output.Books,book)
-	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": output})
+	book.ID=u.TakenBookId
+
+	c.JSON(http.StatusOK,book)
 	return
 }
 
@@ -307,7 +304,7 @@ func (b *BookService) UpdateBookStatusToReturning(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"status": "ok"})
+	c.Redirect(http.StatusFound, "/")
 	book, err := b.BooksRepo.GetByID(reservedBookId)
 	if err != nil {
 		log.Println(err)
