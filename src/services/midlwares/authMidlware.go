@@ -17,6 +17,7 @@ func EnsureLoggedIn() gin.HandlerFunc {
 	}
 }
 
+
 // This middleware ensures that a request will be aborted with an error
 // if the user is already logged in
 func EnsureNotLoggedIn() gin.HandlerFunc {
@@ -41,9 +42,8 @@ func SetUserStatus() gin.HandlerFunc {
 }
 
 func CheckLoggedIn(c *gin.Context) bool {
-	loggedInInterface, _ := c.Get("is_logged_in")
-	loggedIn := loggedInInterface.(bool)
-	if !loggedIn {
+	_, isLoggedIn := c.Get("is_logged_in")
+	if !isLoggedIn {
 		return false
 	}
 	return true

@@ -29,11 +29,13 @@ func Start() {
 	router.Static("/static", "./static")
 	router.LoadHTMLGlob("templates/*.html")
 
+	isLoggedIn := midlwares.CheckLoggedIn
 
 	router.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.tmpl.html", gin.H{
 			"title": "GoToBooX",
 			"page" : "main",
+			"isLoggedIn": &isLoggedIn,
 		})
 	})
 	router.GET("/location", func(c *gin.Context) {
