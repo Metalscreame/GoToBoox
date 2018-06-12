@@ -167,6 +167,7 @@
 {{if eq .page "registration"}}
 <script>
     $('#createButton').on('click', function (e) {
+        e.preventDefault();
         var email = document.getElementById("inputEmail").value;
         var password = document.getElementById("passwordInput").value;
         var password2 = document.getElementById("passwordInput2").value;
@@ -228,7 +229,7 @@
                     // // document.cookie = "bookToReturnFromUpload=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
                     // xhr2.open('GET', "/book/"+bookId, false);
                     // xhr2.send();
-                    window.location.replace = "/book/"+bookId;
+                    window.location.replace("/book/" + bookId);
                     return false;
                 } else {
                     alert("Nickname or email is already registered!");
