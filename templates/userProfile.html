@@ -1,4 +1,6 @@
 {{define "userprofile"}}
+<div class="card bg-light" style="left: 40%;">
+
     <div class="col-md-6 col-md-offset-6">
         <form class="form-horizontal" role="form">
             <fieldset>
@@ -74,7 +76,12 @@
                 <h2 class="card-title mt-5 text-left"></h2>
                 <h2 class="card-title mt-5 text-left"></h2>
 
+                <h4 class="card-title mt-3 text-left">Your taken book</h4>
+                <div class="item">
+                    <ul class="list1a" id="takenBooks">
 
+                    </ul>
+                </div>
 
                 <h4 class="card-title mt-3 text-left">Return previously taken book</h4>
                 <button type="submit" id="returnButton" onclick="returnTaken()" class="btn btn-dark">Return</button>
@@ -89,4 +96,6 @@
             </fieldset>
         </form>
     </div>
+</div>
+
 {{end}}

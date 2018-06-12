@@ -15,24 +15,15 @@ func NewPostgresUsersRepo(Db *sql.DB) repository.UserRepository {
 
 //GetUserByEmail gets users from users table by
 func (p *postgresUsersRepository) GetUserByEmail(email string) (u repository.User, err error) {
-	var n1, n2 sql.NullInt64
-	row := p.Db.QueryRow("SELECT id, nickname,password,email,notification_get_new_books,notification_get_when_book_reserved,notification_daily,has_book_for_exchange,returning_book_id,book_id FROM gotoboox.users where email=$1", email)
-	err = row.Scan(&u.ID, &u.Nickname, &u.Password, &u.Email, &u.NotificationGetBewBooks, &u.NotificationGetWhenBookReserved, &u.NotificationDaily, &u.HasBookForExchange, &n1, &n2)
+	var n1, n2, n3 sql.NullInt64
+	row := p.Db.QueryRow("SELECT id, nickname,password,email,notification_get_new_books,notification_get_when_book_reserved,notification_daily,has_book_for_exchange,returning_book_id,book_id,taken_book_id FROM gotoboox.users where email=$1", email)
+	err = row.Scan(&u.ID, &u.Nickname, &u.Password, &u.Email, &u.NotificationGetBewBooks, &u.NotificationGetWhenBookReserved, &u.NotificationDaily, &u.HasBookForExchange, &n1, &n2, &n3)
 	if err != nil {
 		return
 	}
-
-	if !n1.Valid {
-		u.ReturningBookId = 0
-	}else{
-		u.ReturningBookId =int(n1.Int64)
-	}
-
-	if !n2.Valid {
-		u.BookId = 0
-	}else{
-		u.BookId=int(n2.Int64)
-	}
+	u.ReturningBookId = getNullableIntValue(n1)
+	u.BookId=getNullableIntValue(n2)
+	u.TakenBookId=getNullableIntValue(n3)
 	return
 }
 
@@ -134,10 +125,17 @@ func (p *postgresUsersRepository) MakeBookCross(email string) (err error) {
 		return
 	}
 
-	_, err = p.Db.Query("UPDATE gotoboox.users SET  book_id=NULL,has_book_for_exchange=FALSE where email=$1", email)
+	_, err = p.Db.Query("UPDATE gotoboox.users SET  book_id=NULL,has_book_for_exchange=FALSE,taken_book_id=$1 where email=$2",u.BookId, email)
 	if err != nil {
 		return
 	}
 	_, err = p.Db.Query("UPDATE gotoboox.books SET  state=$1 where id=$2", repository.BookStateTaken, u.BookId)
 	return
+}
+
+func getNullableIntValue(nullableValue sql.NullInt64) int {
+	if !nullableValue.Valid {
+		return 0
+	}
+	return int(nullableValue.Int64)
 }
