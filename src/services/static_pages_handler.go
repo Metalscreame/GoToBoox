@@ -72,23 +72,27 @@ func ShowBook(c *gin.Context) {
 }
 
 func ShowUploadBookPage(c *gin.Context) {
+	isLoggedIn := midlwares.CheckLoggedIn(c)
 	c.HTML(
 		http.StatusOK,
 		"uploadBookPage.html",
 		gin.H{
 			"title": "Upload Book Page",
 			"page": "uploadpage",
+			"isLoggedIn": isLoggedIn,
 		},
 	)
 }
 
 func ShowTakenBooksPage(c *gin.Context) {
+	isLoggedIn := midlwares.CheckLoggedIn(c)
 	c.HTML(
 		http.StatusOK,
 		"takenBooksPage.html",
 		gin.H{
 			"title": "Taken books",
 			"page": "takenBooks",
+			"isLoggedIn": isLoggedIn,
 		},
 	)
 }
