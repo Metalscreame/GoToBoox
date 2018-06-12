@@ -346,6 +346,11 @@
                     takenBooks.appendChild(newLi)
                     // document.getElementById('takenBookList').innerHTML = "<a href='/api/v1/updateBookStatus/" + data.data['Book'][i]['id'] + "'>" + data.data['Book'][i]['title'] + "</a>" ;
                 }
+                if(i==0){
+                    var newLi = document.createElement('li');
+                    newLi.innerHTML = "<a href='&#160" + data.data['Book'][i]['id'] + "/"+ param + "'>" + data.data['Book'][i]['title'] + "</a>";
+                    takenBooks.appendChild(newLi)
+                }
             }
         </script>
 
