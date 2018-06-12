@@ -220,9 +220,10 @@
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == XMLHttpRequest.DONE && this.status == 200) {
                     // alert("Redirecting to book"+bookId);
+                    var xhr2= new XMLHttpRequest();
                     document.cookie = "bookToReturnFromUpload=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                    xhr.open('GET', "/book/"+bookId, false);
-                    xhr.send();
+                    xhr2.open('GET', "/book/"+bookId, false);
+                    xhr2.send();
                     // window.location.href = "/book/"+bookId;
                     return false;
                 } else {
