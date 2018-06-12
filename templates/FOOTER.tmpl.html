@@ -32,6 +32,8 @@
                         break;
                     case 'RESERVED' : status = '/static/img/reserved.svg';
                     break;
+                    case 'RETURNING' : status = '/static/img/returning.svg';
+                        break;
                 }
                 newLi.innerHTML = "<img src='" + status + "'> " + "<a href='/book/" + data.data['Books'][i]['id'] + "'>" + data.data['Books'][i]['title'] + "</a>"
                 ;
@@ -198,7 +200,6 @@
         }
 
         var bookId = getCookie("bookToReturnFromUpload");
-        console.log(bookId);
         var xhr = new XMLHttpRequest();
         var data = JSON.stringify({
             "email": email,
@@ -207,7 +208,6 @@
         });
         xhr.open('POST', "/api/v1/register", false);
         xhr.setRequestHeader('Content-Type', 'application/json');
-        alert(bookId);
         if (typeof bookId === "undefined") {
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == XMLHttpRequest.DONE && this.status == 200) {
