@@ -103,7 +103,7 @@ func initUserProfileRoutes() {
 
 	// Show the registration page
 	// Ensure that the user is not logged in by using the middleware
-	router.GET("/register", midlwares.EnsureNotLoggedIn(), ShowRegistrPage)
+	router.GET("/register/:bookid", midlwares.EnsureNotLoggedIn(), ShowRegistrPage)
 
 	// Show the user's profile page or login page
 	router.GET("/userProfile", UserProfileHandler)
