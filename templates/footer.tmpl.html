@@ -309,6 +309,20 @@
         </script>
 {{end}}
 
+
+
+<script>
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', "/api/v1/userProfile", false);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send();
+    if (xhr.status != 200) {
+        alert(xhr.status + ': ' + xhr.statusText);
+    } else {
+            var json = JSON.parse(xhr.responseText);
+            $('#account').html(json.nickname + "'s profile");
+    }
+</script>
 </body>
 </html>
 {{end}}

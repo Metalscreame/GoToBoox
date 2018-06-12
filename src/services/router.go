@@ -44,7 +44,6 @@ func Start() {
 	})
 
 
-
 	router.GET(apiRoute, IndexHandler)
 	initUserProfileRoutes()
 	initBooksRoutes()
