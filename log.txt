@@ -1,4 +1,7 @@
 Recording of the log file has started...
 Get sql: no rows in result set
 Get sql: no rows in result set
+<<<<<<< HEAD
+=======
 Get sql: no rows in result set
+>>>>>>> master

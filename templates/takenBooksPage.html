@@ -60,14 +60,14 @@
         ));
         return matches ? decodeURIComponent(matches[1]) : undefined;
     }
-    // var date = new Date(0);
-    // document.cookie = "name=; path=/; expires=" + date.toUTCString();
+    alert("before");
 
     var isLoggedInCookie= getCookie("is_logged_in");
-    // alert(isLoggedInCookie);
-    if(!isLoggedInCookie){
+    alert(isLoggedInCookie);
+    if(isLoggedInCookie !="true"){
         xhr.open('GET', '/api/v1/books/taken', false);
         xhr.send();
+        alert("notlogged");
         if (xhr.status != 200) {
             alert(xhr.status + ': ' + xhr.statusText);
         } else {
