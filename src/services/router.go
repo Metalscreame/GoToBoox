@@ -40,9 +40,12 @@ func Start() {
 		})
 	})
 	router.GET("/location", func(c *gin.Context) {
+		isLoggedIn := midlwares.CheckLoggedIn(c)
 		c.HTML(http.StatusOK, "index.tmpl.html", gin.H{
 			"title": "GoToBooX - location",
 			"page" : "location",
+			"isLoggedIn": isLoggedIn,
+
 		})
 	})
 

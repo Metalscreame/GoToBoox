@@ -8,24 +8,28 @@ import (
 
 //ShowLoginPage is a handler function that renders static login page
 func ShowLoginPage(c *gin.Context) {
+	isLoggedIn := midlwares.CheckLoggedIn(c)
 	c.HTML(
 		http.StatusOK,
 		"index.tmpl.html",
 		gin.H{
 			"title": "Login Page",
 			"page": "login",
+			"isLoggedIn": isLoggedIn,
 		},
 	)
 }
 
 //ShowRegistrPage is a handler function that renders static registration page
 func ShowRegistrPage(c *gin.Context) {
+	isLoggedIn := midlwares.CheckLoggedIn(c)
 	c.HTML(
 		http.StatusOK,
 		"index.tmpl.html",
 		gin.H{
 			"title": "Registration Page",
 			"page": "registration",
+			"isLoggedIn": isLoggedIn,
 		},
 	)
 }
@@ -45,20 +49,25 @@ func  UserProfileHandler(c *gin.Context) {
 
 //ShowUsersProfilePage is a handler function that renders static userProfile page
 func(s* UserService) ShowUsersProfilePage(c *gin.Context) {
+	isLoggedIn := midlwares.CheckLoggedIn(c)
 	c.HTML(
 		http.StatusOK,
 		"index.tmpl.html",
 		gin.H{
 			"title": "User's profile page",
 			"page": "userprofile",
+			"isLoggedIn": isLoggedIn,
 		},
 	)
 }
 
 func ShowBook(c *gin.Context) {
+	isLoggedIn := midlwares.CheckLoggedIn(c)
 	c.HTML(http.StatusOK, "index.tmpl.html", gin.H{
 		"title": "Book - Description",
 		"page" : "book",
+		"isLoggedIn": isLoggedIn,
+
 	})
 }
 
