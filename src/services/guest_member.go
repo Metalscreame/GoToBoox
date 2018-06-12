@@ -57,6 +57,7 @@ func (s *UserService) UserDeleteHandler(c *gin.Context) {
 	}
 	c.SetCookie("email", "", -1, "", "", false, true)
 	c.SetCookie("token", "", -1, "", "", false, true)
+	c.SetCookie("is_logged_in","",-1, "", "", false, true)
 	c.Set("is_logged_in", false)
 	c.JSON(http.StatusOK, gin.H{"status": "ok"})
 	return
@@ -123,6 +124,7 @@ func convertEmailString(emailCookie string) (string) {
 func (s *UserService) LogoutHandler(c *gin.Context) {
 	c.SetCookie("email", "", -1, "", "", false, true)
 	c.SetCookie("token", "", -1, "", "", false, true)
+	c.SetCookie("is_logged_in", "", -1, "", "", false, true)
 	c.Set("is_logged_in", false)
 	c.Redirect(http.StatusFound, "/")
 	return
@@ -190,6 +192,7 @@ func performLoginCookiesSetting(u repository.User, c *gin.Context) {
 	c.SetCookie("token", token, 16000, "", "", false, true)
 	c.Set("is_logged_in", true)
 	c.SetCookie("email", u.Email, 16000, "", "", false, true)
+	c.SetCookie("is_logged_in", "true", 16000, "", "", false, true)
 }
 
 //GetMD5Hash generates md5 hash from input string
