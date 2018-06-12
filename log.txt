@@ -1,1 +1,32 @@
 Recording of the log file has started...
+Get sql: no rows in result set
+Get pq: too many connections for role "zrlfyamblttpom"
+http: panic serving [::1]:57174: runtime error: invalid memory address or nil pointer dereference
+goroutine 209 [running]:
+net/http.(*conn).serve.func1(0xc0421d4960)
+	C:/Go/src/net/http/server.go:1726 +0xd7
+panic(0x99bae0, 0xd687d0)
+	C:/Go/src/runtime/panic.go:502 +0x237
+database/sql.(*Rows).Next(0x0, 0xa83998)
+	C:/Go/src/database/sql/sql.go:2599 +0x37
+github.com/metalscreame/GoToBoox/src/dataBase/postgres.(*postgresUsersRepository).GetAllUsers(0xc042004158, 0xc042004158, 0x0, 0x0, 0xacb500, 0xc04244ca20)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/src/dataBase/postgres/postgresUsersRepo.go:99 +0xd3
+github.com/metalscreame/GoToBoox/src/services.IndexHandler(0xc0420b60b0)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/src/services/index.go:21 +0xe6
+github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin.(*Context).Next(0xc0420b60b0)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin/context.go:108 +0x4a
+github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin.LoggerWithWriter.func1(0xc0420b60b0)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin/logger.go:83 +0xd3
+github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin.(*Context).Next(0xc0420b60b0)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin/context.go:108 +0x4a
+github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin.(*Engine).handleHTTPRequest(0xc042093680, 0xc0420b60b0)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin/gin.go:359 +0x58d
+github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin.(*Engine).ServeHTTP(0xc042093680, 0xacf500, 0xc042331a40, 0xc04233a100)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin/gin.go:326 +0x15a
+net/http.serverHandler.ServeHTTP(0xc0421ceea0, 0xacf500, 0xc042331a40, 0xc04233a100)
+	C:/Go/src/net/http/server.go:2694 +0xc3
+net/http.(*conn).serve(0xc0421d4960, 0xacfbc0, 0xc042058c80)
+	C:/Go/src/net/http/server.go:1830 +0x658
+created by net/http.(*Server).Serve
+	C:/Go/src/net/http/server.go:2795 +0x282
+pq: too many connections for role "zrlfyamblttpom"
