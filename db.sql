@@ -22,6 +22,7 @@ notification_get_when_book_reserved BOOLEAN DEFAULT FALSE,
 notification_daily BOOLEAN DEFAULT FALSE,
 has_book_for_exchange BOOLEAN DEFAULT FALSE,
 returning_book_id INT REFERENCES gotoboox.books (id) DEFAULT NULL,
+taken_book_id INT REFERENCES gotoboox.books (id) DEFAULT NULL,
 register_date DATE
 );
 

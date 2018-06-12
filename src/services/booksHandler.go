@@ -46,7 +46,7 @@ func (b *BookService) showAllBooks(c *gin.Context) {
 	}
 }
 
-func (b *BookService) showTakenBooks(c *gin.Context) {
+func (b *BookService) showAllTakenBooks(c *gin.Context) {
 	type Data struct {
 		Book []repository.Book
 	}
@@ -58,6 +58,61 @@ func (b *BookService) showTakenBooks(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": output})
 		return
 	}
+}
+
+func (b *BookService) showReservedBooksByUser(c *gin.Context) {
+	type Data struct {
+		Books []repository.Book
+	}
+	emailCookie, err := c.Request.Cookie("email")
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "bad request"})
+		return
+	}
+
+	email := convertEmailString(emailCookie.Value)
+	u,err:=b.UsersRepo.GetUserByEmail(email)
+	if err!=nil{
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "bad request"})
+		return
+	}
+	book,err:=b.BooksRepo.GetByID(u.ReturningBookId)
+	if err!= nil{
+
+	}
+	var output Data
+	output.Books = append(output.Books,book)
+	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": output})
+	return
+
+}
+
+func (b *BookService) showTakenBookByUser(c *gin.Context){
+	type Data struct {
+		Books []repository.Book
+	}
+
+	emailCookie, err := c.Request.Cookie("email")
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "bad request"})
+		return
+	}
+
+	email := convertEmailString(emailCookie.Value)
+	u,err:=b.UsersRepo.GetUserByEmail(email)
+	if err!=nil{
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "bad request"})
+		return
+	}
+
+	book,err:=b.BooksRepo.GetByID(u.TakenBookId)
+	if err!= nil{
+		
+	}
+	var output Data
+	output.Books = append(output.Books,book)
+	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": output})
+	return
 }
 
 //getBooks is a handler for GetByCategory function

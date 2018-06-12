@@ -215,6 +215,27 @@
     }
 </script>
         <script>
+            function showReserved() {
+                xhr.open('GET', '/api/v1/books/showReserved', false);
+                xhr.send();
+                if (xhr.status != 200) {
+                    alert(xhr.status + ': ' + xhr.statusText);
+                } else {
+                    var takenBooks = document.getElementById('reservedBooks');
+                    var data = JSON.parse(xhr.responseText);
+                    var i = 0;
+                    for (i; i < data.data['Book'].length; i++) {
+                        console.log(data.data['Book'][i]['id']);
+                        // alert(data.data['Book'][i]['id']);
+                        var newLi = document.createElement('li');
+                        newLi.innerHTML = "<a href='/api/v1/updateBookStatusReturn/" + data.data['Book'][i]['id'] + "/"+ param + "'>" + data.data['Book'][i]['title'] + "</a>";
+                        takenBooks.appendChild(newLi)
+                        // document.getElementById('takenBookList').innerHTML = "<a href='/api/v1/updateBookStatus/" + data.data['Book'][i]['id'] + "'>" + data.data['Book'][i]['title'] + "</a>" ;
+                    }
+                }
+            }
+        </script>
+        <script>
             $('#saveButton').on('click', function (e) {
                 var nickname = document.getElementById("nicknameInput").value;
                 var email = document.getElementById("emailInput").value;
@@ -298,6 +319,7 @@
                     if(json.has_book_for_exchange == true){
                         document.getElementById("returnBookRender").innerHTML = '<h4 class="card-title mt-3 text-left">Exchange previously reserved book</h4> ' +
                                 '<button type="submit" id="exchangeBookButton" onclick="exchange()" class="btn btn-dark">Return</button>';
+                        showReserved();
                     }
                 } else if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 400) {
                     window.location.href = "/login";
@@ -307,6 +329,26 @@
             };
             xhr.send();
         </script>
+        <script>
+            xhr.open('GET', '/api/v1/books/taken/0', false);
+            xhr.send();
+            if (xhr.status != 200) {
+                alert(xhr.status + ': ' + xhr.statusText);
+            } else {
+                var takenBooks = document.getElementById('takenBooks');
+                var data = JSON.parse(xhr.responseText);
+                var i = 0;
+                for (i; i < data.data['Book'].length; i++) {
+                    console.log(data.data['Book'][i]['id']);
+                    // alert(data.data['Book'][i]['id']);
+                    var newLi = document.createElement('li');
+                    newLi.innerHTML = "<a href='/api/v1/updateBookStatusReturn/" + data.data['Book'][i]['id'] + "/"+ param + "'>" + data.data['Book'][i]['title'] + "</a>";
+                    takenBooks.appendChild(newLi)
+                    // document.getElementById('takenBookList').innerHTML = "<a href='/api/v1/updateBookStatus/" + data.data['Book'][i]['id'] + "'>" + data.data['Book'][i]['title'] + "</a>" ;
+                }
+            }
+        </script>
+
 {{end}}
 
 </body>
