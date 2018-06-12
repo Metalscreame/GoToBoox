@@ -221,7 +221,7 @@
                 if (xhr.readyState == XMLHttpRequest.DONE && this.status == 200) {
                     // alert("Redirecting to book"+bookId);
                     document.cookie = "bookToReturnFromUpload=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                    xhr.open('POST', "/book/"+bookId, false);
+                    xhr.open('GET', "/book/"+bookId, false);
                     xhr.send();
                     // window.location.href = "/book/"+bookId;
                     return false;
