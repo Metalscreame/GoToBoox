@@ -78,6 +78,7 @@ func ShowTakenBooksPage(c *gin.Context) {
 		"takenBooksPage.html",
 		gin.H{
 			"title": "Taken books",
+			"page": "takenBooks",
 		},
 	)
 }
