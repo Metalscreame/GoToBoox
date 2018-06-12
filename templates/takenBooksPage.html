@@ -1,4 +1,8 @@
 {{template "header" .}}
+{{template "nav" .}}
+<div class="wrapper">
+    <div class="container content">
+        <div class="row">
 <div class="div-box mb mt">
     <div class="foo">
         <span class="letter" data-letter="T">T</span>
@@ -47,68 +51,5 @@
 </div>
     </div>
 </div>
-
-<script>
-
-    var url_string = window.location.href;
-    var param = url_string.substr(url_string.lastIndexOf('/')+1);
-    var xhr = new XMLHttpRequest();
-
-    function getCookie(name) {
-        var matches = document.cookie.match(new RegExp(
-                "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-        ));
-        return matches ? decodeURIComponent(matches[1]) : 'undefined';
-    }
-
-    var isLoggedInCookie = getCookie("is_logged_in");
-    console.log(isLoggedInCookie);
-    if(isLoggedInCookie !="true"){
-        xhr.open('GET', '/api/v1/books/taken', false);
-        xhr.send();
-        console.log("notlogged");
-        if (xhr.status != 200) {
-            alert(xhr.status + ': ' + xhr.statusText);
-        } else {
-            var takenBooks = document.getElementById('takenBooks');
-            var data = JSON.parse(xhr.responseText);
-            var i = 0;
-            for (i; i < data.data['Book'].length; i++) {
-                console.log(data.data['Book'][i]['id']);
-                // alert(data.data['Book'][i]['id']);
-                var newLi = document.createElement('li');
-                newLi.innerHTML = "<a href='/book/" + data.data['Book'][i]['id'] +  "'>" + data.data['Book'][i]['title'] + "</a>";
-                takenBooks.appendChild(newLi)
-                // document.getElementById('takenBookList').innerHTML = "<a href='/api/v1/updateBookStatus/" + data.data['Book'][i]['id'] + "'>" + data.data['Book'][i]['title'] + "</a>" ;
-            }
-        }
-    }else{
-        xhr.open('GET', '/api/v1/books/taken/0', false);
-        xhr.send();
-        if (xhr.status != 200) {
-            alert(xhr.status + ': ' + xhr.statusText);
-        } else {
-            var takenBooks = document.getElementById('takenBooks');
-            var data = JSON.parse(xhr.responseText);
-            var i = 0;
-            var newLi = document.createElement('li');
-            newLi.innerHTML = "<a href='/api/v1/updateBookStatusReturn/" + data.id + "/"+ param + "'>" + data.title + "</a>";
-            takenBooks.appendChild(newLi)
-
-            // for (i; i < data.data['Book'].length; i++) {
-            //     alert("render");
-            //     console.log(data.data['Book'][i]['id']);
-            //     // alert(data.data['Book'][i]['id']);
-            //     var newLi = document.createElement('li');
-            //     newLi.innerHTML = "<a href='/api/v1/updateBookStatusReturn/" + data.data['Book'][i]['id'] + "/"+ param + "'>" + data.data['Book'][i]['title'] + "</a>";
-            //     takenBooks.appendChild(newLi)
-            //     // document.getElementById('takenBookList').innerHTML = "<a href='/api/v1/updateBookStatus/" + data.data['Book'][i]['id'] + "'>" + data.data['Book'][i]['title'] + "</a>" ;
-            // }
-        }
-    }
-
-
-</script>
-</body>
-</html>
-
+        </div></div>
+{{template "footer" .}}
