@@ -1,107 +1,104 @@
 {{define "userprofile"}}
-<div class="bg-light" style="">
 
-    <div class="col-md-6 col-md-offset-6">
-        <form class="form-horizontal" role="form">
-            <fieldset>
-                <h2 class="card-title mt-5 text-left ms">Account Details</h2>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label" for="textinput">Nickname</label>
-                    <div class="col-sm-10">
-                        <input type="text" placeholder="Youre nickname" class="form-control" id="nicknameInput">
-                    </div>
+<div class="col-md-6 col-md-offset-6">
+    <form class="form-horizontal" role="form">
+        <fieldset>
+            <h2 class="card-title mt-5 text-left ms">Account Details</h2>
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="textinput">Nickname</label>
+                <div class="col-sm-10">
+                    <input type="text" placeholder="Youre nickname" class="form-control" id="nicknameInput">
                 </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label" for="textinput">Email</label>
-                    <div class="col-sm-10">
-                        <input type="text" placeholder="Your Email" class="form-control" id="emailInput">
-                    </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="textinput">Email</label>
+                <div class="col-sm-10">
+                    <input type="text" placeholder="Your Email" class="form-control" id="emailInput">
                 </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label" for="textinput">Password</label>
-                    <div class="col-sm-10">
-                        <input type="password" placeholder="Old password" class="form-control" id="passwordInputOld">
-                    </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="textinput">Password</label>
+                <div class="col-sm-10">
+                    <input type="password" placeholder="Old password" class="form-control" id="passwordInputOld">
+                </div>
+                <label class="col-sm-2 control-label" for="textinput"></label>
+
+                <div class="col-sm-10">
+                    <input type="password" placeholder="New password" class="form-control" id="passwordInputNew1">
+                </div>
+                <div class="col-sm-10">
                     <label class="col-sm-2 control-label" for="textinput"></label>
 
-                    <div class="col-sm-10">
-                        <input type="password" placeholder="New password" class="form-control" id="passwordInputNew1">
-                    </div>
-                    <div class="col-sm-10">
-                        <label class="col-sm-2 control-label" for="textinput"></label>
-
-                        <input type="password" placeholder="Repeat" class="form-control" id="passwordInputNew2">
-                    </div>
-
-                    <h4 class="card-title mt-3 text-left">Email notifications</h4>
-                    <div class="col-sm-11">
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="notificationNewBooks">
-                            <label class="form-check-label" for="exampleCheck1">Receive notification when the new book
-                                is added</label>
-                        </div>
-                        <label for="space"></label>
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="notificationReservedBook">
-                            <label class="form-check-label" for="exampleCheck1">Receive notification when the book is
-                                reserved</label>
-                        </div>
-                        <label for="space"></label>
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="notificationDaily">
-                            <label class="form-check-label" for="exampleCheck1">Receive daily notifications</label>
-                        </div>
-                    </div>
+                    <input type="password" placeholder="Repeat" class="form-control" id="passwordInputNew2">
                 </div>
 
-                <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <div class="pull-right">
-                            <button type="submit" id="deleteButton" class="btn btn-dark">Delete current user</button>
-                            <button type="submit" id="saveButton" class="btn btn-dark">Save changes</button>
-                        </div>
+                <h4 class="card-title mt-3 text-left">Email notifications</h4>
+                <div class="col-sm-11">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="notificationNewBooks">
+                        <label class="form-check-label" for="exampleCheck1">Receive notification when the new book
+                            is added</label>
+                    </div>
+                    <label for="space"></label>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="notificationReservedBook">
+                        <label class="form-check-label" for="exampleCheck1">Receive notification when the book is
+                            reserved</label>
+                    </div>
+                    <label for="space"></label>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="notificationDaily">
+                        <label class="form-check-label" for="exampleCheck1">Receive daily notifications</label>
                     </div>
                 </div>
-            </fieldset>
-        </form>
-    </div>
-</div>
-<div class="bg-light" style="">
+            </div>
 
-    <div class="col-md-6 col-md-offset-6">
-            <form class="form-horizontal" role="form">
-                <fieldset>
-                    <h2 class="card-title mt-5 text-left">Operations with books</h2>
-                    <h2 class="card-title mt-5 text-left"></h2>
-
-
-                    <h4 class="card-title mt-3 text-left">Donate people a book</h4>
-                    <button type="submit" id="donateButton" onclick="donate()" class="btn btn-dark">Donate</button>
-
-                    <h2 class="card-title mt-5 text-left"></h2>
-                    <h2 class="card-title mt-5 text-left"></h2>
-
-                    <h4 class="card-title mt-3 text-left">Your taken book</h4>
-                    <div class="item">
-                        <ul class="list1a" id="takenBooks">
-
-                        </ul>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <div class="pull-right">
+                        <button type="submit" id="deleteButton" class="btn btn-dark">Delete current user</button>
+                        <button type="submit" id="saveButton" class="btn btn-dark">Save changes</button>
                     </div>
-
-                    <h4 class="card-title mt-3 text-left">Return previously taken book</h4>
-                    <button type="submit" id="returnButton" onclick="returnTaken()" class="btn btn-dark">Return</button>
-
-                    <h2 class="card-title mt-5 text-left"></h2>
-                    <h2 class="card-title mt-5 text-left"></h2>
-                    <h2 class="card-title mt-5 text-left"></h2>
-                    <h2 class="card-title mt-5 text-left"></h2>
-
-
-                    <div id="returnBookRender"></div>
-                </fieldset>
-            </form>
-        </div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
 </div>
+
+<div class="col-md-6 col-md-offset-6">
+    <form class="form-horizontal" role="form">
+        <fieldset>
+            <h2 class="card-title mt-5 text-left">Operations with books</h2>
+            <h2 class="card-title mt-5 text-left"></h2>
+
+
+            <h4 class="card-title mt-3 text-left">Donate people a book</h4>
+            <button type="submit" id="donateButton" onclick="donate()" class="btn btn-dark">Donate</button>
+
+            <h2 class="card-title mt-5 text-left"></h2>
+            <h2 class="card-title mt-5 text-left"></h2>
+
+            <h4 class="card-title mt-3 text-left">Your taken book</h4>
+            <div class="item">
+                <ul class="list1a" id="takenBooks">
+
+                </ul>
+            </div>
+
+            <h4 class="card-title mt-3 text-left">Return previously taken book</h4>
+            <button type="submit" id="returnButton" onclick="returnTaken()" class="btn btn-dark">Return</button>
+
+            <h2 class="card-title mt-5 text-left"></h2>
+            <h2 class="card-title mt-5 text-left"></h2>
+            <h2 class="card-title mt-5 text-left"></h2>
+            <h2 class="card-title mt-5 text-left"></h2>
+
+
+            <div id="returnBookRender"></div>
+        </fieldset>
+    </form>
+</div>
+
 
 
 {{end}}
