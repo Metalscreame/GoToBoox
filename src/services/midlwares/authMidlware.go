@@ -42,8 +42,8 @@ func SetUserStatus() gin.HandlerFunc {
 }
 
 func CheckLoggedIn(c *gin.Context) bool {
-	_, isLoggedIn := c.Get("is_logged_in")
-	if !isLoggedIn {
+	_, err := c.Request.Cookie("is_logged_in")
+	if err != nil {
 		return false
 	}
 	return true

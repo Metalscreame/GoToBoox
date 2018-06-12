@@ -15,6 +15,7 @@ const (
 )
 var router *gin.Engine
 
+
 //Start is a function that starts server and initializes all the routes.
 func Start() {
 	port, ok := os.LookupEnv("PORT")
@@ -29,13 +30,13 @@ func Start() {
 	router.Static("/static", "./static")
 	router.LoadHTMLGlob("templates/*.html")
 
-	isLoggedIn := midlwares.CheckLoggedIn
 
 	router.GET("/", func(c *gin.Context) {
+		isLoggedIn := midlwares.CheckLoggedIn(c)
 		c.HTML(http.StatusOK, "index.tmpl.html", gin.H{
 			"title": "GoToBooX",
 			"page" : "main",
-			"isLoggedIn": &isLoggedIn,
+			"isLoggedIn": isLoggedIn,
 		})
 	})
 	router.GET("/location", func(c *gin.Context) {
