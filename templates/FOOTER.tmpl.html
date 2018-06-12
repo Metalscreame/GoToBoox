@@ -173,17 +173,18 @@
             alert("Passwords are not equal!");
             return;
         }
-
-        function validateEmail(email) {
-            var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            return re.test(email);
-        }
-
-        if (!validateEmail(email)) {
-            $result.text(email + " is valid :)");
-            $result.css("color", "green");
-            return;
-        }
+        //
+        // function validateEmail(email) {
+        //     var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        //     return re.test(email);
+        // }
+        //
+        // if (!validateEmail(email)) {
+        //     console.log("validate em");
+        //     $result.text(email + " is valid :)");
+        //     $result.css("color", "green");
+        //     return;
+        // }
 
         function getCookie(name) {
             var matches = document.cookie.match(new RegExp(
@@ -218,9 +219,12 @@
         }else{
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == XMLHttpRequest.DONE && this.status == 200) {
-                    alert("Redirecting to book"+bookId);
+                    // alert("Redirecting to book"+bookId);
+                    var xhr2= new XMLHttpRequest();
                     document.cookie = "bookToReturnFromUpload=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                    window.location.href = "/book/"+bookId;
+                    xhr2.open('GET', "/book/"+bookId, false);
+                    xhr2.send();
+                    // window.location.href = "/book/"+bookId;
                     return false;
                 } else {
                     alert("Nickname or email is already registered!");
