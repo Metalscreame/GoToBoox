@@ -105,9 +105,11 @@
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == XMLHttpRequest.DONE && this.status == 200) {
                     setCookie("bookToReturnFromUpload",param.toString(),1);
+                    var xhr2 = new XMLHttpRequest();
+
                     window.location.href= "/register/"+param;
-                    xhr.open('GET', "/register/"+param, false);
-                    xhr.send();
+                    xhr2.open('GET', "/register/"+param, false);
+                    xhr2.send();
 
                 }else{
                 }
