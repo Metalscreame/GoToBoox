@@ -77,6 +77,7 @@ func ShowUploadBookPage(c *gin.Context) {
 		"uploadBookPage.html",
 		gin.H{
 			"title": "Upload Book Page",
+			"page": "uploadpage",
 		},
 	)
 }
