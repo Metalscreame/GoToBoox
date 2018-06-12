@@ -121,35 +121,35 @@ func NotifyAllNewBook(bookTitle, bookDescription string) {
 
 func prepareMsgNewBook(bookTitle, bookDescription string) string {
 	var b bytes.Buffer
-	b.WriteString("Hello from GoToBooX!\nTWe have a new book at GoToBooX for you!\n")
+	b.WriteString("Hello from GoToBooX!\r\nWe have a new book at GoToBooX for you!\r\n")
 	b.WriteString(bookTitle)
-	b.WriteString("\n\n\n")
+	b.WriteString("\r\n\n\n")
 	b.WriteString("Description\n\n")
 	b.WriteString(bookDescription)
-	b.WriteString("\n\nHave a nice day! Don't forget to read the BooX :)")
+	b.WriteString("\r\n\nHave a nice day! Don't forget to read the BooX :)")
 	return b.String()
 }
 
 func prepareMsgBookReserved(bookTitle, bookDescription string) string {
 	var b bytes.Buffer
-	b.WriteString("Hello from GoToBooX!\nThis book has been reserved!\n")
+	b.WriteString("Hello from GoToBooX!\nThis book has been reserved!\r\n")
 	b.WriteString(bookTitle)
-	b.WriteString("\n\n\n")
+	b.WriteString("\r\n\n\n")
 	b.WriteString("Description\n\n")
 	b.WriteString(bookDescription)
-	b.WriteString("\n\nHave a nice day! Don't forget to read the BooX :)")
+	b.WriteString("\r\n\nHave a nice day! Don't forget to read the BooX :)")
 	return b.String()
 }
 
 func prepareMsgAllAvailebleBooksEveryDay(books []repository.Book) string {
 	var b bytes.Buffer
-	b.WriteString("Hello from GoToBooX!\nThere are the list of books that can be read!\n")
-	b.WriteString("\n\n")
-	b.WriteString("Take a look: \n\n")
+	b.WriteString("Hello from GoToBooX!\nThere are the list of books that can be read!\r\n")
+	b.WriteString("\r\n\n")
+	b.WriteString("Take a look: \r\n\n")
 	for _, book := range books {
 		b.WriteString(book.Title)
-		b.WriteString("\n")
+		b.WriteString("\r\n")
 	}
-	b.WriteString("\n\nHave a nice day! Don't forget to read the BooX :)")
+	b.WriteString("\r\n\nHave a nice day! Don't forget to read the BooX :)")
 	return b.String()
 }
