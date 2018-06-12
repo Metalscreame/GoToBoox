@@ -174,34 +174,10 @@
 {{if eq .page "userprofile"}}
 <script>
     function donate(){
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', '/uploadPage/0',false);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                document.location.href="/uploadPage/0";
-                //return;
-            }
-        };
-        xhr.send();
+              window.location.href = "/uploadPage/0";
     }
-</script>
-<script>
-
-</script>
-
-<script>
     function returnTaken(){
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', '/books/taken/0',false);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                window.location.href = "/";
-                return;
-            }
-        };
-        xhr.send();
+                window.location.href = "/books/taken/0";
     }
 </script>
 
@@ -340,21 +316,22 @@
             if (xhr.status != 200) {
                 alert(xhr.status + ': ' + xhr.statusText);
             } else {
-                var takenBooks = document.getElementById('takenBooks');
                 var data = JSON.parse(xhr.responseText);
-                var i = 0;
-                for (i; i < data.data['Book'].length; i++) {
-                    console.log(data.data['Book'][i]['id']);
-                    // alert(data.data['Book'][i]['id']);
-                    var newLi = document.createElement('li');
-                    newLi.innerHTML = "<a href='/api/v1/updateBookStatusReturn/" + data.data['Book'][i]['id'] + "/"+ param + "'>" + data.data['Book'][i]['title'] + "</a>";
-                    takenBooks.appendChild(newLi)
-                    // document.getElementById('takenBookList').innerHTML = "<a href='/api/v1/updateBookStatus/" + data.data['Book'][i]['id'] + "'>" + data.data['Book'][i]['title'] + "</a>" ;
-                }
-                if(i==0){
-                    var newLi = document.createElement('li');
-                    newLi.innerHTML = "<a href='&#160" + data.data['Book'][i]['id'] + "/"+ param + "'>" + data.data['Book'][i]['title'] + "</a>";
-                    takenBooks.appendChild(newLi)
+                console.log(data.data);
+                if(data.data['Books'].length >= 1){
+                    var takenBooks = document.getElementById('takenBooks');
+                    var i = 0;
+                    for (i; i < data.data['Books'].length; i++) {
+                        console.log(data.data['Books'][i]['id']);
+                        var newLi = document.createElement('li');
+                        newLi.innerHTML = "<a href='/api/v1/updateBookStatusReturn/" + data.data['Books'][i]['id'] + "/" + "'>" + data.data['Books'][i]['title'] + "</a>";
+                        takenBooks.appendChild(newLi)
+                    }
+                    if(i==0){
+                        var newLi = document.createElement('li');
+                        newLi.innerHTML = "<a href='&#160" + data.data['Books'][i]['id'] + "/" + "'>" + data.data['Books'][i]['title'] + "</a>";
+                        takenBooks.appendChild(newLi)
+                    }
                 }
             }
         </script>
