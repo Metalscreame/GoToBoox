@@ -246,25 +246,17 @@
               window.location.href = "/uploadPage/0";
     }
     function returnTaken(){
-         window.location.href = "http://gotoboox.herokuapp.com/";
+         window.location.href = "/";
     }
-</script>
-
-<script>
     function exchange(){
         var xhr = new XMLHttpRequest();
         xhr.open('GET', '/api/v1/makeBookCross',false);
         xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-               window.location.href = "/";
-                return;
-            }
-        };
         xhr.send();
+        if (xhr.status != 200) {
+            window.location.replace("/");
+        }
     }
-</script>
-        <script>
             function showReserved() {
                 xhr.open('GET', '/api/v1/books/showReserved', false);
                 xhr.send();
@@ -284,8 +276,6 @@
                     }
                 }
             }
-        </script>
-        <script>
             $('#saveButton').on('click', function (e) {
                 var nickname = document.getElementById("nicknameInput").value;
                 var email = document.getElementById("emailInput").value;
@@ -368,7 +358,7 @@
 
                     if(json.has_book_for_exchange == true){
                         document.getElementById("returnBookRender").innerHTML = '<h4 class="card-title mt-3 text-left">Exchange previously reserved book</h4> ' +
-                                '<button type="submit" id="exchangeBookButton" onclick="exchange()" class="btn btn-dark">Return</button>';
+                                '<button type="submit" id="exchangeBookButton" onclick="exchange(); return false;" class="btn btn-dark">Return</button>';
                         showReserved();
                     }
                 } else if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 400) {
@@ -390,23 +380,7 @@
                 console.log(data.data);
                 var newLi = document.createElement('li');
                 newLi.innerHTML = "<a href='/book/" + data.id  + "'>" + data.title + "</a>";
-                takenBooks.appendChild(newLi)
-
-                // if(data.data['Books'].length >= 1){
-                //     var takenBooks = document.getElementById('takenBooks');
-                //     var i = 0;
-                //     for (i; i < data.data['Books'].length; i++) {
-                //         console.log(data.data['Books'][i]['id']);
-                //         var newLi = document.createElement('li');
-                //         newLi.innerHTML = "<a href='/api/v1/updateBookStatusReturn/" + data.data['Books'][i]['id'] + "/" + "'>" + data.data['Books'][i]['title'] + "</a>";
-                //         takenBooks.appendChild(newLi)
-                //     }
-                //     if(i==0){
-                //         var newLi = document.createElement('li');
-                //         newLi.innerHTML = "<a href='/api/v1/updateBookStatusReturn/" + data.id + "/"+ param + "'>" + data.title + "</a>";
-                //         takenBooks.appendChild(newLi)
-                //     }
-                // }
+                takenBooks.appendChild(newLi);
             }
         </script>
 
