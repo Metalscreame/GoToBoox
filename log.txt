@@ -134,3 +134,121 @@ created by net/http.(*Server).Serve
 	C:/Go/src/net/http/server.go:2795 +0x282
 pq: too many connections for role "zrlfyamblttpom"
 pq: too many connections for role "zrlfyamblttpom"
+Get pq: too many connections for role "zrlfyamblttpom"
+http: panic serving [::1]:12412: runtime error: invalid memory address or nil pointer dereference
+goroutine 756 [running]:
+net/http.(*conn).serve.func1(0xc042191360)
+	C:/Go/src/net/http/server.go:1726 +0xd7
+panic(0x99bae0, 0xd687d0)
+	C:/Go/src/runtime/panic.go:502 +0x237
+database/sql.(*Rows).Next(0x0, 0xa839a1)
+	C:/Go/src/database/sql/sql.go:2599 +0x37
+github.com/metalscreame/GoToBoox/src/dataBase/postgres.(*postgresUsersRepository).GetAllUsers(0xc04207c0b0, 0xc04207c0b0, 0x0, 0x0, 0xacb500, 0xc042121320)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/src/dataBase/postgres/postgresUsersRepo.go:99 +0xd3
+github.com/metalscreame/GoToBoox/src/services.IndexHandler(0xc04232c000)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/src/services/index.go:21 +0xe6
+github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin.(*Context).Next(0xc04232c000)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin/context.go:108 +0x4a
+github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin.LoggerWithWriter.func1(0xc04232c000)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin/logger.go:83 +0xd3
+github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin.(*Context).Next(0xc04232c000)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin/context.go:108 +0x4a
+github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin.(*Engine).handleHTTPRequest(0xc042093680, 0xc04232c000)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin/gin.go:359 +0x58d
+github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin.(*Engine).ServeHTTP(0xc042093680, 0xacf500, 0xc04222e000, 0xc042200800)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin/gin.go:326 +0x15a
+net/http.serverHandler.ServeHTTP(0xc0422baea0, 0xacf500, 0xc04222e000, 0xc042200800)
+	C:/Go/src/net/http/server.go:2694 +0xc3
+net/http.(*conn).serve(0xc042191360, 0xacfbc0, 0xc0422d6340)
+	C:/Go/src/net/http/server.go:1830 +0x658
+created by net/http.(*Server).Serve
+	C:/Go/src/net/http/server.go:2795 +0x282
+Get pq: too many connections for role "zrlfyamblttpom"
+http: panic serving [::1]:12416: runtime error: invalid memory address or nil pointer dereference
+goroutine 763 [running]:
+net/http.(*conn).serve.func1(0xc0421915e0)
+	C:/Go/src/net/http/server.go:1726 +0xd7
+panic(0x99bae0, 0xd687d0)
+	C:/Go/src/runtime/panic.go:502 +0x237
+database/sql.(*Rows).Next(0x0, 0xa839a1)
+	C:/Go/src/database/sql/sql.go:2599 +0x37
+github.com/metalscreame/GoToBoox/src/dataBase/postgres.(*postgresUsersRepository).GetAllUsers(0xc04207c1a0, 0xc04207c1a0, 0x0, 0x0, 0xacb500, 0xc042121c20)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/src/dataBase/postgres/postgresUsersRepo.go:99 +0xd3
+github.com/metalscreame/GoToBoox/src/services.IndexHandler(0xc0420a82c0)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/src/services/index.go:21 +0xe6
+github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin.(*Context).Next(0xc0420a82c0)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin/context.go:108 +0x4a
+github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin.LoggerWithWriter.func1(0xc0420a82c0)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin/logger.go:83 +0xd3
+github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin.(*Context).Next(0xc0420a82c0)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin/context.go:108 +0x4a
+github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin.(*Engine).handleHTTPRequest(0xc042093680, 0xc0420a82c0)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin/gin.go:359 +0x58d
+github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin.(*Engine).ServeHTTP(0xc042093680, 0xacf500, 0xc04228c2a0, 0xc042200c00)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin/gin.go:326 +0x15a
+net/http.serverHandler.ServeHTTP(0xc0422baea0, 0xacf500, 0xc04228c2a0, 0xc042200c00)
+	C:/Go/src/net/http/server.go:2694 +0xc3
+net/http.(*conn).serve(0xc0421915e0, 0xacfbc0, 0xc0422d74c0)
+	C:/Go/src/net/http/server.go:1830 +0x658
+created by net/http.(*Server).Serve
+	C:/Go/src/net/http/server.go:2795 +0x282
+pq: too many connections for role "zrlfyamblttpom"
+Get pq: too many connections for role "zrlfyamblttpom"
+http: panic serving [::1]:12426: runtime error: invalid memory address or nil pointer dereference
+goroutine 771 [running]:
+net/http.(*conn).serve.func1(0xc0421917c0)
+	C:/Go/src/net/http/server.go:1726 +0xd7
+panic(0x99bae0, 0xd687d0)
+	C:/Go/src/runtime/panic.go:502 +0x237
+database/sql.(*Rows).Next(0x0, 0xa839a1)
+	C:/Go/src/database/sql/sql.go:2599 +0x37
+github.com/metalscreame/GoToBoox/src/dataBase/postgres.(*postgresUsersRepository).GetAllUsers(0xc042005138, 0xc042005138, 0x0, 0x0, 0xacb500, 0xc0423d06c0)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/src/dataBase/postgres/postgresUsersRepo.go:99 +0xd3
+github.com/metalscreame/GoToBoox/src/services.IndexHandler(0xc04232c160)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/src/services/index.go:21 +0xe6
+github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin.(*Context).Next(0xc04232c160)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin/context.go:108 +0x4a
+github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin.LoggerWithWriter.func1(0xc04232c160)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin/logger.go:83 +0xd3
+github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin.(*Context).Next(0xc04232c160)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin/context.go:108 +0x4a
+github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin.(*Engine).handleHTTPRequest(0xc042093680, 0xc04232c160)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin/gin.go:359 +0x58d
+github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin.(*Engine).ServeHTTP(0xc042093680, 0xacf500, 0xc04222e1c0, 0xc042201000)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin/gin.go:326 +0x15a
+net/http.serverHandler.ServeHTTP(0xc0422baea0, 0xacf500, 0xc04222e1c0, 0xc042201000)
+	C:/Go/src/net/http/server.go:2694 +0xc3
+net/http.(*conn).serve(0xc0421917c0, 0xacfbc0, 0xc0422d7ac0)
+	C:/Go/src/net/http/server.go:1830 +0x658
+created by net/http.(*Server).Serve
+	C:/Go/src/net/http/server.go:2795 +0x282
+Get pq: too many connections for role "zrlfyamblttpom"
+http: panic serving [::1]:12430: runtime error: invalid memory address or nil pointer dereference
+goroutine 790 [running]:
+net/http.(*conn).serve.func1(0xc0420555e0)
+	C:/Go/src/net/http/server.go:1726 +0xd7
+panic(0x99bae0, 0xd687d0)
+	C:/Go/src/runtime/panic.go:502 +0x237
+database/sql.(*Rows).Next(0x0, 0xa839a1)
+	C:/Go/src/database/sql/sql.go:2599 +0x37
+github.com/metalscreame/GoToBoox/src/dataBase/postgres.(*postgresUsersRepository).GetAllUsers(0xc04207c5d0, 0xc04207c5d0, 0x0, 0x0, 0xacb500, 0xc04223b560)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/src/dataBase/postgres/postgresUsersRepo.go:99 +0xd3
+github.com/metalscreame/GoToBoox/src/services.IndexHandler(0xc04232c210)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/src/services/index.go:21 +0xe6
+github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin.(*Context).Next(0xc04232c210)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin/context.go:108 +0x4a
+github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin.LoggerWithWriter.func1(0xc04232c210)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin/logger.go:83 +0xd3
+github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin.(*Context).Next(0xc04232c210)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin/context.go:108 +0x4a
+github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin.(*Engine).handleHTTPRequest(0xc042093680, 0xc04232c210)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin/gin.go:359 +0x58d
+github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin.(*Engine).ServeHTTP(0xc042093680, 0xacf500, 0xc04222e2a0, 0xc042126100)
+	C:/gopath/src/github.com/metalscreame/GoToBoox/vendor/github.com/gin-gonic/gin/gin.go:326 +0x15a
+net/http.serverHandler.ServeHTTP(0xc0422baea0, 0xacf500, 0xc04222e2a0, 0xc042126100)
+	C:/Go/src/net/http/server.go:2694 +0xc3
+net/http.(*conn).serve(0xc0420555e0, 0xacfbc0, 0xc0420586c0)
+	C:/Go/src/net/http/server.go:1830 +0x658
+created by net/http.(*Server).Serve
+	C:/Go/src/net/http/server.go:2795 +0x282
+pq: too many connections for role "zrlfyamblttpom"

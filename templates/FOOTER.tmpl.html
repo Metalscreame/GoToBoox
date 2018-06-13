@@ -248,6 +248,9 @@
     function returnTaken(){
          window.location.href = "/";
     }
+</script>
+
+<script>
     function exchange(){
         var xhr = new XMLHttpRequest();
         xhr.open('GET', '/api/v1/makeBookCross',false);
@@ -255,8 +258,11 @@
         xhr.send();
         if (xhr.status != 200) {
             window.location.replace("/");
+            return false;
         }
     }
+</script>
+        <script>
             function showReserved() {
                 xhr.open('GET', '/api/v1/books/showReserved', false);
                 xhr.send();
@@ -276,6 +282,8 @@
                     }
                 }
             }
+        </script>
+        <script>
             $('#saveButton').on('click', function (e) {
                 var nickname = document.getElementById("nicknameInput").value;
                 var email = document.getElementById("emailInput").value;
