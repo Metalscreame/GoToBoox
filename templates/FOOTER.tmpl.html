@@ -178,18 +178,6 @@
             alert("Passwords are not equal!");
             return;
         }
-        //
-        // function validateEmail(email) {
-        //     var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        //     return re.test(email);
-        // }
-        //
-        // if (!validateEmail(email)) {
-        //     console.log("validate em");
-        //     $result.text(email + " is valid :)");
-        //     $result.css("color", "green");
-        //     return;
-        // }
 
         function getCookie(name) {
             var matches = document.cookie.match(new RegExp(
@@ -200,15 +188,16 @@
         }
 
         var bookId = getCookie("bookToReturnFromUpload");
-        var xhr = new XMLHttpRequest();
         var data = JSON.stringify({
             "email": email,
             "nickname": nickname,
             "password": password
         });
-        xhr.open('POST', "/api/v1/register", false);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        if (typeof bookId === "undefined") {
+
+        if ( bookId == "undefined") {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', "/api/v1/register", false);
+            xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == XMLHttpRequest.DONE && this.status == 200) {
                     window.location.href = "/";
@@ -220,6 +209,9 @@
             xhr.send(data);
 
         }else{
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', "/api/v1/register", false);
+            xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == XMLHttpRequest.DONE && this.status == 200) {
                     // console.log('bookId is not undefined + status 200')
