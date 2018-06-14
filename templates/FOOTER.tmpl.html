@@ -94,7 +94,7 @@
             xhr.open('GET', "/uploadPage/"+param, false);
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == XMLHttpRequest.DONE && this.status == 200) {
-                    window.location.href= "/uploadPage/"+param;
+                    window.location.href= "/\/"+param;
                 }else{
 
                 }
@@ -438,7 +438,7 @@
 
         var url_string = window.location.href;
         var len = url_string.length;
-        var param = url_string[len-1];
+        var param = url_string.substr(url_string.lastIndexOf('/')+1);
 
 
         var xhr = new XMLHttpRequest();
