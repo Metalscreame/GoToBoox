@@ -94,7 +94,7 @@
             xhr.open('GET', "/uploadPage/"+param, false);
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == XMLHttpRequest.DONE && this.status == 200) {
-                    window.location.href= "/" + param;
+                    window.location.href= "/uploadPage/" + param;
                 }else{
 
                 }
