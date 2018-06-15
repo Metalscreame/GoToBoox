@@ -13,3 +13,4 @@ type UserRepository interface {
 	SetReturningBookIdByEmail(id int,email string)(err error)
 	ClearReturningBookIdByEmail(email string)(err error)
 }
+
