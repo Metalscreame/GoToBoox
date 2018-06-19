@@ -19,7 +19,7 @@ test:
 	-go test -v -cover ./... > tests.xml
 
 run:
-	set -e;
-	. ./sys_variables.sh
+
+	bash sys_variables.sh
 	go run main.go
 
