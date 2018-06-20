@@ -2,75 +2,87 @@ package services
 
 import (
 	"testing"
-	"github.com/oreuta/elementary-service/src/models/trianglesSort"
 	"net/http"
 	"bytes"
 	"net/http/httptest"
 	"github.com/golang/mock/gomock"
+	"github.com/gin-gonic/gin"
 	"github.com/metalscreame/GoToBoox/src/mocks"
+	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
+	"errors"
 )
 
-func TestUserService_PerformLoginHandler(t *testing.T) {
+func TestUserService_UserGetHandler(t *testing.T) {
 
 	testCases := []struct {
 		name            string
 		inputBody       string
 		expResponseBody string
 		needError       bool
+		needEmailCookie bool
+		needServerError bool
 	}{
 		{
-			name: "no err, regular request",
-			inputBody:`{"triangles":[{"vertices": "ABC","a": 10,"b": 20,"c": 22.36},{"vertices":"CBA","a":16,"b":15,"c": 6}]}`,
-			expResponseBody:`{"triangles":[{"vertices":"ABC","a":10,"b":20,"c":22.36,"square":0},{"vertices":"CBA","a":16,"b":15,"c":6,"square":0}]}`,
-			needError:false,
+			name:            "regular",
+			inputBody:       ``,
+			expResponseBody: `{"nickname":"","email":"","password":"","new_passwordd":"","has_book_for_exchange":false,"notification_get_new_books":false,"notification_get_when_book_reserved":false,"notification_daily":false,"taken_book_id":0}`,
+			needError:       false,
+			needEmailCookie: true,
 		},
 		{
-			name: "need err, bad request, want number but got string",
-			inputBody:`{"triangles":[{"vertices": "ABCsd","a": "10","b": 20,"c": 22.36},{"vertices":"CBA","a":16,"b":15,"c": 6}]}`,
-			expResponseBody:``,
-			needError:true,
+			name:            "error no email cookie",
+			inputBody:       ``,
+			needError:       true,
+			needEmailCookie: false,
 		},
 		{
-			name: "need err, bad request, empty",
-			inputBody:`{}`,
-			expResponseBody:``,
-			needError:true,
+			name:            "internal error",
+			inputBody:       ``,
+			needError:       true,
+			needEmailCookie: true,
+			needServerError: true,
 		},
 	}
-
-	//Mock
-	trianglesSquare = func(trianglesToSortSlice []trianglesSort.Triangle) ([]trianglesSort.Triangle, error) {
-		return trianglesToSortSlice,nil
-	}
-
 
 	for _, testCase := range testCases {
 		testCase := testCase
+
 		t.Run(testCase.name, func(t *testing.T) {
-			mockCtrl:=gomock.NewController(t)
+			mockCtrl := gomock.NewController(t)
 			defer mockCtrl.Finish()
 			mockUsersRepo := mocks.NewMockUserRepository(mockCtrl)
+			mockService := NewUserService(mockUsersRepo)
 
-			NewUserService(mockUsersRepo)
+			router := gin.New()
+			router.GET("/getUser", mockService.UserGetHandler)
 
-			mockUsersRepo.EXPECT().
-			req, err := http.NewRequest("POST", "/trianglesSort",bytes.NewReader([]byte(testCase.inputBody)))
+			req, err := http.NewRequest("GET", "/getUser", bytes.NewReader([]byte(testCase.inputBody)))
 			if err != nil {
 				t.Fatal(err)
 			}
+
+			if testCase.needEmailCookie {
+				req.AddCookie(&http.Cookie{Name: "email", Value: "email%40email.com"})
+				mockUsersRepo.EXPECT().GetUserByEmail("email@email.com").Return(repository.User{}, nil)
+			}
+
+			if testCase.needServerError{
+				req.AddCookie(&http.Cookie{Name: "email", Value: "email%40email.com"})
+				mockUsersRepo.EXPECT().GetUserByEmail("email@email.com").Return(repository.User{}, errors.New("err"))
+			}
+
 			rr := httptest.NewRecorder()
+			router.ServeHTTP(rr, req)
 
-			handler := http.HandlerFunc(Handler)
-			handler.ServeHTTP(rr, req)
-
-			if status := rr.Code; status != http.StatusOK  && !testCase.needError{
+			if status := rr.Code; status != http.StatusOK && !testCase.needError {
 				t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
 			}
 
-			temp :=rr.Body.String()
-			if temp != testCase.expResponseBody && !testCase.needError{
-				t.Errorf("handler returned unexpected body: %v",temp)
+			result := rr.Body.String()
+			if result != testCase.expResponseBody && !testCase.needError {
+				t.Errorf("handler returned unexpected body: %v", result)
 			}
 		})
 
+	}
 }
