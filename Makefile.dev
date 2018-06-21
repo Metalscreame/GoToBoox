@@ -1,11 +1,10 @@
-all:get vendor install linter test run
+all:get glide vendor install linter test run
 
 get:
 	curl https://glide.sh/get | sh
-	go get -u github.com/kardianos/govendor
-	go get -u gopkg.in/alecthomas/gometalinter.v2
-	go get github.com/golang/mock/gomock
-    go get github.com/golang/mock/mockgen
+
+glide:
+	glide update
 
 vendor:
 	govendor sync update
