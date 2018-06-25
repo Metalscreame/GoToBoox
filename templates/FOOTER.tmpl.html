@@ -122,6 +122,75 @@
 
     });
 </script>
+
+<script>
+    var url_string = window.location.href;
+    var param = url_string.substr(url_string.lastIndexOf('/')+1);
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/api/v1/bookComments/'+param, false);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
+            var data = JSON.parse(xhr.responseText);
+            var commentSection = document.getElementById('commentSection');
+            var i = 0;
+            for (i; i < data.data['Comments'].length; i++) {
+                var newLi = document.createElement('li');
+                newLi.innerHTML = '<li class="media">\n' +
+                        '                                    <a class="pull-left" href="#">\n' +
+                        '                                        <img class="media-object img-circle" src="/static/img/bklogo.jpg"  height="60" width="60" alt="profile">\n' +
+                        '                                    </a>\n' +
+                        '                                    <div class="media-body">\n' +
+                        '                                        <div class="well well-lg">\n' +
+                        '                                            <a href="/userComments/'+data.data['Comments'][i]['nickname']+'">' + data.data['Comments'][i]['nickname'] + ' </a>\n' +
+                        '                                            <ul class="media-date text-uppercase reviews list-inline">\n' +
+                        '                                            <li class="date">' + data.data['Comments'][i]['date'].substring(0,data.data['Comments'][i]['date'].length-8) + '</li>' +
+                        '                                            </ul>\n' +
+                        '                                            <p class="media-comment">\n' +
+                                                                                data.data['Comments'][i]['commentText'] +
+                        '                                            </p>\n' +
+                        '                                        </div>\n' +
+                        '                                    </div>\n' +
+                        '                                </li>';
+                commentSection.appendChild(newLi);
+            }
+        }
+    };
+    xhr.send();
+
+</script>
+
+<script>
+    $("#submitComment").click(function () {
+        function getCookie(name) {
+            var matches = document.cookie.match(new RegExp(
+                    "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+
+            ));
+            return matches ? decodeURIComponent(matches[1]) : 'undefined';
+        }
+
+        var isLoggedInCookie = getCookie("is_logged_in");
+        if (isLoggedInCookie!="true") {
+           alert("You must be logged in!");
+        }else{
+            var url_string = window.location.href;
+            var param = url_string.substr(url_string.lastIndexOf('/')+1);
+            var commentary = document.getElementById("addComment").value;
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', "/api/v1/addBookComment/"+param, false);
+            var data = JSON.stringify({
+                "commentText": commentary
+            });
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
+                    window.location.href = "/book/"+param;
+                }
+            };
+            xhr.send(data);
+        }
+    });
+</script>
 {{end}}
 
 {{if eq .page "login"}}
@@ -134,7 +203,7 @@
     });
 
     $(".signup_link").click(function () {
-        window.location.href = "/register";
+        window.location.href = "/register/0";
     });
 
     $("#unflip-btn").click(function () {
@@ -560,7 +629,44 @@
         </script>
          {{end}}
 
+{{if eq .page "comments"}}
 
+<script>
+    var url_string = window.location.href;
+    var param = url_string.substr(url_string.lastIndexOf('/')+1);
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/api/v1/allCommentsByNickname/'+param, false);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
+            var data = JSON.parse(xhr.responseText);
+            var commentSection = document.getElementById('commentSection');
+            var i = 0;
+            for (i; i < data.data['Comments'].length; i++) {
+                var newLi = document.createElement('li');
+                newLi.innerHTML = '<li class="media">\n' +
+                        '                                    <a class="pull-left" href="#">\n' +
+                        '                                        <img class="media-object img-circle" src="/static/img/bklogo.jpg" height="60" width="60" alt="profile">\n' +
+                        '                                    </a>\n' +
+                        '                                    <div class="media-body">\n' +
+                        '                                        <div class="well well-lg">\n' +
+                        '                                            <a href="/userComments/'+data.data['Comments'][i]['nickname']+'">' + data.data['Comments'][i]['nickname'] + ' </a>\n' +
+                        '                                            <ul class="media-date text-uppercase reviews list-inline">\n' +
+                        '                                            <li class="date">' + data.data['Comments'][i]['date'].substring(0,data.data['Comments'][i]['date'].length-8) + '</li>' +
+                        '                                            </ul>\n' +
+                        '                                            <p class="media-comment">\n' +
+                        data.data['Comments'][i]['commentText'] +
+                        '                                            </p>\n' +
+                        '                                        </div>\n' +
+                        '                                    </div>\n' +
+                        '                                </li>';
+                commentSection.appendChild(newLi);
+            }
+        }
+    };
+    xhr.send();
+</script>
+
+{{end}}
 
 
 <script>
@@ -578,3 +684,5 @@
 </body>
 </html>
 {{end}}
+
+

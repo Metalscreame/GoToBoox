@@ -41,3 +41,13 @@ type User struct {
 	ReturningBookId                 int       `json:"-"`
 	TakenBookId                     int       `json:"taken_book_id"`
 }
+
+type Comment struct {
+	ID             int       `json:"-"`
+	BookID         int       `json:"book_id,omitempty"`
+	UserNickname   string    `json:"nickname,omitempty"`
+	UserEmail      string    `json:"-"`
+	CommentaryText string    `json:"commentText"`
+	CommentDate    time.Time `json:"-"`
+	FormatedDate   string    `json:"date,omitempty"`
+}
