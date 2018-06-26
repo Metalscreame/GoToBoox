@@ -6,7 +6,7 @@
                 <div class="single-product-photo">
                     <div id="sync1" class="owl-carousel owl-template">
                         <div class="item">
-                            <figure id="image"> </figure>
+                            <figure id="image"></figure>
 
                         </div>
                     </div>
@@ -23,127 +23,76 @@
                             <p></p>
                         </div>
 
-                        {{/*<button type="submit" class="single_add_to_cart_button button alt">I want to BooX it!</button>*/}}
+                    {{/*<button type="submit" class="single_add_to_cart_button button alt">I want to BooX it!</button>*/}}
                         <button type="submit" id="booxIt" class="btn-block btn-dark">I want to BooX it!</button>
                         <div class="add-to-wishlist">
-                            <div class="add-button show"> <p> Add to Wishlist: <a href="#" class="add_to_wishlist">  <i class="fa fa-heart-o"> </i> </a></p></div>
+                            <div class="add-button show"><p> Add to Wishlist: <a href="#" class="add_to_wishlist"> <i
+                                    class="fa fa-heart-o"> </i> </a></p></div>
                         </div>
 
                         <div class="product_meta"><span class="product-stock-status-wrapper">
-                            <p> <label >State: </label> <span class="product-stock-status" id="state"></span></span><span class="posted_in">
-                            <p><label>Categories: </label><a href="#"> Book that wants to become your new best friend </a> </p> </span><span class="tagged_as">
-                            <p>  <label>Tag: </label><a href="#"> Bookcrossing/</a><a href="#">GoToBooX/</a><a href="#">Books</a> </p> </span></div>
+                            <p> <label>State: </label> <span class="product-stock-status" id="state"></span></span><span
+                                class="posted_in">
+                            <p><label>Categories: </label><a
+                                    href="#"> Book that wants to become your new best friend </a> </p> </span><span
+                                class="tagged_as">
+                            <p>  <label>Tag: </label><a href="#"> Bookcrossing/</a><a href="#">GoToBooX/</a><a href="#">Books</a> </p> </span>
+                        </div>
                         <span class="popularity">
                             <p>  <label>BooXMark: </label><a href="#" id="popularity"> </a> </p></span></div>
-                        <div class="social-share-wrap">
-                            <label><i class="fa fa-share-alt"></i>Share:</label>
-                            <ul class="social-share">
-                               <a href="#"><i class="fa fa-facebook"></i></a>
-                              <a href="#"><i class="fa fa-twitter"></i></a>
-                                <a href="#"><i class="fa fa-google-plus"></i></a>
-                                <a href="#"><i class="fa fa-linkedin"></i></a>
-                               <a href="#"><i class="fa fa-tumblr"></i></a>
-                               <a href="#"><i class="fa fa-pinterest"></i></a>
-                            </ul>
-                        </div>
+                    <div class="social-share-wrap">
+                        <label><i class="fa fa-share-alt"></i>Share:</label>
+                        <ul class="social-share">
+                            <a href="#"><i class="fa fa-facebook"></i></a>
+                            <a href="#"><i class="fa fa-twitter"></i></a>
+                            <a href="#"><i class="fa fa-google-plus"></i></a>
+                            <a href="#"><i class="fa fa-linkedin"></i></a>
+                            <a href="#"><i class="fa fa-tumblr"></i></a>
+                            <a href="#"><i class="fa fa-pinterest"></i></a>
+                        </ul>
                     </div>
                 </div>
+            </div>
 
             <div class="col-sm-10 col-sm-offset-1" id="logout">
                 <div class="comment-tabs">
                     <ul class="nav nav-tabs" role="tablist">
-                        <li class="active"><a href="#comments-logout" role="tab" data-toggle="tab"><h4 class="reviews text-capitalize">Comments</h4></a></li>
-                        <li><a href="#add-comment" role="tab" data-toggle="tab"><h4 class="reviews text-capitalize">Add comment</h4></a></li>
+                        <li class="active"><a href="#comments-logout" role="tab" data-toggle="tab"><h4
+                                class="reviews text-capitalize">Comments</h4></a></li>
+                        <li><a href="#add-comment" role="tab" data-toggle="tab"><h4 class="reviews text-capitalize">Add
+                            comment</h4></a></li>
                     </ul>
 
                     <div class="tab-content">
                         <div class="tab-pane active" id="comments-logout">
                             <ul class="media-list" id="commentSection">
-                               
+
                             </ul>
                         </div>
 
                         <div class="tab-pane" id="add-comment">
                             <!-- <form action="#" method="post" class="form-horizontal" id="commentForm" role="form"> -->
-                                <div class="form-group">
-                                    <label for="email" class="col-sm-2 control-label">Comment</label>
-                                    <div class="col-sm-10">
-                                        <textarea class="form-control" name="addComment" id="addComment" rows="5"></textarea>
-                                    </div>
+                            <div class="form-group">
+                                <label for="email" class="col-sm-2 control-label">Comment</label>
+                                <div class="col-sm-10">
+                                    <textarea class="form-control" name="addComment" id="addComment"
+                                              rows="5"></textarea>
                                 </div>
-                                <div class="form-group">
-                                    <div class="col-sm-offset-2 col-sm-10">
-                                        <button class="btn btn-success btn-circle text-uppercase" type="submit" id="submitComment"><span class="glyphicon glyphicon-send"></span> Summit comment</button>
-                                    </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <button class="btn btn-success btn-circle text-uppercase" type="submit"
+                                            id="submitComment"><span class="glyphicon glyphicon-send"></span> Summit
+                                        comment
+                                    </button>
                                 </div>
+                            </div>
                             <!-- </form> -->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-            </div>
-        </div>
     </div>
 </div>
 {{end}}
-
-
-
-{{/*<li class="media">*/}}
-    {{/*<a class="pull-left" href="#">*/}}
-        {{/*<img class="media-object img-circle" src="/static/img/bklogo.jpg" alt="profile">*/}}
-    {{/*</a>*/}}
-    {{/*<div class="media-body">*/}}
-        {{/*<div class="well well-lg">*/}}
-            {{/*<h4 class="media-heading text-uppercase reviews">Marco </h4>*/}}
-            {{/*<ul class="media-date text-uppercase reviews list-inline">*/}}
-                {{/*<li class="date">22/09/2014</li>*/}}
-            {{/*</ul>*/}}
-            {{/*<p class="media-comment">*/}}
-                {{/*Great snippet! Thanks for sharing.*/}}
-            {{/*</p>*/}}
-        {{/*</div>*/}}
-    {{/*</div>*/}}
-{{/*</li>*/}}
-{{/*<li class="media">*/}}
-    {{/*<a class="pull-left" href="#">*/}}
-        {{/*<img class="media-object img-circle" src="/static/img/bklogo.jpg" alt="profile">*/}}
-    {{/*</a>*/}}
-    {{/*<div class="media-body">*/}}
-        {{/*<div class="well well-lg">*/}}
-            {{/*<h4 class="media-heading text-uppercase reviews">Nico</h4>*/}}
-            {{/*<ul class="media-date text-uppercase reviews list-inline">*/}}
-                {{/*<li class="dd">22</li>*/}}
-                {{/*<li class="mm">09</li>*/}}
-                {{/*<li class="aaaa">2014</li>*/}}
-            {{/*</ul>*/}}
-            {{/*<p class="media-comment">*/}}
-                {{/*I'm looking for that. Thanks!*/}}
-            {{/*</p>*/}}
-            {{/*<div class="embed-responsive embed-responsive-16by9">*/}}
-                {{/*<iframe class="embed-responsive-item" src="//www.youtube.com/embed/80lNjkcp6gI" allowfullscreen></iframe>*/}}
-            {{/*</div>*/}}
-        {{/*</div>*/}}
-    {{/*</div>*/}}
-{{/*</li>*/}}
-
-{{/*<li class="media">*/}}
-    {{/*<a class="pull-left" href="#">*/}}
-        {{/*<img class="media-object img-circle" src="/static/img/bklogo.jpg" alt="profile">*/}}
-    {{/*</a>*/}}
-    {{/*<div class="media-body">*/}}
-        {{/*<div class="well well-lg">*/}}
-            {{/*<h4 class="media-heading text-uppercase reviews">Kriztine</h4>*/}}
-            {{/*<ul class="media-date text-uppercase reviews list-inline">*/}}
-                {{/*<li class="dd">22</li>*/}}
-                {{/*<li class="mm">09</li>*/}}
-                {{/*<li class="aaaa">2014</li>*/}}
-            {{/*</ul>*/}}
-            {{/*<p class="media-comment">*/}}
-                {{/*Yehhhh... Thanks for sharing.*/}}
-            {{/*</p>*/}}
-        {{/*</div>*/}}
-    {{/*</div>*/}}
-{{/*</li>*/}}
