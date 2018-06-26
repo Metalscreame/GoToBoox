@@ -153,7 +153,7 @@ func (b *BookService) ShowTakenBookByUser(c *gin.Context){
 
 	book,err:=b.BooksRepo.GetByID(u.TakenBookId)
 	if err!=nil{
-		c.JSON(http.StatusOK, gin.H{"status": "no books"})
+		c.JSON(http.StatusBadRequest, gin.H{"status": "no books"})
 		return
 	}
 	book.ID=u.TakenBookId

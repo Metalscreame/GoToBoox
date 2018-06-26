@@ -451,7 +451,9 @@
             xhr.open('GET', '/api/v1/books/taken/0', false);
             xhr.send();
             if (xhr.status != 200) {
-                alert(xhr.status + ': ' + xhr.statusText);
+                var newLi = document.createElement('li');
+                newLi.innerHTML = "<p> You don't have any taken books </p>";
+                takenBooks.appendChild(newLi);
             } else {
                 var data = JSON.parse(xhr.responseText);
                 console.log(data.data);
@@ -460,6 +462,16 @@
                 takenBooks.appendChild(newLi);
             }
         </script>
+
+<script>
+
+        var usrComments = document.getElementById('userComments');
+        var newLi = document.createElement('li');
+        var nickname = document.getElementById("nicknameInput").value;
+        newLi.innerHTML = "<h2><a href='/userComments/" + nickname  + "'>You're comments</a><h2>";
+        usrComments.appendChild(newLi);
+
+</script>
 
 {{end}}
 
