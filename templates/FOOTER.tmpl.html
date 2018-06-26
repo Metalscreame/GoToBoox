@@ -25,14 +25,18 @@
             for (var i = 0; i < data.data['Books'].length; i++) {
                 var newLi = document.createElement('p');
                 var status;
-                switch (data.data['Books'][i]['state']){
-                    case 'FREE' : status = '/static/img/available.svg';
+                switch (data.data['Books'][i]['state']) {
+                    case 'FREE' :
+                        status = '/static/img/available.svg';
                         break;
-                    case 'TAKEN' : status = '/static/img/taken.svg';
+                    case 'TAKEN' :
+                        status = '/static/img/taken.svg';
                         break;
-                    case 'RESERVED' : status = '/static/img/reserved.svg';
-                    break;
-                    case 'RETURNING' : status = '/static/img/returning.svg';
+                    case 'RESERVED' :
+                        status = '/static/img/reserved.svg';
+                        break;
+                    case 'RETURNING' :
+                        status = '/static/img/returning.svg';
                         break;
                 }
                 newLi.innerHTML = "<img src='" + status + "'> " + "<a href='/book/" + data.data['Books'][i]['id'] + "'>" + data.data['Books'][i]['title'] + "</a>"
@@ -47,9 +51,9 @@
 {{if eq .page "book"}}
 <script>
     var url_string = window.location.href;
-    var param = url_string.substr(url_string.lastIndexOf('/')+1);
+    var param = url_string.substr(url_string.lastIndexOf('/') + 1);
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/api/v1/book/' +param, false);
+    xhr.open('GET', '/api/v1/book/' + param, false);
     xhr.send();
     if (xhr.status != 200) {
         alert("error")
@@ -71,49 +75,49 @@
         function getCookie(name) {
             var matches = document.cookie.match(new RegExp(
                     "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-
             ));
             return matches ? decodeURIComponent(matches[1]) : 'undefined';
         }
-        function setCookie(name,value,days) {
+
+        function setCookie(name, value, days) {
             var expires = "";
             if (days) {
                 var date = new Date();
-                date.setTime(date.getTime() + (days*24*60*60*1000));
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
                 expires = "; expires=" + date.toUTCString();
             }
-            document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+            document.cookie = name + "=" + (value || "") + expires + "; path=/";
         }
 
         var isLoggedInCookie = getCookie("is_logged_in");
         var xhr = new XMLHttpRequest();
 
-        if (isLoggedInCookie=="true"){
+        if (isLoggedInCookie == "true") {
             var url_string = window.location.href;
-            var param = url_string.substr(url_string.lastIndexOf('/')+1);
-            xhr.open('GET', "/uploadPage/"+param, false);
+            var param = url_string.substr(url_string.lastIndexOf('/') + 1);
+            xhr.open('GET', "/uploadPage/" + param, false);
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == XMLHttpRequest.DONE && this.status == 200) {
-                    window.location.href= "/uploadPage/" + param;
-                }else{
+                    window.location.href = "/uploadPage/" + param;
+                } else {
 
                 }
             };
             xhr.send();
-        }else{
+        } else {
             var url_string = window.location.href;
-            var param = url_string.substr(url_string.lastIndexOf('/')+1);
-            xhr.open('GET', "/uploadPage/"+param, false);
+            var param = url_string.substr(url_string.lastIndexOf('/') + 1);
+            xhr.open('GET', "/uploadPage/" + param, false);
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == XMLHttpRequest.DONE && this.status == 200) {
-                    setCookie("bookToReturnFromUpload",param.toString(),1);
+                    setCookie("bookToReturnFromUpload", param.toString(), 1);
                     var xhr2 = new XMLHttpRequest();
 
-                    window.location.href= "/register/"+param;
-                    xhr2.open('GET', "/register/"+param, false);
+                    window.location.href = "/register/" + param;
+                    xhr2.open('GET', "/register/" + param, false);
                     xhr2.send();
 
-                }else{
+                } else {
                 }
             };
             xhr.send();
@@ -125,9 +129,9 @@
 
 <script>
     var url_string = window.location.href;
-    var param = url_string.substr(url_string.lastIndexOf('/')+1);
+    var param = url_string.substr(url_string.lastIndexOf('/') + 1);
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/api/v1/bookComments/'+param, false);
+    xhr.open('GET', '/api/v1/bookComments/' + param, false);
     xhr.onreadystatechange = function () {
         if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
             var data = JSON.parse(xhr.responseText);
@@ -141,12 +145,12 @@
                         '                                    </a>\n' +
                         '                                    <div class="media-body">\n' +
                         '                                        <div class="well well-lg">\n' +
-                        '                                            <a href="/userComments/'+data.data['Comments'][i]['nickname']+'">' + data.data['Comments'][i]['nickname'] + ' </a>\n' +
+                        '                                            <a href="/userComments/' + data.data['Comments'][i]['nickname'] + '">' + data.data['Comments'][i]['nickname'] + ' </a>\n' +
                         '                                            <ul class="media-date text-uppercase reviews list-inline">\n' +
-                        '                                            <li class="date">' + data.data['Comments'][i]['date'].substring(0,data.data['Comments'][i]['date'].length-8) + '</li>' +
+                        '                                            <li class="date">' + data.data['Comments'][i]['date'].substring(0, data.data['Comments'][i]['date'].length - 8) + '</li>' +
                         '                                            </ul>\n' +
                         '                                            <p class="media-comment">\n' +
-                                                                                data.data['Comments'][i]['commentText'] +
+                        data.data['Comments'][i]['commentText'] +
                         '                                            </p>\n' +
                         '                                        </div>\n' +
                         '                                    </div>\n' +
@@ -164,27 +168,26 @@
         function getCookie(name) {
             var matches = document.cookie.match(new RegExp(
                     "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-
             ));
             return matches ? decodeURIComponent(matches[1]) : 'undefined';
         }
 
         var isLoggedInCookie = getCookie("is_logged_in");
-        if (isLoggedInCookie!="true") {
-           alert("You must be logged in!");
-        }else{
+        if (isLoggedInCookie != "true") {
+            alert("You must be logged in!");
+        } else {
             var url_string = window.location.href;
-            var param = url_string.substr(url_string.lastIndexOf('/')+1);
+            var param = url_string.substr(url_string.lastIndexOf('/') + 1);
             var commentary = document.getElementById("addComment").value;
             var xhr = new XMLHttpRequest();
-            xhr.open('POST', "/api/v1/addBookComment/"+param, false);
+            xhr.open('POST', "/api/v1/addBookComment/" + param, false);
             var data = JSON.stringify({
                 "commentText": commentary
             });
 
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
-                    window.location.href = "/book/"+param;
+                    window.location.href = "/book/" + param;
                 }
             };
             xhr.send(data);
@@ -223,7 +226,7 @@
             }
             else {
                 alert("Wrong email or password");
-                window.location.href =  "/login";
+                window.location.href = "/login";
             }
         };
         var data = JSON.stringify({
@@ -251,7 +254,6 @@
         function getCookie(name) {
             var matches = document.cookie.match(new RegExp(
                     "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-
             ));
             return matches ? decodeURIComponent(matches[1]) : 'undefined';
         }
@@ -263,7 +265,7 @@
             "password": password
         });
 
-        if ( bookId == "undefined") {
+        if (bookId == "undefined") {
             var xhr = new XMLHttpRequest();
             xhr.open('POST', "/api/v1/register", false);
             xhr.setRequestHeader('Content-Type', 'application/json');
@@ -277,7 +279,7 @@
             };
             xhr.send(data);
 
-        }else{
+        } else {
             var xhr = new XMLHttpRequest();
             xhr.open('POST', "/api/v1/register", false);
             xhr.setRequestHeader('Content-Type', 'application/json');
@@ -302,8 +304,6 @@
         }
 
 
-
-
     });
 </script>
 {{end}}
@@ -311,18 +311,19 @@
 
 {{if eq .page "userprofile"}}
 <script>
-    function donate(){
-              window.location.href = "/uploadPage/0";
+    function donate() {
+        window.location.href = "/uploadPage/0";
     }
-    function returnTaken(){
-         window.location.href = "/";
+
+    function returnTaken() {
+        window.location.href = "/";
     }
 </script>
 
 <script>
-    function exchange(){
+    function exchange() {
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', '/api/v1/makeBookCross',false);
+        xhr.open('GET', '/api/v1/makeBookCross', false);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.send();
         if (xhr.status != 200) {
@@ -331,145 +332,145 @@
         }
     }
 </script>
-        <script>
-            function showReserved() {
-                xhr.open('GET', '/api/v1/books/showReserved', false);
-                xhr.send();
-                if (xhr.status != 200) {
-                    alert(xhr.status + ': ' + xhr.statusText);
-                } else {
-                    var takenBooks = document.getElementById('reservedBooks');
-                    var data = JSON.parse(xhr.responseText);
-                    var i = 0;
-                    for (i; i < data.data['Book'].length; i++) {
-                        console.log(data.data['Book'][i]['id']);
-                        // alert(data.data['Book'][i]['id']);
-                        var newLi = document.createElement('li');
-                        newLi.innerHTML = "<a href='/api/v1/updateBookStatusReturn/" + data.data['Book'][i]['id'] + "/"+ param + "'>" + data.data['Book'][i]['title'] + "</a>";
-                        takenBooks.appendChild(newLi)
-                        // document.getElementById('takenBookList').innerHTML = "<a href='/api/v1/updateBookStatus/" + data.data['Book'][i]['id'] + "'>" + data.data['Book'][i]['title'] + "</a>" ;
-                    }
-                }
-            }
-        </script>
-        <script>
-            $('#saveButton').on('click', function (e) {
-                var nickname = document.getElementById("nicknameInput").value;
-                var email = document.getElementById("emailInput").value;
-                var passwordOld = document.getElementById("passwordInputOld").value;
-                var passwordNew1 = document.getElementById("passwordInputNew1").value;
-                var passwordNew2 = document.getElementById("passwordInputNew2").value;
-
-                if(passwordNew1!=passwordNew2){
-                    alert("Passwords doesnt mach");
-                    return
-                }
-
-                var xhr = new XMLHttpRequest();
-                xhr.open('PUT', "/api/v1/userProfile", false);
-                xhr.setRequestHeader("Content-Type", "application/json");
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState == 4 && xhr.status == 200) {
-                        document.location.href="/";
-                        return;
-                    } else {
-                        alert("wrong old password");
-                        window.location.href = "/userProfile";
-                        return;
-                    }
-                };
-
-                var notification_get_new_books=false;
-                if ($('#notificationNewBooks').is(":checked")) {
-                    notification_get_new_books = true;
-                }
-                var notification_get_when_book_reserved=false;
-                if ($('#notificationReservedBook').is(":checked")) {
-                    notification_get_when_book_reserved = true;
-                }
-                var notificationDailyy=false;
-                if ($('#notificationDaily').is(":checked")) {
-                    notificationDailyy = true;
-                }
-                var body = JSON.stringify({
-                    "nickname": nickname,
-                    "email": email,
-                    "password": passwordOld,
-                    "new_passwordd": passwordNew1,
-                    "notification_get_new_books":notification_get_new_books,
-                    "notification_get_when_book_reserved":notification_get_when_book_reserved,
-                    "notification_daily":notificationDailyy
-                });
-                xhr.send(body);
-            });
-
-            <!-- deleteButton -->
-            $('#deleteButton').on('click', function (e) {
-                var xhr = new XMLHttpRequest();
-                xhr.open('DELETE', "/api/v1/userProfile", false);
-                xhr.setRequestHeader("Content-Type", "application/json");
-                xhr.send();
-                window.location.href = "/login";
-            });
-
-        </script>
-        <script>
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', "/api/v1/userProfile", false);
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
-                    var json = JSON.parse(xhr.responseText);
-                    $('#nicknameInput').val(json.nickname);
-                    $('#emailInput').val(json.email);
-                    if(json.notification_get_new_books == true){
-                        $('#notificationNewBooks').prop( "checked", true );
-                    }
-                    if(json.notification_get_when_book_reserved == true){
-                        $('#notificationReservedBook').prop( "checked", true );
-                    }
-                    if(json.notification_daily == true){
-
-                        $('#notificationDaily').prop( "checked", true );
-                    }
-
-                    if(json.has_book_for_exchange == true){
-                        document.getElementById("returnBookRender").innerHTML = '<h4 class="card-title mt-3 text-left">Exchange previously reserved book</h4> ' +
-                                '<button type="submit" id="exchangeBookButton" onclick="exchange(); return false;" class="btn btn-dark">Return</button>';
-                        showReserved();
-                    }
-                } else if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 400) {
-                    window.location.href = "/login";
-                }
-                else {
-                }
-            };
-            xhr.send();
-        </script>
-        <script>
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', '/api/v1/books/taken/0', false);
-            xhr.send();
-            if (xhr.status != 200) {
+<script>
+    function showReserved() {
+        xhr.open('GET', '/api/v1/books/showReserved', false);
+        xhr.send();
+        if (xhr.status != 200) {
+            alert(xhr.status + ': ' + xhr.statusText);
+        } else {
+            var takenBooks = document.getElementById('reservedBooks');
+            var data = JSON.parse(xhr.responseText);
+            var i = 0;
+            for (i; i < data.data['Book'].length; i++) {
+                console.log(data.data['Book'][i]['id']);
+                // alert(data.data['Book'][i]['id']);
                 var newLi = document.createElement('li');
-                newLi.innerHTML = "<p> You don't have any taken books </p>";
-                takenBooks.appendChild(newLi);
+                newLi.innerHTML = "<a href='/api/v1/updateBookStatusReturn/" + data.data['Book'][i]['id'] + "/" + param + "'>" + data.data['Book'][i]['title'] + "</a>";
+                takenBooks.appendChild(newLi)
+                // document.getElementById('takenBookList').innerHTML = "<a href='/api/v1/updateBookStatus/" + data.data['Book'][i]['id'] + "'>" + data.data['Book'][i]['title'] + "</a>" ;
+            }
+        }
+    }
+</script>
+<script>
+    $('#saveButton').on('click', function (e) {
+        var nickname = document.getElementById("nicknameInput").value;
+        var email = document.getElementById("emailInput").value;
+        var passwordOld = document.getElementById("passwordInputOld").value;
+        var passwordNew1 = document.getElementById("passwordInputNew1").value;
+        var passwordNew2 = document.getElementById("passwordInputNew2").value;
+
+        if (passwordNew1 != passwordNew2) {
+            alert("Passwords doesnt mach");
+            return
+        }
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('PUT', "/api/v1/userProfile", false);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                document.location.href = "/";
+                return;
             } else {
-                var data = JSON.parse(xhr.responseText);
-                console.log(data.data);
-                var newLi = document.createElement('li');
-                newLi.innerHTML = "<a href='/book/" + data.id  + "'>" + data.title + "</a>";
-                takenBooks.appendChild(newLi);
+                alert("wrong old password");
+                window.location.href = "/userProfile";
+                return;
             }
-        </script>
+        };
+
+        var notification_get_new_books = false;
+        if ($('#notificationNewBooks').is(":checked")) {
+            notification_get_new_books = true;
+        }
+        var notification_get_when_book_reserved = false;
+        if ($('#notificationReservedBook').is(":checked")) {
+            notification_get_when_book_reserved = true;
+        }
+        var notificationDailyy = false;
+        if ($('#notificationDaily').is(":checked")) {
+            notificationDailyy = true;
+        }
+        var body = JSON.stringify({
+            "nickname": nickname,
+            "email": email,
+            "password": passwordOld,
+            "new_passwordd": passwordNew1,
+            "notification_get_new_books": notification_get_new_books,
+            "notification_get_when_book_reserved": notification_get_when_book_reserved,
+            "notification_daily": notificationDailyy
+        });
+        xhr.send(body);
+    });
+
+    <!-- deleteButton -->
+    $('#deleteButton').on('click', function (e) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('DELETE', "/api/v1/userProfile", false);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send();
+        window.location.href = "/login";
+    });
+
+</script>
+<script>
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', "/api/v1/userProfile", false);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
+            var json = JSON.parse(xhr.responseText);
+            $('#nicknameInput').val(json.nickname);
+            $('#emailInput').val(json.email);
+            if (json.notification_get_new_books == true) {
+                $('#notificationNewBooks').prop("checked", true);
+            }
+            if (json.notification_get_when_book_reserved == true) {
+                $('#notificationReservedBook').prop("checked", true);
+            }
+            if (json.notification_daily == true) {
+
+                $('#notificationDaily').prop("checked", true);
+            }
+
+            if (json.has_book_for_exchange == true) {
+                document.getElementById("returnBookRender").innerHTML = '<h4 class="card-title mt-3 text-left">Exchange previously reserved book</h4> ' +
+                        '<button type="submit" id="exchangeBookButton" onclick="exchange(); return false;" class="btn btn-dark">Return</button>';
+                showReserved();
+            }
+        } else if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 400) {
+            window.location.href = "/login";
+        }
+        else {
+        }
+    };
+    xhr.send();
+</script>
+<script>
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/api/v1/books/taken/0', false);
+    xhr.send();
+    if (xhr.status != 200) {
+        var newLi = document.createElement('li');
+        newLi.innerHTML = "<p> You don't have any taken books </p>";
+        takenBooks.appendChild(newLi);
+    } else {
+        var data = JSON.parse(xhr.responseText);
+        console.log(data.data);
+        var newLi = document.createElement('li');
+        newLi.innerHTML = "<a href='/book/" + data.id + "'>" + data.title + "</a>";
+        takenBooks.appendChild(newLi);
+    }
+</script>
 
 <script>
 
-        var usrComments = document.getElementById('userComments');
-        var newLi = document.createElement('li');
-        var nickname = document.getElementById("nicknameInput").value;
-        newLi.innerHTML = "<h2><a href='/userComments/" + nickname  + "'>You're comments</a><h2>";
-        usrComments.appendChild(newLi);
+    var usrComments = document.getElementById('userComments');
+    var newLi = document.createElement('li');
+    var nickname = document.getElementById("nicknameInput").value;
+    newLi.innerHTML = "<h2><a href='/userComments/" + nickname + "'>You're comments</a><h2>";
+    usrComments.appendChild(newLi);
 
 </script>
 
@@ -478,9 +479,9 @@
 
 {{if eq .page "uploadpage"}}
 <script>
-    var id = window.location.href.substr(window.location.href.lastIndexOf('/')+1);
-    if (id != 0){
-        var url = "/api/v1/book/"+id;
+    var id = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
+    if (id != 0) {
+        var url = "/api/v1/book/" + id;
         var xhr = new XMLHttpRequest();
         xhr.open('GET', url, false);
         xhr.send();
@@ -497,18 +498,16 @@
 </script>
 
 
-
-
 <script>
     $('#submitBtn').on('click', function (e) {
         var file = document.getElementById("fileInpt1").files[0]; //this is the input where I can choose the file
         var title = $("#titleText").val();
-        if(title==""){
+        if (title == "") {
             alert("Title cant be empty");
             return;
         }
         var descr = $("#descriptionText").val();
-        if(descr==""){
+        if (descr == "") {
             alert("Description cant be empty");
             return;
         }
@@ -519,20 +518,20 @@
 
         var url_string = window.location.href;
         var len = url_string.length;
-        var param = url_string.substr(url_string.lastIndexOf('/')+1);
+        var param = url_string.substr(url_string.lastIndexOf('/') + 1);
 
 
         var xhr = new XMLHttpRequest();
-        xhr.open('POST', '/api/v1/insertNewBook/'+param,false);
+        xhr.open('POST', '/api/v1/insertNewBook/' + param, false);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onreadystatechange = function () {
             if (xhr.readyState == XMLHttpRequest.DONE && this.status == 200) {
-                window.location.href= '/';
+                window.location.href = '/';
             }
         };
 
         reader.onload = function () {
-            fileBase64=reader.result;
+            fileBase64 = reader.result;
             // alert(fileBase64);
             console.log(reader.result);
             var data = JSON.stringify({
@@ -547,13 +546,13 @@
     $('#returnPreviosly').on('click', function (e) {
         var url_string = window.location.href;
         var len = url_string.length;
-        var param = url_string[len-1];
+        var param = url_string[len - 1];
 
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', '/books/taken/'+param,false);
+        xhr.open('GET', '/books/taken/' + param, false);
         xhr.onreadystatechange = function () {
             if (xhr.readyState == XMLHttpRequest.DONE && this.status == 200) {
-                window.location.href= '/books/taken/'+param;
+                window.location.href = '/books/taken/' + param;
             }
         };
         xhr.send();
@@ -563,22 +562,22 @@
 <script>
     function bs_input_file() {
         $(".input-file").before(
-                function() {
-                    if ( ! $(this).prev().hasClass('input-ghost') ) {
+                function () {
+                    if (!$(this).prev().hasClass('input-ghost')) {
                         var element = $("<input type='file' class='input-ghost' id='fileInpt1' style='visibility:hidden; height:0'>");
-                        element.attr("name",$(this).attr("name"));
-                        element.change(function(){
+                        element.attr("name", $(this).attr("name"));
+                        element.change(function () {
                             element.next(element).find('input').val((element.val()).split('\\').pop());
                         });
-                        $(this).find("button.btn-choose").click(function(){
+                        $(this).find("button.btn-choose").click(function () {
                             element.click();
                         });
-                        $(this).find("button.btn-reset").click(function(){
+                        $(this).find("button.btn-reset").click(function () {
                             element.val(null);
                             $(this).parents(".input-file").find('input').val('');
                         });
-                        $(this).find('input').css("cursor","pointer");
-                        $(this).find('input').mousedown(function() {
+                        $(this).find('input').css("cursor", "pointer");
+                        $(this).find('input').mousedown(function () {
                             $(this).parents('.input-file').prev().click();
                             return false;
                         });
@@ -587,91 +586,106 @@
                 }
         );
     }
-    $(function() {
+
+    $(function () {
         bs_input_file();
     });
 </script>
 {{end}}
 
-        {{if eq .page "takenBooks"}}
-        <script>
-            var url_string = window.location.href;
-            var param = url_string.substr(url_string.lastIndexOf('/')+1);
-            var xhr = new XMLHttpRequest();
-            function getCookie(name) {
-                var matches = document.cookie.match(new RegExp(
-                        "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-                ));
-                return matches ? decodeURIComponent(matches[1]) : 'undefined';
+{{if eq .page "takenBooks"}}
+<script>
+    var url_string = window.location.href;
+    var param = url_string.substr(url_string.lastIndexOf('/') + 1);
+    var xhr = new XMLHttpRequest();
+
+    function getCookie(name) {
+        var matches = document.cookie.match(new RegExp(
+                "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+        ));
+        return matches ? decodeURIComponent(matches[1]) : 'undefined';
+    }
+
+    var isLoggedInCookie = getCookie("is_logged_in");
+    if (isLoggedInCookie != "true") {
+        xhr.open('GET', '/api/v1/books/taken', false);
+        xhr.send();
+        if (xhr.status != 200) {
+            alert(xhr.status + ': ' + xhr.statusText);
+        } else {
+            var takenBooks = document.getElementById('takenBooks');
+            var data = JSON.parse(xhr.responseText);
+            var i = 0;
+            for (i; i < data.data['Book'].length; i++) {
+                console.log(data.data['Book'][i]['id']);
+                var newLi = document.createElement('li');
+                newLi.innerHTML = "<a href='/book/" + data.data['Book'][i]['id'] + "'>" + data.data['Book'][i]['title'] + "</a>";
+                takenBooks.appendChild(newLi)
             }
-
-            var isLoggedInCookie = getCookie("is_logged_in");
-            if(isLoggedInCookie !="true"){
-                xhr.open('GET', '/api/v1/books/taken', false);
-                xhr.send();
-                if (xhr.status != 200) {
-                    alert(xhr.status + ': ' + xhr.statusText);
-                } else {
-                    var takenBooks = document.getElementById('takenBooks');
-                    var data = JSON.parse(xhr.responseText);
-                    var i = 0;
-                    for (i; i < data.data['Book'].length; i++) {
-                        console.log(data.data['Book'][i]['id']);
-                        var newLi = document.createElement('li');
-                        newLi.innerHTML = "<a href='/book/" + data.data['Book'][i]['id'] +  "'>" + data.data['Book'][i]['title'] + "</a>";
-                        takenBooks.appendChild(newLi)
-                    }
-                }
-            }else{
-                xhr.open('GET', '/api/v1/books/taken/0', false);
-                xhr.send();
-                if (xhr.status != 200) {
-                    alert(xhr.status + ': ' + xhr.statusText);
-                } else {
-                    var takenBooks = document.getElementById('takenBooks');
-                    var data = JSON.parse(xhr.responseText);
-                    var i = 0;
-                    var newLi = document.createElement('li');
-                    newLi.innerHTML = "<a href='/api/v1/updateBookStatusReturn/" + data.id + "/"+ param + "'>" + data.title + "</a>";
-                    takenBooks.appendChild(newLi)
-                }
-            }
+        }
+    } else {
+        xhr.open('GET', '/api/v1/books/taken/0', false);
+        xhr.send();
+        if (xhr.status != 200) {
+            alert(xhr.status + ': ' + xhr.statusText);
+        } else {
+            var takenBooks = document.getElementById('takenBooks');
+            var data = JSON.parse(xhr.responseText);
+            var i = 0;
+            var newLi = document.createElement('li');
+            newLi.innerHTML = "<a href='/api/v1/updateBookStatusReturn/" + data.id + "/" + param + "'>" + data.title + "</a>";
+            takenBooks.appendChild(newLi)
+        }
+    }
 
 
-        </script>
-         {{end}}
+</script>
+{{end}}
 
 {{if eq .page "comments"}}
 
 <script>
     var url_string = window.location.href;
-    var param = url_string.substr(url_string.lastIndexOf('/')+1);
+    var param = url_string.substr(url_string.lastIndexOf('/') + 1);
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/api/v1/allCommentsByNickname/'+param, false);
+    xhr.open('GET', '/api/v1/allCommentsByNickname/' + param, false);
     xhr.onreadystatechange = function () {
         if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
             var data = JSON.parse(xhr.responseText);
             var commentSection = document.getElementById('commentSection');
             var i = 0;
             for (i; i < data.data['Comments'].length; i++) {
-                var newLi = document.createElement('li');
-                newLi.innerHTML = '<li class="media">\n' +
-                        '                                    <a class="pull-left" href="#">\n' +
-                        '                                        <img class="media-object img-circle" src="/static/img/bklogo.jpg" height="60" width="60" alt="profile">\n' +
-                        '                                    </a>\n' +
-                        '                                    <div class="media-body">\n' +
-                        '                                        <div class="well well-lg">\n' +
-                        '                                            <a href="/userComments/'+data.data['Comments'][i]['nickname']+'">' + data.data['Comments'][i]['nickname'] + ' </a>\n' +
-                        '                                            <ul class="media-date text-uppercase reviews list-inline">\n' +
-                        '                                            <li class="date">' + data.data['Comments'][i]['date'].substring(0,data.data['Comments'][i]['date'].length-8) + '</li>' +
-                        '                                            </ul>\n' +
-                        '                                            <p class="media-comment">\n' +
-                        data.data['Comments'][i]['commentText'] +
-                        '                                            </p>\n' +
-                        '                                        </div>\n' +
-                        '                                    </div>\n' +
-                        '                                </li>';
+                // var newLi = document.createElement('li');
+                // newLi.innerHTML = '<li class="media">\n' +
+                //         '                                    <a class="pull-left" href="#">\n' +
+                //         '                                        <img class="media-object img-circle" src="/static/img/bklogo.jpg" height="60" width="60" alt="profile">\n' +
+                //         '                                    </a>\n' +
+                //         '                                    <div class="media-body">\n' +
+                //         '                                        <div class="well well-lg">\n' +
+                //         '                                            <a href="/userComments/'+data.data['Comments'][i]['nickname']+'">' + data.data['Comments'][i]['nickname'] + ' </a>\n' +
+                //         '                                            <ul class="media-date text-uppercase reviews list-inline">\n' +
+                //         '                                            <li class="date">' + data.data['Comments'][i]['date'].substring(0,data.data['Comments'][i]['date'].length-8) + '</li>' +
+                //         '                                            </ul>\n' +
+                //         '                                            <p class="media-comment">\n' +
+                //         data.data['Comments'][i]['commentText'] +
+                //         '                                            </p>\n' +
+                //         '                                        </div>\n' +
+                //         '                                    </div>\n' +
+                //         '                                </li>';
+                // commentSection.appendChild(newLi);
+
+                var commentSection = document.getElementById('commentFulfier');
+                var newLi = document.createElement('div');
+                newLi.innerHTML =
+                        '<div class="head">' +
+                        '<small><strong class=\'user\'>' + data.data['Comments'][i]['nickname']+'</strong>'
+                        +'    '+ data.data['Comments'][i]['date'].substring(0, data.data['Comments'][i]['date'].length - 8) + '</small>' +
+                        '</div>' +
+                        '<p>' + data.data['Comments'][i]['commentText'] + ' </p>' +
+                        '</div>';
                 commentSection.appendChild(newLi);
+
+
             }
         }
     };
@@ -689,8 +703,8 @@
     if (xhr.status != 200) {
         alert(xhr.status + ': ' + xhr.statusText);
     } else {
-            var json = JSON.parse(xhr.responseText);
-            $('#account').html(json.nickname + "'s profile");
+        var json = JSON.parse(xhr.responseText);
+        $('#account').html(json.nickname + "'s profile");
     }
 </script>
 </body>
