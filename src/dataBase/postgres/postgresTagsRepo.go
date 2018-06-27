@@ -17,7 +17,7 @@ func NewTagsRepository(Db *sql.DB) repository.TagsRepository {
 
 
 func (p tagsRepositoryPG) GetListOfTags() (tags []repository.Tags, err error) {
-	rows, err := p.Db.Query("SELECT id, title  FROM gotoboox.tags LIMIT 100")
+	rows, err := p.Db.Query("SELECT tag_id, title  FROM gotoboox.tags LIMIT 100")
 	if err != nil {
 		log.Printf("Get %v", err)
 		return
