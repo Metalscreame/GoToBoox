@@ -174,7 +174,7 @@ func (p booksRepositoryPG) GetByTagsAndRating(tags []string, rating []int) (book
 	if rating[0] == 0 && rating[1] == 0 && tagsLen != 0{
 		rows, err := p.Db.Query("SELECT gotoboox.books.id, gotoboox.books.title FROM gotoboox.books " +
 			"LEFT JOIN gotoboox.books_tags ON gotoboox.books.id = gotoboox.books_tags.book_id " +
-			"LEFT JOIN gotoboox.tags ON gotoboox.books_tags.tag_id = gotoboox.tags.id " +
+			"LEFT JOIN gotoboox.tags ON gotoboox.books_tags.id = gotoboox.tags.tag_id " +
 			"WHERE gotoboox.tags.title = any($1) " +
 			"GROUP BY gotoboox.books.title, gotoboox.books.id " +
 			"having count(*) = $2",
