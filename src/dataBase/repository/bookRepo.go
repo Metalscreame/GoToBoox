@@ -1,6 +1,7 @@
 package repository
 
 type BookRepository interface {
+	InsertTags (tagID int, bookID int) (err error)
 	GetAll() (books []Book, err error)
 	GetByCategory(categoryID int) (books []Book, err error)
 	GetByLikeName(title string) (books []Book, err error)

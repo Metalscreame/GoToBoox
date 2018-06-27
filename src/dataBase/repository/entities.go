@@ -15,14 +15,15 @@ const (
 )
 
 type Book struct {
-	ID             int     `json:"id,omitempty"`
-	Title          string  `json:"title"`
-	Description    string  `json:"description"`
-	Popularity     float32 `json:"popularity,omitempty"`
-	EvaluateNumber int     `json:"-"`
-	State          string  `json:"state,omitempty"`
-	Image          []byte  `json:"image,omitempty"`
-	Base64Img      string  `json:"base_64_img"`
+	ID             int      `json:"id,omitempty"`
+	Title          string   `json:"title"`
+	Description    string   `json:"description"`
+	Popularity     float32  `json:"popularity,omitempty"`
+	EvaluateNumber int      `json:"-"`
+	State          string   `json:"state,omitempty"`
+	Image          []byte   `json:"image,omitempty"`
+	Base64Img      string   `json:"base_64_img"`
+	TagID          []string `json:"tag_id"`
 }
 
 type User struct {
@@ -42,6 +43,17 @@ type User struct {
 	TakenBookId                     int       `json:"taken_book_id"`
 }
 
+
+type Tags struct {
+	ID    int    `json:"id,omitempty"`
+	Title string `json:"tag_title"`
+}
+
+type BookTags struct {
+	BookID int `json:"book_id"`
+	TagID  int `json:"tag_id"`
+}
+
 type Comment struct {
 	ID             int       `json:"-"`
 	BookID         int       `json:"book_id,omitempty"`
@@ -50,4 +62,5 @@ type Comment struct {
 	CommentaryText string    `json:"commentText"`
 	CommentDate    time.Time `json:"-"`
 	FormatedDate   string    `json:"date,omitempty"`
+
 }

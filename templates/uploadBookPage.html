@@ -1,9 +1,10 @@
 {{template "header" .}}
 {{template "nav" .}}
 
+
 <h2 id="ttl" style="text-align: center; margin-top: 2% !important;"> Please make your proposition </h2>
-    <div class="container content">
-        <hr>
+<div class="container content">
+    <hr>
 
     <div class="form-group">
     </div>
@@ -17,45 +18,84 @@
         <div class="col-md-8 col-md-offset-1">
             <div class="form-group">
                 <label for="exampleFormControlTextarea1">Title of a new book *</label>
-                <textarea class="form-control" id="titleText"  rows="1"></textarea>
+                <textarea class="form-control" id="titleText" rows="1"></textarea>
             </div>
 
             <div class="form-group">
                 <label for="exampleFormControlTextarea1">Enter the description of a new book*</label>
-                <textarea class="form-control" id="descriptionText"  rows="12"></textarea>
-            </div>
-            <div class="form-group">
-                <button class="btn btn btn-dark" id="submitBtn" type="button">&#160&#160&#160&#160&#160&#160&#160Save this and reserve chosen book&#160&#160&#160&#160&#160&#160&#160&#160</button>
-                <label for="exampleFormControlTextarea1">&#160&#160&#160or you can... &#160&#160&#160</label>
-                <button class="btn btn btn-dark" id="returnPreviosly" type="button">Return previously taken book</button>
+                <textarea class="form-control" id="descriptionText" rows="12"></textarea>
             </div>
 
-        </div>
-        <div class="col-md-4 col-md-offset-1">
+            <div class="form-group">
+                <label for="exampleFormControlTextarea1">Rate the book*</label>
+                <textarea class="form-control" id="rateText" rows="1"></textarea>
+            </div>
 
             <div class="form-group">
-                <label for="exampleFormControlTextarea1">Upload a picture for the new book*</label>
-                <form method="POST" action="#" enctype="multipart/form-data" >
+                <select class="form-control" id="tagsList" multiple="multiple">
 
-                    <div class="form-group">
-                        <div class="input-group input-file" name="Fichier1">
+                </select>
+            </div>
+            <script>
+                var tagsList = document.getElementById('tagsList');
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', '/api/v1/tags', false);
+                xhr.send();
+                if (xhr.status != 200) {
+                    alert(xhr.status + ': ' + xhr.statusText);
+                } else {
+                    var data = JSON.parse(xhr.responseText);
+                    let option;
+                    var i = 0;
+                    for (i; i < data.data['Tags'].length; i++) {
+                        option = document.createElement('option');
+                        option.text = data.data['Tags'][i]['tag_title'];
+                        option.value = data.data['Tags'][i]['id'];
+                        tagsList.add(option)
+                    }
+                }
+
+            </script>
+
+            <div>
+                <div class="form-group">
+                    <button class="btn btn btn-dark" id="submitBtn" type="button">
+                        &#160&#160&#160&#160&#160&#160&#160Save this and reserve chosen
+                        book&#160&#160&#160&#160&#160&#160&#160&#160
+                    </button>
+                    <label for="exampleFormControlTextarea1">&#160&#160&#160or you can... &#160&#160&#160</label>
+                    <button class="btn btn btn-dark" id="returnPreviosly" type="button">Return previously taken book
+                    </button>
+                </div>
+
+            </div>
+            <div class="col-md-4 col-md-offset-1">
+
+                <div class="form-group">
+                    <label for="exampleFormControlTextarea1">Upload a picture for the new book*</label>
+                    <form method="POST" action="#" enctype="multipart/form-data">
+
+                        <div class="form-group">
+                            <div class="input-group input-file" name="Fichier1">
 			                <span class="input-group-btn">
         		                <button class="btn btn-default btn-choose" type="button">Choose</button>
     		                </span>
-                            <input type="text" class="form-control" id="fileChooser" placeholder='Choose a file...' />
-                            <span class="input-group-btn">
+                                <input type="text" class="form-control" id="fileChooser"
+                                       placeholder='Choose a file...'/>
+                                <span class="input-group-btn">
        			             <button class="btn btn-warning btn-light" type="button">Reset</button>
     	                	</span>
+                            </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
-        </div>
+    </div>
+    <hr>
+    <p>&#160</p>
+    <p>&#160</p>
+    <p>&#160</p>
+    <p>&#160</p>
 </div>
-<hr>
-<p>&#160</p>
-<p>&#160</p>
-<p>&#160</p>
-<p>&#160</p>
 {{template "footer" .}}
