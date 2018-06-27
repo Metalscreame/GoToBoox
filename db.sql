@@ -1,5 +1,15 @@
 CREATE SCHEMA gotoboox;
 
+CREATE TABLE gotoboox.tags(
+id SERIAL primary key,
+title character varying (150) not null
+);
+
+CREATE TABLE gotoboox.books_tags(
+book_id int references gotoboox.books (id) not null,
+tag_id int references gotoboox.tags (id) not null
+);
+
 CREATE TABLE gotoboox.books(
 id SERIAL PRIMARY KEY,
 title CHARACTER VARYING (250) NOT NULL,

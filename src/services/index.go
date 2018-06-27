@@ -8,6 +8,7 @@ import (
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
 )
 
+// IndexHandler get all nedeed data for the main page from repos.
 func IndexHandler(c *gin.Context) {
 	type Data struct{
 		Books []repository.Book

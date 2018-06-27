@@ -8,9 +8,52 @@
 </div>
 <script src="/static/vendor/jquery/jquery.min.js"></script>
 <script src="/static/vendor/bootstrap/js/bootstrap.min.js"></script>
+<script src="/static/js/nativemultiple.jquery.min.js"></script>
+{{if eq .page "search"}}
 <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
+<script>
+    $('#search').submit(function(e) {
+        e.preventDefault();
+        var $form = $(this);
+        console.log($form.serialize());
+        $.ajax({
+            type: 'POST',
+            url: '/api/v1/books/search',
+            data: $form.serialize(),
+            success: function(data) { //Данные отправлены успешно
+                console.log(data);
+                $('#result').empty();
+                if (data.response.Books){
+                    for (var i = 0; i < data.response.Books.length; i++){
+                        $('#result').append("<li><a href='/book/" + data.response.Books[i].id + "'>" + data.response.Books[i].title + "</a></li>");
+                    }
+                }
+            },
+            error: function(data) { // Данные не отправлены
+                console.log(data);
+            }
+        });
+    });
 
+    $('input[name=three]').nativeMultiple({
+        stylesheet: "slider",
+        onCreate: function() {
+            console.log(this);
+        },
+        onChange: function(first_value, second_value) {
+            $('#firstValue').val(first_value);
+            $('#secondValue').val(second_value);
+            console.log('onchange', [first_value, second_value]);
+        },
+        onSlide: function(first_value, second_value) {
+            $('#firstValue').val(first_value);
+            $('#secondValue').val(second_value);
+            console.log('onslide', [first_value, second_value]);
+        }
+    });
+</script>
+{{end}}
 {{if eq .page "main"}}
 <script>
     var xhr = new XMLHttpRequest();

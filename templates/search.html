@@ -1,0 +1,37 @@
+{{define "search"}}
+<div class="col-lg-6">
+    <h2> You can find book with it: </h2>
+    <form id="search" enctype="multipart/form-data">
+        <p>Title: </p>
+        <p><input type="text" name="title"> </p>
+
+        <select multiple name="tags[]">
+            <option>Crime</option>
+            <option>Suspense</option>
+            <option>Historical</option>
+            <option>Comedy</option>
+        </select>
+
+
+        <p>Rating: </p>
+        <p>
+            >= <input style="width:30px;" type="text" id="firstValue" name="rating[]"> <br>
+            <= <input style="width:30px;" type="text" id="secondValue" name="rating[]">
+        </p>
+        <input type="range" min="1" max="10" step="1" value="1,7" name="three" />
+        <hr>
+        <button>Search</button>
+
+    </form>
+    <div class="row mb-4" style="display: block">
+        <div class="col-md-8">
+        <ul id="result">
+
+        </ul>
+        </div>
+        <div class="col-md-4">
+        </div>
+    </div>
+</div>
+
+{{end}}

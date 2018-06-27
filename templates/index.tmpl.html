@@ -3,24 +3,27 @@
   <div class="wrapper">
   <div class="container content" style="max-width: 1185px !important;">
       <div class="row">
-      {{if eq .page "main"}}
-        {{template "main"}}
-      {{end}}
-      {{if eq .page "location"}}
-        {{template "location"}}
-      {{end}}
-      {{if eq .page "book"}}
-        {{template "book"}}
-      {{end}}
-      {{if eq .page "login"}}
-        {{template "login"}}
-      {{end}}
-      {{if eq .page "registration"}}
-        {{template "registration"}}
-      {{end}}
-      {{if eq .page "userprofile"}}
-        {{template "userprofile"}}
-      {{end}}
+          {{if eq .page "main"}}
+            {{template "main"}}
+          {{end}}
+          {{if eq .page "location"}}
+            {{template "location"}}
+          {{end}}
+          {{if eq .page "book"}}
+            {{template "book"}}
+          {{end}}
+          {{if eq .page "login"}}
+            {{template "login"}}
+          {{end}}
+          {{if eq .page "registration"}}
+            {{template "registration"}}
+          {{end}}
+          {{if eq .page "userprofile"}}
+            {{template "userprofile"}}
+          {{end}}
+          {{if eq .page "search"}}
+            {{template  "search"}}
+          {{end}}
       </div>
   </div>
   {{template "footer" .}}

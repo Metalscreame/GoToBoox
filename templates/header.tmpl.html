@@ -8,6 +8,11 @@
     <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/static/css/modern-business.css" rel="stylesheet">
     <link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon">
+
+    {{if eq .page "search"}}
+        <link href="/static/css/rate-slider/slider.css" rel="stylesheet">
+    {{end}}
+
     {{if eq .page "book"}}
         <link href="https://fonts.googleapis.com/css?family=Pacifico%7CSource+Sans+Pro:200,200i,300,300i,400,400i,600,600i,700,700i,900,900i&amp;amp;subset=latin-ext,vietnamese" rel="stylesheet">
         <!-- Vendor CSS-->

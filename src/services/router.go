@@ -48,8 +48,15 @@ func Start() {
 
 		})
 	})
+	router.GET("/search", func(c *gin.Context) {
+		isLoggedIn := midlwares.CheckLoggedIn(c)
+		c.HTML(http.StatusOK, "index.tmpl.html", gin.H{
+			"title": "GoToBooX - search",
+			"page" : "search",
+			"isLoggedIn": isLoggedIn,
 
-
+		})
+	})
 	router.GET(apiRoute, IndexHandler)
 	initUserProfileRoutes()
 	initBooksRoutes()
@@ -127,7 +134,9 @@ func initBooksRoutes() {
 	//router.GET("/categories/:cat_id/book/:book_id", bookService.getBook)
 	router.GET("/books/m/mostPopularBooks", bookService.FiveMostPop)
 
+	router.POST("/api/v1/books/search", bookService.getBookBySearch)
 	router.GET("/api/v1/book/:book_id", bookService.getBook)
+
 	router.GET("/book/:book_id", ShowBook)
 
 	router.GET("/api/v1/books/showReserved", bookService.showReservedBooksByUser)

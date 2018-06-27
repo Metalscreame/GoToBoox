@@ -8,6 +8,7 @@ import (
 	"log"
 	"encoding/base64"
 	"strings"
+	"unicode/utf8"
 )
 
 type BookService struct {
@@ -160,6 +161,45 @@ func (b *BookService) getBook(c *gin.Context) {
 		}
 	}
 }
+
+func (b *BookService) getBookBySearch(c *gin.Context) {
+	type Data struct {
+		Books []repository.Book
+	}
+
+	// if user pass the title of the book, then we don't need use any filters - user know what book he want
+	title := c.PostForm("title")
+	if utf8.RuneCountInString(title) > 0{
+		books, err := b.BooksRepo.GetByLikeName(title)
+		if err != nil{
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		response := Data{books}
+		c.JSON(http.StatusOK, gin.H{"response" : response})
+		return
+	}
+
+	type Myform struct {
+		Tags   []string `form:"tags[]"`
+		Rating []int     `form:"rating[]"`
+	}
+	var myform Myform
+	c.Bind(&myform)
+	books, err := b.BooksRepo.GetByTagsAndRating(myform.Tags, myform.Rating)
+	if err != nil{
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	response := Data{books}
+	c.JSON(http.StatusOK, gin.H{"response" : response})
+	return
+}
+
+
+
+
 
 func (b *BookService) insertNewBook(c *gin.Context) {
 	var bookToAdd repository.Book
