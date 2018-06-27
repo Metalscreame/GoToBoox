@@ -23,7 +23,7 @@ func NewUserService(repository repository.UserRepository) *UserService {
 	}
 }
 
-//UserGetHandler gets users data from database using unique email that is stored in cookie
+//UserGetHandler gets users Data from database using unique email that is stored in cookie
 //if there is no email in coolie that means that session is over
 func (s *UserService) UserGetHandler(c *gin.Context) {
 	emailCookie, err := c.Request.Cookie("email")
@@ -123,6 +123,7 @@ func convertEmailString(emailCookie string) (string) {
 //Uses route /api/v1/logout
 func (s *UserService) LogoutHandler(c *gin.Context) {
 	c.SetCookie("email", "", -1, "", "", false, true)
+	c.SetCookie("nickname", "",-1,"","",false,true)
 	c.SetCookie("token", "", -1, "", "", false, true)
 	c.SetCookie("is_logged_in", "", -1, "", "", false, true)
 	c.Set("is_logged_in", false)
@@ -193,6 +194,7 @@ func performLoginCookiesSetting(u repository.User, c *gin.Context) {
 	c.SetCookie("token", token, 16000, "", "", false, false)
 	c.Set("is_logged_in", true)
 	c.SetCookie("email", u.Email, 16000, "", "", false, false)
+	c.SetCookie("nickname", u.Nickname, 16000, "", "", false, false)
 	c.SetCookie("is_logged_in", "true", 16000, "", "", false, false)
 }
 

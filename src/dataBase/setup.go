@@ -19,8 +19,11 @@ func Connect() () {
 	var err error
 	dbUrl, ok := os.LookupEnv("POSTGRES_URL")
 	if !ok {
+		println("$POSTGRES_URL is required\nFor localhosts setup sys env \"POSTGRES_URL\" " +
+			"with key \"postgres://postgres:root@localhost:5432/postgres?sslmode=disable\" where ://username:password@host:port/dbname")
 		log.Fatal("$POSTGRES_URL is required\nFor localhosts setup sys env \"POSTGRES_URL\" " +
 			"with key \"postgres://postgres:root@localhost:5432/postgres?sslmode=disable\" where ://username:password@host:port/dbname")
+
 	}
 
 	Connection, err = sql.Open("postgres", dbUrl)

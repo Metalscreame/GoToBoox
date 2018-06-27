@@ -31,6 +31,15 @@ id SERIAL PRIMARY KEY,
 title CHARACTER VARYING (250) NOT NULL UNIQUE
 );
 
+CREATE TABLE gotoboox.comments (
+  id SERIAL PRIMARY KEY,
+  book_id INT REFERENCES gotoboox.books (id),
+  user_nickname CHARACTER VARYING (150) REFERENCES gotoboox.users (nickname),
+  user_email CHARACTER VARYING (250) REFERENCES gotoboox.users (email) ,
+  commentary TEXT NOT NULL,
+  commentary_date DATE
+);
+
 INSERT INTO gotoboox.users  (nickname,email,password,register_date)
 VALUES
 ('admin', 'admin@admin', 'asd', '2018-01-01'),

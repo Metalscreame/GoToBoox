@@ -71,6 +71,7 @@ func ShowBook(c *gin.Context) {
 	})
 }
 
+//ShowUploadBookPage is a static page hangler func that renders uploadBook page
 func ShowUploadBookPage(c *gin.Context) {
 	isLoggedIn := midlwares.CheckLoggedIn(c)
 	c.HTML(
@@ -84,6 +85,7 @@ func ShowUploadBookPage(c *gin.Context) {
 	)
 }
 
+//ShowTakenBooksPage is a static page hangler func that renders taken books page
 func ShowTakenBooksPage(c *gin.Context) {
 	isLoggedIn := midlwares.CheckLoggedIn(c)
 	c.HTML(
@@ -93,6 +95,15 @@ func ShowTakenBooksPage(c *gin.Context) {
 			"title": "Taken books",
 			"page": "takenBooks",
 			"isLoggedIn": isLoggedIn,
+		},
+	)
+}
+
+//ShowCommentsPage is a static page hangler func that renders comments page
+func ShowCommentsPage(c *gin.Context)  {
+	c.HTML(http.StatusOK, "index.tmpl.html", gin.H{
+			"title": "User comments",
+			"page": "comments",
 		},
 	)
 }
