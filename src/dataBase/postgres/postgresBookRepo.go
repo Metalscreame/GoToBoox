@@ -24,7 +24,7 @@ const (
 
 func (p booksRepositoryPG) InsertTags (tagID int, bookID int) (err error){
 
-	_, err = p.Db.Query("INSERT INTO gotoboox.books_tags (book_id, tag_id) values($1, $2)",
+	_, err = p.Db.Query("INSERT INTO gotoboox.books_tags (book_id, id) values($1, $2)",
 		bookID, tagID)
 	return
 }
