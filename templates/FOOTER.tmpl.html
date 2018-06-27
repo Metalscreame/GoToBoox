@@ -13,6 +13,23 @@
 <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 <script>
+    $.ajax({
+        type: 'GET',
+        url: '/api/v1/tags',
+        success: function(data){
+            for(var i = 0; i < data.data.Tags.length; i++){
+                $('#tags').append("<option>" + data.data.Tags[i].tag_title + "</option>")
+            }
+
+            console.log(data)
+        },
+        error: function(data){
+            console.log('error: ' + data)
+        }
+    })
+
+
+
     $('#search').submit(function(e) {
         e.preventDefault();
         var $form = $(this);
