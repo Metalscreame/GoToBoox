@@ -141,7 +141,7 @@ func initBooksRoutes() {
 	router.GET("/book/:book_id", ShowBook)
 	router.GET("/api/v1/books/taken", bookService.showAllTakenBooks)
 
-	//----
+
 	router.GET("/api/v1/books/showReserved", bookService.ShowReservedBooksByUser)
 	router.GET("/api/v1/books/taken/0",bookService.ShowTakenBookByUser)
 	router.GET("/books/taken/:id", ShowTakenBooksPage)
@@ -156,6 +156,8 @@ func initBooksRoutes() {
 	router.GET("/api/v1/bookComments/:book_id",commentsService.BookCommentsHandler)
 	router.POST("/api/v1/addBookComment/:book_id",commentsService.AddBookCommentHandler)
 	router.GET("/api/v1/allCommentsByNickname/:nickname",commentsService.AllCommentsByNicknameHandler)
+
+	router.GET("api/v1/tag/:book_id", bookService.getTags)
 }
 
 func initTagsRoutes(){

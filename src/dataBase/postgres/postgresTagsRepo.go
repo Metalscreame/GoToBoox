@@ -38,3 +38,5 @@ func (p tagsRepositoryPG) GetListOfTags() (tags []repository.Tags, err error) {
 	}
 	return tags, nil
 }
+
+
