@@ -145,7 +145,7 @@ func initBooksRoutes() {
 	router.GET("/api/v1/books/showReserved", bookService.ShowReservedBooksByUser)
 	router.GET("/api/v1/books/taken/0",bookService.ShowTakenBookByUser)
 	router.GET("/books/taken/:id", ShowTakenBooksPage)
-	
+
 	router.POST("/api/v1/insertNewBook/:book_id", midlwares.EnsureLoggedIn(), bookService.InsertNewBook)
 
 	router.GET("/api/v1/updateBookStatus/:book_id", bookService.UpdateBookStatusToReturningFromTaken)

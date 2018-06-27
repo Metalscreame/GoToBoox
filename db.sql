@@ -75,3 +75,18 @@ VALUES
   ('Feel for Love', 'Joe Cantrell, owner of the Gansett Island Ferry Company, has been in love with Janey McCarthy for as long as he can remember. At the same time, Janey has been dating or engaged to doctor-in-training David Lawrence. When things go horribly wrong between David and Janey, she calls her fifth brother', '9', '1','TAKEN'),
   ('Tekken taken game', 'Joe Cantrell, owner of the Gansett Island Ferry Company, has been in love with Janey McCarthy for as long as he can remember. At the same time, Janey has been dating or engaged to doctor-in-training David Lawrence. When things go horribly wrong between David and Janey, she calls her fifth brother', '9', '1','TAKEN'),
   ('What a pretty bookkie', 'Joe Cantrell, owner of the Gansett Island Ferry Company, has been in love with Janey McCarthy for as long as he can remember. At the same time, Janey has been dating or engaged to doctor-in-training David Lawrence. When things go horribly wrong between David and Janey, she calls her fifth brother', '9', '1','RESERVED');
+
+
+INSERT INTO gotoboox.tags(
+  title)
+VALUES
+  ('Crime'), ('Comedy'),('DarkFantasy'),
+  ('HistFic'),('Historical'),('LitFic'),('Mystery'),('NonFiction'),('Poetry'),('Romantic'),
+  ('RomanticSuspense'), ('TrueStories'),('ScienceFiction'),('ShortStory'),('Suspense'),('UrbanFantasy'),
+  ('YA'),('YALit'),('YABook'),('BestBookEver'),('Dystopian'),
+  ('EpicReads'),('MyFav'),('NeededToBeRead');
+
+INSERT INTO gotoboox.books_tags(
+  book_id, tag_id)
+VALUES ('1', '1'), ('1', '2'), ('1', '3'), ('2', '4'), ('3', '5'), ('4', '1'), ('5', '2'), ('6', '3'),
+  ('7', '15'), ('8', '1'), ('5', '11'), ('5', '16'),('5', '5') ;
