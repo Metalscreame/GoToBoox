@@ -200,7 +200,7 @@ func (p booksRepositoryPG) GetByTagsAndRating(tags []string, rating []int) (book
 		// if user select the rating without tags
 		rows, err := p.Db.Query("SELECT gotoboox.books.id, gotoboox.books.title FROM gotoboox.books " +
 			"LEFT JOIN gotoboox.books_tags ON gotoboox.books.id = gotoboox.books_tags.book_id " +
-			"LEFT JOIN gotoboox.tags ON gotoboox.books_tags.tag_id = gotoboox.tags.id " +
+			"LEFT JOIN gotoboox.tags ON gotoboox.books_tags.id = gotoboox.tags.tag_id " +
 			"WHERE gotoboox.books.popularity BETWEEN $1 AND $2" +
 			"GROUP BY gotoboox.books.title, gotoboox.books.id ",
 			rating[0], rating[1])
@@ -225,7 +225,7 @@ func (p booksRepositoryPG) GetByTagsAndRating(tags []string, rating []int) (book
 		// if user select the rating with tags
 		rows, err := p.Db.Query("SELECT gotoboox.books.id, gotoboox.books.title FROM gotoboox.books " +
 			"LEFT JOIN gotoboox.books_tags ON gotoboox.books.id = gotoboox.books_tags.book_id " +
-			"LEFT JOIN gotoboox.tags ON gotoboox.books_tags.tag_id = gotoboox.tags.id " +
+			"LEFT JOIN gotoboox.tags ON gotoboox.books_tags.id = gotoboox.tags.tag_id " +
 			"WHERE gotoboox.tags.title = any($1) AND gotoboox.books.popularity BETWEEN $3 AND $4" +
 			"GROUP BY gotoboox.books.title, gotoboox.books.id " +
 			"having count(*) = $2",
