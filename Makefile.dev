@@ -1,6 +1,3 @@
-GOPATH=$(shell pwd)/vendor:$(shell pwd)
-
-
 
 all:get glide vendor install linter test run
 
@@ -11,22 +8,22 @@ glide:
 	glide update
 
 vendor:
-	@GOPATH=$(GOPATH) govendor sync update
+	govendor sync update
 
 install:
 	gometalinter.v2 --install
 
 linter:
-	@GOPATH=$(GOPATH) -gometalinter.v2 --vendor --tests --skip=mocks \
+	-gometalinter.v2 --vendor --tests --skip=mocks \
 		--exclude='_gen.go' --exclude='docs.go' \
 		--disable=gotype --disable=errcheck --disable=gas --disable=dupl \
 		--deadline=1500s --checkstyle --sort=linter ./... > static-analysis.xml
 test:
-	@GOPATH=$(GOPATH) -go test -v -cover ./... > tests.xml
+	-go test -v -cover ./... > tests.xml
 
 build:
-	@GOPATH=$(GOPATH) go build -o gotoboox
+	go build -o gotoboox
 
 run:
-	@GOPATH=$(GOPATH) go run main.go
+	go run main.go
 
