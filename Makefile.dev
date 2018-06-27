@@ -11,7 +11,7 @@ glide:
 	glide update
 
 vendor:
-	govendor sync update
+	@GOPATH=$(GOPATH) govendor sync update
 
 install:
 	gometalinter.v2 --install
