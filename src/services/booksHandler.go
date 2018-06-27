@@ -20,7 +20,6 @@ func NewBookService(repository repository.BookRepository, usersRepo repository.U
 	return &BookService{
 		BooksRepo: repository,
 		UsersRepo: usersRepo,
-
 	}
 }
 
@@ -61,7 +60,6 @@ func (b *BookService) showAllTakenBooks(c *gin.Context) {
 		return
 	}
 }
-
 
 func (b *BookService) showReservedBooksByUser(c *gin.Context) {
 	type Data struct {
@@ -115,7 +113,6 @@ func (b *BookService) showTakenBookByUser(c *gin.Context) {
 	return
 }
 
-
 //getBooks is a handler for GetByCategory function
 func (b *BookService) getBooks(c *gin.Context) {
 	// Check if the categoryID is valid
@@ -163,6 +160,31 @@ func (b *BookService) getBook(c *gin.Context) {
 	}
 }
 
+
+func (b *BookService) getTags(c *gin.Context) {
+	type Data struct {
+		Book []repository.Book
+	}
+	// Check if the bookID is valid
+	if bookID, err := strconv.Atoi(c.Param("book_id"));
+
+		err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	} else {
+
+		if book, err := b.BooksRepo.GetTagsForBook(bookID);
+			err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		} else {
+			output := Data{book}
+			c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": output})
+			return
+		}
+	}
+}
+
 func (b *BookService) getBookBySearch(c *gin.Context) {
 	type Data struct {
 		Books []repository.Book
@@ -170,33 +192,34 @@ func (b *BookService) getBookBySearch(c *gin.Context) {
 
 	// if user pass the title of the book, then we don't need use any filters - user know what book he want
 	title := c.PostForm("title")
-	if utf8.RuneCountInString(title) > 0{
+	if utf8.RuneCountInString(title) > 0 {
 		books, err := b.BooksRepo.GetByLikeName(title)
-		if err != nil{
+		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 		response := Data{books}
-		c.JSON(http.StatusOK, gin.H{"response" : response})
+		c.JSON(http.StatusOK, gin.H{"response": response})
 		return
 	}
 
 	type Myform struct {
 		Tags   []string `form:"tags[]"`
-		Rating []int     `form:"rating[]"`
+		Rating []int    `form:"rating[]"`
 	}
 	var myform Myform
 	c.Bind(&myform)
 	books, err := b.BooksRepo.GetByTagsAndRating(myform.Tags, myform.Rating)
-	if err != nil{
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	response := Data{books}
-	c.JSON(http.StatusOK, gin.H{"response" : response})
+	c.JSON(http.StatusOK, gin.H{"response": response})
 	return
 }
+
 //---- Roman's part
 //ShowReservedBooksByUser is a handler func that returns json with user's reserved book
 func (b *BookService) ShowReservedBooksByUser(c *gin.Context) {
@@ -210,20 +233,20 @@ func (b *BookService) ShowReservedBooksByUser(c *gin.Context) {
 	}
 
 	email := convertEmailString(emailCookie.Value)
-	u,err:=b.UsersRepo.GetUserByEmail(email)
-	if err!=nil{
+	u, err := b.UsersRepo.GetUserByEmail(email)
+	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"status": "bad request"})
 		return
 	}
-	book,_:=b.BooksRepo.GetByID(u.ReturningBookId)
+	book, _ := b.BooksRepo.GetByID(u.ReturningBookId)
 	var output Data
-	output.Books = append(output.Books,book)
+	output.Books = append(output.Books, book)
 	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": output})
 	return
 }
 
 //ShowTakenBookByUser is a handler func that returns user's taken books
-func (b *BookService) ShowTakenBookByUser(c *gin.Context){
+func (b *BookService) ShowTakenBookByUser(c *gin.Context) {
 
 	emailCookie, err := c.Request.Cookie("email")
 	if err != nil {
@@ -232,19 +255,19 @@ func (b *BookService) ShowTakenBookByUser(c *gin.Context){
 	}
 
 	email := convertEmailString(emailCookie.Value)
-	u,err:=b.UsersRepo.GetUserByEmail(email)
-	if err!=nil{
+	u, err := b.UsersRepo.GetUserByEmail(email)
+	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"status": "bad request"})
 		return
 	}
 
-	book,err:=b.BooksRepo.GetByID(u.TakenBookId)
-	if err!=nil{
+	book, err := b.BooksRepo.GetByID(u.TakenBookId)
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "no books"})
 		return
 	}
-	book.ID=u.TakenBookId
-	c.JSON(http.StatusOK,book)
+	book.ID = u.TakenBookId
+	c.JSON(http.StatusOK, book)
 	return
 }
 
@@ -283,15 +306,16 @@ func (b *BookService) InsertNewBook(c *gin.Context) {
 		return
 	}
 
-	if err := b.BooksRepo.InsertNewBook(bookToAdd);
-		err != nil {
+	last, err := b.BooksRepo.InsertNewBook(bookToAdd);
+	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
 		return
 	}
+
 	for k, _ := range bookToAdd.TagID {
 		number, _ := strconv.Atoi(bookToAdd.TagID[k])
-		if err := b.BooksRepo.InsertTags(number, bookIdToReserve);
+		if err := b.BooksRepo.InsertTags(number, last);
 			err != nil {
 			log.Println(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
@@ -301,7 +325,6 @@ func (b *BookService) InsertNewBook(c *gin.Context) {
 	go NotifyAllNewBook(bookToAdd.Title, bookToAdd.Description)
 	return
 }
-
 
 //UpdateBookStatusToReturningFromTaken is a handler func that sets up state from taken to returned if user want this book
 func (b *BookService) UpdateBookStatusToReturningFromTaken(c *gin.Context) {

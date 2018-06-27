@@ -21,10 +21,37 @@ const (
 	takenState = "TAKEN"
 )
 
+
 func (p booksRepositoryPG) InsertTags (tagID int, bookID int) (err error){
+
 	_, err = p.Db.Query("INSERT INTO gotoboox.books_tags (book_id, tag_id) values($1, $2)",
 		bookID, tagID)
 	return
+}
+
+
+func (p booksRepositoryPG) GetTagsForBook (bookID int) (tags []repository.Book, err error){
+
+	rows, err := p.Db.Query("SELECT gotoboox.tags.title FROM (gotoboox.books JOIN gotoboox.books_tags USING (id)) JOIN gotoboox.tags USING (tag_id) WHERE gotoboox.books.id = $1",bookID)
+	if err != nil {
+		log.Printf("Get %v", err)
+		return
+	}
+	defer rows.Close()
+	var tag repository.Book
+	for rows.Next() {
+
+		if err := rows.Scan(&tag.TagsTitles);
+			err != nil {
+			log.Printf("Get %v", err)
+		}
+		tags = append(tags, tag)
+	}
+	if err := rows.Err(); err != nil {
+		log.Printf("Get %v", err)
+
+	}
+	return tags, nil
 }
 
 //GetByID iterates over the DB using the SQL SELECT Request and return selected book by its ID
@@ -245,9 +272,9 @@ func (p booksRepositoryPG) GetMostPopularBooks(quantity int) ([]repository.Book,
 }
 
 
-func (p * booksRepositoryPG) InsertNewBook(b repository.Book) (err error){
-	_, err = p.Db.Query("INSERT INTO gotoboox.books (title,description,image, popularity) values($1,$2,$3, $4)",
-		b.Title, b.Description, b.Image, b.Popularity)
+func (p * booksRepositoryPG) InsertNewBook(b repository.Book) (lastID int, err error){
+	err = p.Db.QueryRow("INSERT INTO gotoboox.books (title,description,image, popularity) values($1,$2,$3, $4) RETURNING id",
+		b.Title, b.Description, b.Image, b.Popularity).Scan(&lastID);
 	return
 }
 

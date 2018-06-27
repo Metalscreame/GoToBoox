@@ -129,6 +129,30 @@
     }
 </script>
 
+
+<script>
+    var url_string = window.location.href;
+    var param = url_string.substr(url_string.lastIndexOf('/') + 1);
+    var xhr = new XMLHttpRequest();
+    var tags =  document.getElementById('tags');
+    xhr.open('GET', '/api/v1/tag/' + param, false);
+    xhr.send();
+    if (xhr.status != 200) {
+        alert("error")
+        alert(xhr.status + ': ' + xhr.statusText);
+    } else {
+        var BookDescription = document.getElementById('BookDescription');
+        var data = JSON.parse(xhr.responseText);
+        var i = 0;
+        for (i; i < data.data['Book'].length; i++) {
+            var newLi = document.createElement('li');
+            newLi.innerHTML =  data.data['Book'][i]['tag_title'];
+            tags.appendChild(newLi);
+            //document.getElementById('tags').innerHTML = data.data['Book'][i]['tag_title'];
+        }
+    }
+</script>
+
 <script>
     $('#booxIt').on('click', function (e) {
 

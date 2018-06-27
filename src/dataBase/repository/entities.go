@@ -24,6 +24,7 @@ type Book struct {
 	Image          []byte   `json:"image,omitempty"`
 	Base64Img      string   `json:"base_64_img"`
 	TagID          []string `json:"tag_id"`
+	TagsTitles     string `json:"tag_title"`
 }
 
 type User struct {
@@ -43,7 +44,6 @@ type User struct {
 	TakenBookId                     int       `json:"taken_book_id"`
 }
 
-
 type Tags struct {
 	ID    int    `json:"id,omitempty"`
 	Title string `json:"tag_title"`
@@ -62,5 +62,4 @@ type Comment struct {
 	CommentaryText string    `json:"commentText"`
 	CommentDate    time.Time `json:"-"`
 	FormatedDate   string    `json:"date,omitempty"`
-
 }
