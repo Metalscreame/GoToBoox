@@ -5,12 +5,13 @@ import (
 	"github.com/metalscreame/GoToBoox/src/services"
 	"os"
 	"log"
+	"github.com/metalscreame/GoToBoox/src/dataBase"
 )
 
 func main() {
 	file:=setupLogFile()
 	defer file.Close()
-	//dataBase.Connect()
+	dataBase.Connect()
 	services.ConfigureEmailDialer()
 	services.Start()
 	go services.DailyEmailNotifications()
