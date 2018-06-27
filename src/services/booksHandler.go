@@ -8,6 +8,7 @@ import (
 	"log"
 	"encoding/base64"
 	"strings"
+	"unicode/utf8"
 )
 
 type BookService struct {
@@ -61,6 +62,7 @@ func (b *BookService) showAllTakenBooks(c *gin.Context) {
 	}
 }
 
+
 func (b *BookService) showReservedBooksByUser(c *gin.Context) {
 	type Data struct {
 		Books []repository.Book
@@ -113,6 +115,7 @@ func (b *BookService) showTakenBookByUser(c *gin.Context) {
 	return
 }
 
+
 //getBooks is a handler for GetByCategory function
 func (b *BookService) getBooks(c *gin.Context) {
 	// Check if the categoryID is valid
@@ -160,7 +163,93 @@ func (b *BookService) getBook(c *gin.Context) {
 	}
 }
 
-func (b *BookService) insertNewBook(c *gin.Context) {
+func (b *BookService) getBookBySearch(c *gin.Context) {
+	type Data struct {
+		Books []repository.Book
+	}
+
+	// if user pass the title of the book, then we don't need use any filters - user know what book he want
+	title := c.PostForm("title")
+	if utf8.RuneCountInString(title) > 0{
+		books, err := b.BooksRepo.GetByLikeName(title)
+		if err != nil{
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		response := Data{books}
+		c.JSON(http.StatusOK, gin.H{"response" : response})
+		return
+	}
+
+	type Myform struct {
+		Tags   []string `form:"tags[]"`
+		Rating []int     `form:"rating[]"`
+	}
+	var myform Myform
+	c.Bind(&myform)
+	books, err := b.BooksRepo.GetByTagsAndRating(myform.Tags, myform.Rating)
+	if err != nil{
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	response := Data{books}
+	c.JSON(http.StatusOK, gin.H{"response" : response})
+	return
+}
+//---- Roman's part
+//ShowReservedBooksByUser is a handler func that returns json with user's reserved book
+func (b *BookService) ShowReservedBooksByUser(c *gin.Context) {
+	type Data struct {
+		Books []repository.Book
+	}
+	emailCookie, err := c.Request.Cookie("email")
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "bad request"})
+		return
+	}
+
+	email := convertEmailString(emailCookie.Value)
+	u,err:=b.UsersRepo.GetUserByEmail(email)
+	if err!=nil{
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "bad request"})
+		return
+	}
+	book,_:=b.BooksRepo.GetByID(u.ReturningBookId)
+	var output Data
+	output.Books = append(output.Books,book)
+	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": output})
+	return
+}
+
+//ShowTakenBookByUser is a handler func that returns user's taken books
+func (b *BookService) ShowTakenBookByUser(c *gin.Context){
+
+	emailCookie, err := c.Request.Cookie("email")
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "bad request"})
+		return
+	}
+
+	email := convertEmailString(emailCookie.Value)
+	u,err:=b.UsersRepo.GetUserByEmail(email)
+	if err!=nil{
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "bad request"})
+		return
+	}
+
+	book,err:=b.BooksRepo.GetByID(u.TakenBookId)
+	if err!=nil{
+		c.JSON(http.StatusBadRequest, gin.H{"status": "no books"})
+		return
+	}
+	book.ID=u.TakenBookId
+	c.JSON(http.StatusOK,book)
+	return
+}
+
+//InsertNewBook is a handler func to add a new book to a database
+func (b *BookService) InsertNewBook(c *gin.Context) {
 	var bookToAdd repository.Book
 	var err error
 
@@ -212,6 +301,7 @@ func (b *BookService) insertNewBook(c *gin.Context) {
 	go NotifyAllNewBook(bookToAdd.Title, bookToAdd.Description)
 	return
 }
+
 
 //UpdateBookStatusToReturningFromTaken is a handler func that sets up state from taken to returned if user want this book
 func (b *BookService) UpdateBookStatusToReturningFromTaken(c *gin.Context) {

@@ -43,6 +43,7 @@ type User struct {
 	TakenBookId                     int       `json:"taken_book_id"`
 }
 
+
 type Tags struct {
 	ID    int    `json:"id,omitempty"`
 	Title string `json:"tag_title"`
@@ -51,4 +52,15 @@ type Tags struct {
 type BookTags struct {
 	BookID int `json:"book_id"`
 	TagID  int `json:"tag_id"`
+}
+
+type Comment struct {
+	ID             int       `json:"-"`
+	BookID         int       `json:"book_id,omitempty"`
+	UserNickname   string    `json:"nickname,omitempty"`
+	UserEmail      string    `json:"-"`
+	CommentaryText string    `json:"commentText"`
+	CommentDate    time.Time `json:"-"`
+	FormatedDate   string    `json:"date,omitempty"`
+
 }

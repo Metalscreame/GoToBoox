@@ -21,6 +21,12 @@
       {{if eq .page "userprofile"}}
         {{template "userprofile"}}
       {{end}}
+      {{if eq .page "comments"}}
+        {{template "comments"}}
+      {{end}}
+          {{if eq .page "search"}}
+            {{template  "search"}}
+          {{end}}
       </div>
   </div>
   {{template "footer" .}}

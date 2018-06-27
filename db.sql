@@ -1,5 +1,15 @@
 CREATE SCHEMA gotoboox;
 
+CREATE TABLE gotoboox.tags(
+id SERIAL primary key,
+title character varying (150) not null
+);
+
+CREATE TABLE gotoboox.books_tags(
+book_id int references gotoboox.books (id) not null,
+tag_id int references gotoboox.tags (id) not null
+);
+
 CREATE TABLE gotoboox.books(
 id SERIAL PRIMARY KEY,
 title CHARACTER VARYING (250) NOT NULL,
@@ -29,6 +39,15 @@ register_date DATE
 CREATE TABLE gotoboox.categories(
 id SERIAL PRIMARY KEY,
 title CHARACTER VARYING (250) NOT NULL UNIQUE
+);
+
+CREATE TABLE gotoboox.comments (
+  id SERIAL PRIMARY KEY,
+  book_id INT REFERENCES gotoboox.books (id),
+  user_nickname CHARACTER VARYING (150) REFERENCES gotoboox.users (nickname),
+  user_email CHARACTER VARYING (250) REFERENCES gotoboox.users (email) ,
+  commentary TEXT NOT NULL,
+  commentary_date DATE
 );
 
 INSERT INTO gotoboox.users  (nickname,email,password,register_date)
