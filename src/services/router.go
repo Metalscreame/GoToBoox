@@ -73,35 +73,35 @@ func initUserProfileRoutes() {
 	// indicating whether the request was from an authenticated user or not
 	router.Use(midlwares.SetUserStatus())
 
-	service := NewUserService(postgres.NewPostgresUsersRepo(dataBase.Connection))
+	userService := NewUserService(postgres.NewPostgresUsersRepo(dataBase.Connection))
 	userRoutes := router.Group(apiRoute)
 	{
 		// Handle POST requests at /api/v1/login
 		// Ensure that the user is not logged in by using the middleware
-		userRoutes.POST("/login", midlwares.EnsureNotLoggedIn(), service.PerformLoginHandler)
+		userRoutes.POST("/login", midlwares.EnsureNotLoggedIn(), userService.PerformLoginHandler)
 
 		// Handle GET requests at /api/v1/logout
 		// Ensure that the user is logged in by using the middleware
-		userRoutes.GET("/logout", midlwares.EnsureLoggedIn(), service.LogoutHandler)
+		userRoutes.GET("/logout", midlwares.EnsureLoggedIn(), userService.LogoutHandler)
 
 		// Handle POST requests at /api/v1/register
 		// Ensure that the user is not logged in by using the middleware
-		userRoutes.POST("/register", midlwares.EnsureNotLoggedIn(), service.UserCreateHandler)
+		userRoutes.POST("/register", midlwares.EnsureNotLoggedIn(), userService.UserCreateHandler)
 
 		// Handle the GET requests at /api/v1/userProfile
 		// Show the user's profile page
 		// Ensure that the user is logged in by using the middleware
-		userRoutes.GET("/userProfile", midlwares.EnsureLoggedIn(), service.UserGetHandler)
+		userRoutes.GET("/userProfile", midlwares.EnsureLoggedIn(), userService.UserGetHandler)
 
 		// Handle the GET requests at /api/v1/register
 		// Show the user's profile page
 		// Ensure that the user is logged in by using the middleware
-		userRoutes.PUT("/userProfile", midlwares.EnsureLoggedIn(), service.UserUpdateHandler)
+		userRoutes.PUT("/userProfile", midlwares.EnsureLoggedIn(), userService.UserUpdateHandler)
 
 		// Handle the GET requests at /api/v1/userProfile
 		// Show the user's profile page
 		// Ensure that the user is logged in by using the middleware
-		userRoutes.DELETE("/userProfile", midlwares.EnsureLoggedIn(), service.UserDeleteHandler)
+		userRoutes.DELETE("/userProfile", midlwares.EnsureLoggedIn(), userService.UserDeleteHandler)
 	}
 
 	// Show the login page
@@ -120,8 +120,9 @@ func initUserProfileRoutes() {
 
 	// Show the user's profile page
 	// Ensure that the user is logged in by using the middleware
-	router.GET("/userProfilePage", midlwares.EnsureLoggedIn(), service.ShowUsersProfilePage)
+	router.GET("/userProfilePage", midlwares.EnsureLoggedIn(), userService.ShowUsersProfilePage)
 
+	router.GET("/userComments/:nickname", ShowCommentsPage)
 }
 
 func initBooksRoutes() {
@@ -133,20 +134,24 @@ func initBooksRoutes() {
 	//get books by it's ID
 	//router.GET("/categories/:cat_id/book/:book_id", bookService.getBook)
 	router.GET("/books/m/mostPopularBooks", bookService.FiveMostPop)
-
 	router.POST("/api/v1/books/search", bookService.getBookBySearch)
 	router.GET("/api/v1/book/:book_id", bookService.getBook)
 
 	router.GET("/book/:book_id", ShowBook)
-
-	router.GET("/api/v1/books/showReserved", bookService.showReservedBooksByUser)
-
 	router.GET("/api/v1/books/taken", bookService.showAllTakenBooks)
-	router.GET("/api/v1/books/taken/0",bookService.showTakenBookByUser)
+
+	//----
+	router.GET("/api/v1/books/showReserved", bookService.ShowReservedBooksByUser)
+	router.GET("/api/v1/books/taken/0",bookService.ShowTakenBookByUser)
 	router.GET("/books/taken/:id", ShowTakenBooksPage)
 
-	router.POST("/api/v1/insertNewBook/:book_id", midlwares.EnsureLoggedIn(), bookService.insertNewBook)
+	router.POST("/api/v1/insertNewBook/:book_id", midlwares.EnsureLoggedIn(), bookService.InsertNewBook)
 	router.GET("/api/v1/updateBookStatus/:book_id", bookService.UpdateBookStatusToReturningFromTaken)
 	router.GET("/api/v1/updateBookStatusReturn/:book_id/:reserved_book_id", bookService.UpdateBookStatusToReturning)
 	router.GET("/api/v1/makeBookCross", bookService.ExchangeBook)
+	
+	commentsService:= NewCommentsService(postgres.NewCommentsRepository(dataBase.Connection))
+	router.GET("/api/v1/bookComments/:book_id",commentsService.BookCommentsHandler)
+	router.POST("/api/v1/addBookComment/:book_id",commentsService.AddBookCommentHandler)
+	router.GET("/api/v1/allCommentsByNickname/:nickname",commentsService.AllCommentsByNicknameHandler)
 }
