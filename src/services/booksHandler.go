@@ -19,6 +19,7 @@ func NewBookService(repository repository.BookRepository, usersRepo repository.U
 	return &BookService{
 		BooksRepo: repository,
 		UsersRepo: usersRepo,
+
 	}
 }
 
@@ -71,23 +72,23 @@ func (b *BookService) showReservedBooksByUser(c *gin.Context) {
 	}
 
 	email := convertEmailString(emailCookie.Value)
-	u,err:=b.UsersRepo.GetUserByEmail(email)
-	if err!=nil{
+	u, err := b.UsersRepo.GetUserByEmail(email)
+	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"status": "bad request"})
 		return
 	}
-	book,err:=b.BooksRepo.GetByID(u.ReturningBookId)
-	if err!= nil{
+	book, err := b.BooksRepo.GetByID(u.ReturningBookId)
+	if err != nil {
 
 	}
 	var output Data
-	output.Books = append(output.Books,book)
+	output.Books = append(output.Books, book)
 	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": output})
 	return
 
 }
 
-func (b *BookService) showTakenBookByUser(c *gin.Context){
+func (b *BookService) showTakenBookByUser(c *gin.Context) {
 
 	emailCookie, err := c.Request.Cookie("email")
 	if err != nil {
@@ -96,19 +97,19 @@ func (b *BookService) showTakenBookByUser(c *gin.Context){
 	}
 
 	email := convertEmailString(emailCookie.Value)
-	u,err:=b.UsersRepo.GetUserByEmail(email)
-	if err!=nil{
+	u, err := b.UsersRepo.GetUserByEmail(email)
+	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"status": "bad request"})
 		return
 	}
 
-	book,err:=b.BooksRepo.GetByID(u.TakenBookId)
-	if err!= nil{
-		
-	}
-	book.ID=u.TakenBookId
+	book, err := b.BooksRepo.GetByID(u.TakenBookId)
+	if err != nil {
 
-	c.JSON(http.StatusOK,book)
+	}
+	book.ID = u.TakenBookId
+
+	c.JSON(http.StatusOK, book)
 	return
 }
 
@@ -146,8 +147,6 @@ func (b *BookService) getBook(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	} else {
-
-		// Check if the category exists
 
 		if book, err := b.BooksRepo.GetByID(bookID);
 			err != nil {
@@ -195,10 +194,20 @@ func (b *BookService) insertNewBook(c *gin.Context) {
 		return
 	}
 
-	if err := b.BooksRepo.InsertNewBook(bookToAdd); err != nil {
+	if err := b.BooksRepo.InsertNewBook(bookToAdd);
+		err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
 		return
+	}
+	for k, _ := range bookToAdd.TagID {
+		number, _ := strconv.Atoi(bookToAdd.TagID[k])
+		if err := b.BooksRepo.InsertTags(number, bookIdToReserve);
+			err != nil {
+			log.Println(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
+			return
+		}
 	}
 	go NotifyAllNewBook(bookToAdd.Title, bookToAdd.Description)
 	return

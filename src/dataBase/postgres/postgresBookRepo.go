@@ -19,9 +19,13 @@ const (
 	takenState = "TAKEN"
 )
 
-//var Db = repository.OpenDb()
-//GetByCategory iterates over the DB using the SQL SELECT Request and return selected book by its ID
+func (p booksRepositoryPG) InsertTags (tagID int, bookID int) (err error){
+	_, err = p.Db.Query("INSERT INTO gotoboox.books_tags (book_id, tag_id) values($1, $2)",
+		bookID, tagID)
+	return
+}
 
+//GetByID iterates over the DB using the SQL SELECT Request and return selected book by its ID
 func (p booksRepositoryPG) GetByID(bookID int) (books repository.Book, err error) {
 
 	row := p.Db.QueryRow("SELECT title, description, popularity, state, image  FROM gotoboox.books where id = $1", bookID)
@@ -36,8 +40,6 @@ func (p booksRepositoryPG) GetByID(bookID int) (books repository.Book, err error
 		log.Printf("Get %v", err)
 		return
 	}
-	//just for checking
-	//fmt.Printf("%s\n%s\n%f\n", book.Title, book.Description, book.Popularity)
 	return
 }
 
@@ -69,7 +71,7 @@ func (p booksRepositoryPG) GetAllTakenBooks() (books []repository.Book, err erro
 
 //GetAll iterates over the DB using the SQL SELECT Request and return all books from DB
 func (p booksRepositoryPG) GetAll() (books []repository.Book, err error) {
-	rows, err := p.Db.Query("SELECT id, title, description, state  FROM gotoboox.books LIMIT 1000")
+	rows, err := p.Db.Query("SELECT id, title, description, state  FROM gotoboox.books LIMIT 100")
 	if err != nil {
 		log.Printf("Get %v", err)
 		return
@@ -134,8 +136,8 @@ func (p booksRepositoryPG) GetMostPopularBooks(quantity int) ([]repository.Book,
 
 
 func (p * booksRepositoryPG) InsertNewBook(b repository.Book) (err error){
-	_, err = p.Db.Query("INSERT INTO gotoboox.books (title,description,image) values($1,$2,$3)",
-		b.Title, b.Description, b.Image)
+	_, err = p.Db.Query("INSERT INTO gotoboox.books (title,description,image, popularity) values($1,$2,$3, $4)",
+		b.Title, b.Description, b.Image, b.Popularity)
 	return
 }
 

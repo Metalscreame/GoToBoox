@@ -53,6 +53,7 @@ func Start() {
 	router.GET(apiRoute, IndexHandler)
 	initUserProfileRoutes()
 	initBooksRoutes()
+	initTagsRoutes()
 	router.Run(":" + port)
 }
 
@@ -136,8 +137,14 @@ func initBooksRoutes() {
 	router.GET("/api/v1/books/taken/0",bookService.showTakenBookByUser)
 	router.GET("/books/taken/:id", ShowTakenBooksPage)
 
-	router.POST("/api/v1/insertNewBook/:book_id", midlwares.EnsureLoggedIn(), bookService.insertNewBook)
+	router.POST("/api/v1/insertNewBook/:book_id", midlwares.EnsureLoggedIn(), bookService.insertNewBook )
 	router.GET("/api/v1/updateBookStatus/:book_id", bookService.UpdateBookStatusToReturningFromTaken)
 	router.GET("/api/v1/updateBookStatusReturn/:book_id/:reserved_book_id", bookService.UpdateBookStatusToReturning)
 	router.GET("/api/v1/makeBookCross", bookService.ExchangeBook)
+}
+
+func initTagsRoutes(){
+
+	tagsService  := NewTagsService(postgres.NewBooksRepository(dataBase.Connection), postgres.NewTagsRepository(dataBase.Connection))
+	router.GET("/api/v1/tags", tagsService.getTags)
 }

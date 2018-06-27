@@ -432,6 +432,13 @@
             return;
         }
 
+        var rate = $("#rateText").val();
+        rate = parseFloat(rate)
+        if(rate==""){
+            alert("Please, rate the book");
+            return;
+        }
+
         var fileBase64;
         var reader = new FileReader();
         reader.readAsDataURL(file);
@@ -457,7 +464,10 @@
             var data = JSON.stringify({
                 "title": title,
                 "description": descr,
-                "base_64_img": fileBase64.toString()
+                "popularity": rate,
+                "tag_id": select_val,
+                "base_64_img": fileBase64.toString(),
+
             });
             xhr.send(data);
         };
@@ -575,6 +585,40 @@
             $('#account').html(json.nickname + "'s profile");
     }
 </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+<script>
+    $(function () {
+        $('select').select2();
+
+
+    })
+</script>
+<script>
+    $(".js-example-tags").select2({
+        tags: true
+    });
+
+
+</script>
+
+        <script>
+            $(document).ready(function () {
+                $(".js-example-basic-multiple-limit").select2({
+                    maximumSelectionLength: 5
+                });
+            });
+        </script>
+
+        <script>
+            var select_val;
+            $("#tagsList").select2()
+                    .on("select2:select", function (e) {
+                        var selected_element = $(e.currentTarget);
+                      select_val = selected_element.val();
+                    });
+
+        </script>
 </body>
 </html>
 {{end}}
