@@ -140,11 +140,6 @@
 			"revisionTime": "2017-03-07T16:30:44Z"
 		},
 		{
-			"checksumSHA1": "lQlNwdfW3dVSpBhim0KHyxcHOeo=",
-			"path": "github.com/mattn/go-isatty",
-			"revision": "7fcbc72f853b92b5720db4a6b8482be612daef24"
-		},
-		{
 			"checksumSHA1": "LuFv4/jlrmFNnDb/5SCSEPAM9vU=",
 			"comment": "v1.0.0",
 			"path": "github.com/pmezard/go-difflib/difflib",
