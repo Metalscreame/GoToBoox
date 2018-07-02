@@ -16,8 +16,10 @@ func NewPostgresUsersRepo(Db *sql.DB) repository.UserRepository {
 //GetUserByEmail gets users from users table by
 func (p *postgresUsersRepository) GetUserByEmail(email string) (u repository.User, err error) {
 	var n1, n2, n3 sql.NullInt64
-	row := p.Db.QueryRow("SELECT id, nickname,password,email,notification_get_new_books,notification_get_when_book_reserved,notification_daily,has_book_for_exchange,returning_book_id,book_id,taken_book_id FROM gotoboox.users where email=$1", email)
-	err = row.Scan(&u.ID, &u.Nickname, &u.Password, &u.Email, &u.NotificationGetBewBooks, &u.NotificationGetWhenBookReserved, &u.NotificationDaily, &u.HasBookForExchange, &n1, &n2, &n3)
+	row := p.Db.QueryRow("SELECT id, nickname,password,email,notification_get_new_books,notification_get_when_book_reserved,notification_daily," +
+		"has_book_for_exchange,returning_book_id,book_id,taken_book_id FROM gotoboox.users where email=$1", email)
+	err = row.Scan(&u.ID, &u.Nickname, &u.Password, &u.Email, &u.NotificationGetBewBooks, &u.NotificationGetWhenBookReserved,
+		&u.NotificationDaily, &u.HasBookForExchange, &n1, &n2, &n3)
 	if err != nil {
 		return
 	}
@@ -46,22 +48,11 @@ func (p *postgresUsersRepository) InsertUser(u repository.User) (err error) {
 		u.Nickname, u.Email, u.Password, u.RegisterDate)
 	return
 }
-
-//func (p *postgresUsersRepository)GetUsersBookByEmail(email string)(ub repository.UsersBooks,err error){
-//	//_, err = p.Db.Query("SELECT b.title, b.description, b.popularity, b.title FROM gotoboox.users a, gotoboox.books b where a.categories_id=b.id",
-//		//id SERIAL PRIMARY KEY,
-//		//title CHARACTER VARYING (250) NOT NULL,
-//		//description CHARACTER VARYING (900) NOT NULL,
-//		//popularity REAL NOT NULL DEFAULT 0,
-//		//isTaken BOOLEAN DEFAULT FALSE,
-//		//file_path CHARACTER VARYING (250) NOT NULL,
-//		//categories_id INT REFERENCES gotoboox.categories (id)
-//	return
-//}
-
+//GetUsersEmailToNotifyNewBook is a function that
 func (p *postgresUsersRepository) GetUsersEmailToNotifyNewBook() (u []repository.User, err error) {
 	rows, err := p.Db.Query(
 		"SELECT email,nickname FROM gotoboox.users where notification_get_new_books='true'")
+	defer rows.Close()
 	for rows.Next() {
 		var user repository.User
 		err = rows.Scan(&user.Email, &user.Nickname)
@@ -76,6 +67,7 @@ func (p *postgresUsersRepository) GetUsersEmailToNotifyNewBook() (u []repository
 func (p *postgresUsersRepository) GetUsersEmailToNotifyReserved() (u []repository.User, err error) {
 	rows, err := p.Db.Query(
 		"SELECT email,nickname FROM gotoboox.users where notification_get_when_book_reserved='true'")
+	defer rows.Close()
 	for rows.Next() {
 		var user repository.User
 		err = rows.Scan(&user.Email, &user.Nickname)
@@ -95,7 +87,7 @@ func (p *postgresUsersRepository) SetUsersBookAsNullByBookId(id int) (err error)
 func (p *postgresUsersRepository) GetAllUsers() (u []repository.User, err error) {
 	rows, err := p.Db.Query(
 		"SELECT id,email,nickname,exchanges_number FROM gotoboox.users LIMIT 2000")
-
+	defer rows.Close()
 	for rows.Next() {
 		var user repository.User
 		err = rows.Scan(&user.ID, &user.Email, &user.Nickname, &user.ExchangesNumber)
@@ -117,20 +109,47 @@ func (p *postgresUsersRepository) ClearReturningBookIdByEmail(email string) (err
 	return
 }
 
-//_, err = p.Db.Query("UPDATE gotoboox.books AS b, gotoboox.users AS u SET  b.state=$1, u.book_id=NULL, u.has_book_for_exchange=FALSE where u.email=$2 AND b.id=u.book_id",
-
 func (p *postgresUsersRepository) MakeBookCross(email string) (err error) {
 	u, err := p.GetUserByEmail(email)
 	if err != nil {
 		return
 	}
 
-	_, err = p.Db.Query("UPDATE gotoboox.users SET  book_id=NULL,has_book_for_exchange=FALSE,taken_book_id=$1 where email=$2",u.BookId, email)
-	if err != nil {
+	tx,err:=p.Db.Begin()
+	if err!=nil{
 		return
 	}
-	_, err = p.Db.Query("UPDATE gotoboox.books SET  state=$1 where id=$2", repository.BookStateTaken, u.BookId)
-	return
+
+	//First transaction
+	{
+		stmt, err := tx.Prepare(`UPDATE gotoboox.users SET  book_id=NULL,has_book_for_exchange=FALSE,
+		  							taken_book_id=$1 where email=$2;`)
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
+		defer stmt.Close()
+
+		if _, err := stmt.Exec(u.BookId, email); err != nil {
+			tx.Rollback() // return an error too, we may want to wrap them
+			return err
+		}
+	}
+	//Second transaction
+	{
+		stmt, err := tx.Prepare(`UPDATE gotoboox.books SET  state=$1 where id=$2`)
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
+		defer stmt.Close()
+
+		if _, err := stmt.Exec(repository.BookStateTaken, u.BookId); err != nil {
+			tx.Rollback() // return an error too, we may want to wrap them
+			return err
+		}
+	}
+	return tx.Commit()
 }
 
 func getNullableIntValue(nullableValue sql.NullInt64) int {

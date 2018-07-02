@@ -9,6 +9,7 @@ import (
 	"encoding/base64"
 	"strings"
 	"unicode/utf8"
+	"time"
 )
 
 type BookService struct {
@@ -103,10 +104,7 @@ func (b *BookService) showTakenBookByUser(c *gin.Context) {
 		return
 	}
 
-	book, err := b.BooksRepo.GetByID(u.TakenBookId)
-	if err != nil {
-
-	}
+	book, _ := b.BooksRepo.GetByID(u.TakenBookId)
 	book.ID = u.TakenBookId
 
 	c.JSON(http.StatusOK, book)
@@ -282,6 +280,7 @@ func (b *BookService) InsertNewBook(c *gin.Context) {
 	}
 	bookToAdd.Base64Img = bookToAdd.Base64Img[strings.IndexByte(bookToAdd.Base64Img, ',')+1:]
 	if bookToAdd.Image, err = base64.StdEncoding.DecodeString(bookToAdd.Base64Img); err != nil {
+		log.Printf("Error in InsertBookHandler while encoding picture %v: \n",time.Now())
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
 		return
@@ -308,6 +307,7 @@ func (b *BookService) InsertNewBook(c *gin.Context) {
 
 	last, err := b.BooksRepo.InsertNewBook(bookToAdd);
 	if err != nil {
+		log.Printf("Error in InsertNewBook while adding new book to db at %v: \n",time.Now())
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
 		return
@@ -317,6 +317,7 @@ func (b *BookService) InsertNewBook(c *gin.Context) {
 		number, _ := strconv.Atoi(bookToAdd.TagID[k])
 		if err := b.BooksRepo.InsertTags(number, last);
 			err != nil {
+			log.Printf("Error in InsertNewBook while adding tag to a new book %v: \n",time.Now())
 			log.Println(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
 			return
@@ -337,6 +338,7 @@ func (b *BookService) UpdateBookStatusToReturningFromTaken(c *gin.Context) {
 
 	err = b.BooksRepo.UpdateBookState(bookID, repository.BookStateReturningToShelf)
 	if err != nil {
+		log.Printf("Error in AllCommentsByNickname while getting user from db at %v: \n",time.Now())
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
 		return
@@ -363,6 +365,7 @@ func (b *BookService) ExchangeBook(c *gin.Context) {
 
 	user, err := b.UsersRepo.GetUserByEmail(email)
 	if err != nil {
+		log.Printf("Error in ExchangeBook while getting user from db %v: \n",time.Now())
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
 		return
@@ -371,12 +374,14 @@ func (b *BookService) ExchangeBook(c *gin.Context) {
 	if user.ReturningBookId != 0 {
 		err = b.UsersRepo.ClearReturningBookIdByEmail(email)
 		if err != nil {
+			log.Printf("Error in ExchangeBook while clearing bookIdByEmail from db %v: \n",time.Now())
 			log.Println(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
 			return
 		}
 		err = b.BooksRepo.UpdateBookState(user.ReturningBookId, repository.BookStateFree)
 		if err != nil {
+			log.Printf("Error in ExchangeBook while updating book state in db %v: \n",time.Now())
 			log.Println(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
 			return

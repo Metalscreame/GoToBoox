@@ -34,6 +34,7 @@ func (s *UserService) UserGetHandler(c *gin.Context) {
 	email := convertEmailString(emailCookie.Value)
 	user, err := s.UsersRepo.GetUserByEmail(email)
 	if err != nil {
+		log.Println("Error in UserGetHandler while getting user from db: ")
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
 		return
@@ -51,13 +52,14 @@ func (s *UserService) UserDeleteHandler(c *gin.Context) {
 	}
 	email := convertEmailString(emailCookie.Value)
 	if err := s.UsersRepo.DeleteUserByEmail(email); err != nil {
+		log.Println("Error in UserDeleteHandler while deleting user from db: ")
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
 		return
 	}
 	c.SetCookie("email", "", -1, "", "", false, true)
 	c.SetCookie("token", "", -1, "", "", false, true)
-	c.SetCookie("is_logged_in","",-1, "", "", false, true)
+	c.SetCookie("is_logged_in", "", -1, "", "", false, true)
 	c.Set("is_logged_in", false)
 	c.JSON(http.StatusOK, gin.H{"status": "ok"})
 	return
@@ -88,6 +90,7 @@ func (s *UserService) UserUpdateHandler(c *gin.Context) {
 
 	userFromDb, err := s.UsersRepo.GetUserByEmail(email)
 	if err != nil {
+		log.Println("Error in UserUpdateHandler while getting user from db: ")
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
 		return
@@ -100,6 +103,7 @@ func (s *UserService) UserUpdateHandler(c *gin.Context) {
 	userToUpdate.Password = GetMD5Hash(userToUpdate.NewPassword)
 
 	if err := s.UsersRepo.UpdateUserByEmail(userToUpdate, email); err != nil {
+		log.Println("Error in UserUpdateHandler while updating user in db: ")
 		log.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"status": "bad request"})
 		return
@@ -123,7 +127,7 @@ func convertEmailString(emailCookie string) (string) {
 //Uses route /api/v1/logout
 func (s *UserService) LogoutHandler(c *gin.Context) {
 	c.SetCookie("email", "", -1, "", "", false, true)
-	c.SetCookie("nickname", "",-1,"","",false,true)
+	c.SetCookie("nickname", "", -1, "", "", false, true)
 	c.SetCookie("token", "", -1, "", "", false, true)
 	c.SetCookie("is_logged_in", "", -1, "", "", false, true)
 	c.Set("is_logged_in", false)
@@ -149,9 +153,8 @@ func (s *UserService) UserCreateHandler(c *gin.Context) {
 		return
 	}
 
-	u.RegisterDate = time.Now()
+	u.RegisterDate = time.Now().UTC()
 	u.Password = GetMD5Hash(u.Password)
-
 	if err := s.UsersRepo.InsertUser(u); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "bad request"})
 		return
@@ -183,7 +186,7 @@ func (s *UserService) PerformLoginHandler(c *gin.Context) {
 func isUserValid(email string, password string, repository repository.UserRepository) bool {
 	user, err := repository.GetUserByEmail(email)
 
-	if err != nil || user.Password !=GetMD5Hash(password) {
+	if err != nil || user.Password != GetMD5Hash(password) {
 		return false
 	}
 	return true

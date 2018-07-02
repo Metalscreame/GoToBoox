@@ -5,6 +5,8 @@ import (
 	"strconv"
 	"net/http"
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
+	"log"
+	"time"
 )
 
 type CommentsService struct {
@@ -66,6 +68,8 @@ func (cs *CommentsService) AddBookCommentHandler(c *gin.Context) {
 
 	err = cs.CommentsRepo.InsertNewComment(email, nickname, comment.CommentaryText, bookID)
 	if err != nil {
+		log.Println("Error in AddBookCommentHandler while getting user from db: ")
+		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
 		return
 	}
@@ -80,6 +84,8 @@ func (cs *CommentsService) AllCommentsByNicknameHandler(c *gin.Context)  {
 
 	comments,err:=cs.CommentsRepo.GetAllCommentsByNickname(nickname)
 	if err != nil {
+		log.Printf("Error in AllCommentsByNickname while getting user from db at %v: ",time.Now())
+		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "server error"})
 		return
 	}
