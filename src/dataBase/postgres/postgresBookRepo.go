@@ -176,7 +176,7 @@ func (p booksRepositoryPG) GetByTagsAndRating(tags []string, rating []int) (book
 			"LEFT JOIN books_tags ON books.id = books_tags.id " +
 			"LEFT JOIN tags ON books_tags.tag_id = tags.tag_id " +
 			"WHERE tags.title = any($1) " +
-			"GROUP BY books.title, books.id " + 
+			"GROUP BY title, id " + 
 			"having count(*) = $2",
 			pq.Array(tags), tagsLen)
 		log.Print(rating)
