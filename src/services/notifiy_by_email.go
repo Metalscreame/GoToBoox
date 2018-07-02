@@ -17,12 +17,12 @@ const (
 	emailPassword   = "hjvfhekbn"
 )
 
-var Dialer *gomail.Dialer
+var dialer *gomail.Dialer
 
-//ConfigureEmailDialer is a function that configures Dialer for GoToBooX email sender
+//ConfigureEmailDialer is a function that configures dialer for GoToBooX email sender
 func ConfigureEmailDialer() {
-	Dialer = gomail.NewDialer("smtp.gmail.com", 587, emailUsername, emailPassword)
-	Dialer.TLSConfig = &tls.Config{InsecureSkipVerify: true}
+	dialer = gomail.NewDialer("smtp.gmail.com", 587, emailUsername, emailPassword)
+	dialer.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 }
 
 //DailyEmailNotifications is a functions that sends emails every 24 hours with lists of
@@ -45,7 +45,7 @@ func DailyEmailNotifications() {
 			continue
 		}
 
-		sendCloser, err := Dialer.Dial()
+		sendCloser, err := dialer.Dial()
 		if err != nil {
 			log.Printf("Error at daily email notify while dial dialer at %v\n",time.Now())
 			log.Println(err)
@@ -80,7 +80,7 @@ func NofityAllBookReserved(bookTitle, bookDescription string) {
 		return
 	}
 
-	sc, err := Dialer.Dial()
+	sc, err := dialer.Dial()
 	if err != nil {
 		log.Printf("Error at notifyAllBookReserved while dial dialer at %v\n",time.Now())
 		log.Println(err)
@@ -104,6 +104,7 @@ func NofityAllBookReserved(bookTitle, bookDescription string) {
 	}
 }
 
+//NotifyAllNewBook is a func that notifies by email everyone when the book is added
 func NotifyAllNewBook(bookTitle, bookDescription string) {
 	s := NewUserService(postgres.NewPostgresUsersRepo(dataBase.Connection))
 	listOfUsersEmails, err := s.UsersRepo.GetUsersEmailToNotifyNewBook()
@@ -111,7 +112,7 @@ func NotifyAllNewBook(bookTitle, bookDescription string) {
 		log.Println(err)
 		return
 	}
-	sc, err := Dialer.Dial()
+	sc, err := dialer.Dial()
 	if err != nil {
 		log.Println(err)
 		return
@@ -120,7 +121,7 @@ func NotifyAllNewBook(bookTitle, bookDescription string) {
 
 	m := gomail.NewMessage()
 	for _, user := range listOfUsersEmails {
-		Dialer.TLSConfig = &tls.Config{InsecureSkipVerify: true}
+		dialer.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 
 		m.SetHeader("From", senderEmailAddr)
 		m.SetAddressHeader("To", user.Email, user.Nickname)

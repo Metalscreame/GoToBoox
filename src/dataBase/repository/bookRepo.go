@@ -12,6 +12,6 @@ type BookRepository interface {
 
 	InsertNewBook(b Book) (lastID int, err error)
 	UpdateBookState(bookId int, state string) (err error)
-	UpdateBookStateAndUsersBookIdByUserEmail(email string, state string, bookId int) (err error)
+	UpdateBookStateAndUsersBookIDByUserEmail(email string, state string, bookId int) (err error)
 	GetTagsForBook (bookID int) (tags []Book, err error)
 }

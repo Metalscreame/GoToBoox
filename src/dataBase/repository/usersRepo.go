@@ -1,5 +1,6 @@
 package repository
 
+//UserRepository is a repository interface that contains methods for member(user) that works with database
 type UserRepository interface {
 	GetUserByEmail(email string) (u User, err error)
 	UpdateUserByEmail(u User,email string) (err error)
@@ -10,7 +11,7 @@ type UserRepository interface {
 	SetUsersBookAsNullByBookId(id int)(err error)
 	GetAllUsers()(u []User,err error)
 	MakeBookCross(email string) (err error)
-	SetReturningBookIdByEmail(id int,email string)(err error)
-	ClearReturningBookIdByEmail(email string)(err error)
+	SetReturningBookIDByEmail(id int,email string)(err error)
+	ClearReturningBookIDByEmail(email string)(err error)
 }
 

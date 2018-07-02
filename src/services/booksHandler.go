@@ -298,7 +298,7 @@ func (b *BookService) InsertNewBook(c *gin.Context) {
 	}
 
 	email := convertEmailString(emailCookie.Value)
-	err = b.BooksRepo.UpdateBookStateAndUsersBookIdByUserEmail(email, repository.BookStateReserved, bookIdToReserve)
+	err = b.BooksRepo.UpdateBookStateAndUsersBookIDByUserEmail(email, repository.BookStateReserved, bookIdToReserve)
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
@@ -372,7 +372,7 @@ func (b *BookService) ExchangeBook(c *gin.Context) {
 	}
 
 	if user.ReturningBookId != 0 {
-		err = b.UsersRepo.ClearReturningBookIdByEmail(email)
+		err = b.UsersRepo.ClearReturningBookIDByEmail(email)
 		if err != nil {
 			log.Printf("Error in ExchangeBook while clearing bookIdByEmail from db %v: \n",time.Now())
 			log.Println(err)
@@ -393,12 +393,12 @@ func (b *BookService) ExchangeBook(c *gin.Context) {
 //UpdateBookStatusToReturning is a handler func that handled route of taken books that wants to be back, when user
 //reserves s new book but have previoysly registered at the system one
 func (b *BookService) UpdateBookStatusToReturning(c *gin.Context) {
-	takenBookId, err := strconv.Atoi(c.Param("book_id"))
+	takenBookID, err := strconv.Atoi(c.Param("book_id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "bad request"})
 		return
 	}
-	reservedBookId, err := strconv.Atoi(c.Param("reserved_book_id"))
+	reservedBookID, err := strconv.Atoi(c.Param("reserved_book_id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "bad request"})
 		return
@@ -411,20 +411,20 @@ func (b *BookService) UpdateBookStatusToReturning(c *gin.Context) {
 	}
 	email := convertEmailString(emailCookie.Value)
 
-	err = b.BooksRepo.UpdateBookStateAndUsersBookIdByUserEmail(email, repository.BookStateReserved, reservedBookId)
+	err = b.BooksRepo.UpdateBookStateAndUsersBookIDByUserEmail(email, repository.BookStateReserved, reservedBookID)
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
 		return
 	}
 
-	err = b.BooksRepo.UpdateBookState(takenBookId, repository.BookStateReturningToShelf)
+	err = b.BooksRepo.UpdateBookState(takenBookID, repository.BookStateReturningToShelf)
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
 		return
 	}
-	err = b.UsersRepo.SetReturningBookIdByEmail(takenBookId, email)
+	err = b.UsersRepo.SetReturningBookIDByEmail(takenBookID, email)
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
@@ -432,7 +432,7 @@ func (b *BookService) UpdateBookStatusToReturning(c *gin.Context) {
 	}
 
 	c.Redirect(http.StatusFound, "/")
-	book, err := b.BooksRepo.GetByID(reservedBookId)
+	book, err := b.BooksRepo.GetByID(reservedBookID)
 	if err != nil {
 		log.Println(err)
 		return

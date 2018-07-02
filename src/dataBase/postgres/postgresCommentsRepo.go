@@ -3,7 +3,6 @@ package postgres
 import (
 	"database/sql"
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
-	"log"
 	"time"
 )
 
@@ -11,6 +10,7 @@ type poastgresCommentRepository struct {
 	Db *sql.DB
 }
 
+//NewCommentsRepository is a function to get New poastgresCommentRepository which uses given connection
 func NewCommentsRepository(Db *sql.DB) repository.CommentsRepository {
 	return &poastgresCommentRepository{Db}
 }
@@ -25,7 +25,7 @@ func (p *poastgresCommentRepository) GetAllCommentsByNickname(nickname string) (
 	var comment repository.Comment
 	for rows.Next() {
 
-		if err := rows.Scan(&comment.BookID, &comment.UserNickname, &comment.CommentaryText, &comment.CommentDate);
+		if err = rows.Scan(&comment.BookID, &comment.UserNickname, &comment.CommentaryText, &comment.CommentDate);
 			err != nil {
 			return
 		}
@@ -45,7 +45,7 @@ func (p *poastgresCommentRepository) GetAllCommentsByBookID(bookID int) (comment
 	var comment repository.Comment
 	for rows.Next() {
 
-		if err := rows.Scan(&comment.UserNickname, &comment.CommentaryText, &comment.CommentDate);
+		if err = rows.Scan(&comment.UserNickname, &comment.CommentaryText, &comment.CommentDate);
 			err != nil {
 			return
 		}

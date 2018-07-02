@@ -274,18 +274,18 @@ func (p *booksRepositoryPG) InsertNewBook(b repository.Book) (lastID int, err er
 	return
 }
 
-func (p *booksRepositoryPG) UpdateBookState(bookId int, state string) (err error) {
+func (p *booksRepositoryPG) UpdateBookState(bookID int, state string) (err error) {
 	_, err = p.Db.Query("UPDATE gotoboox.books set state=$1 where id=$2",
-		state, bookId)
+		state, bookID)
 	return
 }
 
-func (p *booksRepositoryPG) UpdateBookStateAndUsersBookIdByUserEmail(email string, state string, bookId int) (err error) {
+func (p *booksRepositoryPG) UpdateBookStateAndUsersBookIDByUserEmail(email string, state string, bookID int) (err error) {
 	tx, err := p.Db.Begin()
 	if err != nil {
 		return
 	}
-	
+
 	//First transaction
 	{
 		stmt, err := tx.Prepare(`UPDATE gotoboox.users set book_id=$1, has_book_for_exchange=TRUE where email=$2`)
@@ -295,7 +295,7 @@ func (p *booksRepositoryPG) UpdateBookStateAndUsersBookIdByUserEmail(email strin
 		}
 		defer stmt.Close()
 
-		if _, err := stmt.Exec(bookId, email); err != nil {
+		if _, err := stmt.Exec(bookID, email); err != nil {
 			tx.Rollback() // return an error too, we may want to wrap them
 			return err
 		}
@@ -309,7 +309,7 @@ func (p *booksRepositoryPG) UpdateBookStateAndUsersBookIdByUserEmail(email strin
 		}
 		defer stmt.Close()
 
-		if _, err := stmt.Exec(state, bookId); err != nil {
+		if _, err := stmt.Exec(state, bookID); err != nil {
 			tx.Rollback() // return an error too, we may want to wrap them
 			return err
 		}

@@ -133,16 +133,16 @@ func (mr *MockUserRepositoryMockRecorder) MakeBookCross(arg0 interface{}) *gomoc
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MakeBookCross", reflect.TypeOf((*MockUserRepository)(nil).MakeBookCross), arg0)
 }
 
-// SetReturningBookIdByEmail mocks base method
+// SetReturningBookIDByEmail mocks base method
 func (m *MockUserRepository) SetReturningBookIdByEmail(arg0 int, arg1 string) error {
-	ret := m.ctrl.Call(m, "SetReturningBookIdByEmail", arg0, arg1)
+	ret := m.ctrl.Call(m, "SetReturningBookIDByEmail", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// SetReturningBookIdByEmail indicates an expected call of SetReturningBookIdByEmail
+// SetReturningBookIDByEmail indicates an expected call of SetReturningBookIDByEmail
 func (mr *MockUserRepositoryMockRecorder) SetReturningBookIdByEmail(arg0, arg1 interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetReturningBookIdByEmail", reflect.TypeOf((*MockUserRepository)(nil).SetReturningBookIdByEmail), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetReturningBookIDByEmail", reflect.TypeOf((*MockUserRepository)(nil).SetReturningBookIdByEmail), arg0, arg1)
 }
 
 // SetUsersBookAsNullByBookId mocks base method

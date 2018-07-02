@@ -9,6 +9,7 @@ type postgresUsersRepository struct {
 	Db *sql.DB
 }
 
+//NewPostgresUsersRepo is a function to get New postgresUsersRepository which uses given connecti
 func NewPostgresUsersRepo(Db *sql.DB) repository.UserRepository {
 	return &postgresUsersRepository{Db}
 }
@@ -99,12 +100,12 @@ func (p *postgresUsersRepository) GetAllUsers() (u []repository.User, err error)
 	return
 }
 
-func (p *postgresUsersRepository) SetReturningBookIdByEmail(id int, email string) (err error) {
+func (p *postgresUsersRepository) SetReturningBookIDByEmail(id int, email string) (err error) {
 	_, err = p.Db.Query("UPDATE gotoboox.users set returning_book_id=$1 where email=$2", id, email)
 	return
 }
 
-func (p *postgresUsersRepository) ClearReturningBookIdByEmail(email string) (err error) {
+func (p *postgresUsersRepository) ClearReturningBookIDByEmail(email string) (err error) {
 	_, err = p.Db.Query("UPDATE gotoboox.users set returning_book_id=NULL where email=$2", email)
 	return
 }

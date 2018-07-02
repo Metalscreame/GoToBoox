@@ -8,7 +8,7 @@ import (
 )
 
 
-
+//Connection is a global postgres connection variable, that must be used in all postgres repositories or DAO interfaces
 var Connection *sql.DB
 
 //Connect is a function that is used to open Connection
@@ -17,7 +17,7 @@ var Connection *sql.DB
 //where ://username:password@host:port/dbname
 func Connect() () {
 	var err error
-	dbUrl, ok := os.LookupEnv("POSTGRES_URL")
+	dbURL, ok := os.LookupEnv("POSTGRES_URL")
 	if !ok {
 		println("$POSTGRES_URL is required\nFor localhosts setup sys env \"POSTGRES_URL\" " +
 			"with key \"postgres://postgres:root@localhost:5432/postgres?sslmode=disable\" where ://username:password@host:port/dbname")
@@ -26,7 +26,7 @@ func Connect() () {
 
 	}
 
-	Connection, err = sql.Open("postgres", dbUrl)
+	Connection, err = sql.Open("postgres", dbURL)
 	if err != nil {
 		log.Fatal(err)
 	}

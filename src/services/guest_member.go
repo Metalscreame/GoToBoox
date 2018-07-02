@@ -13,10 +13,12 @@ import (
 	"math/rand"
 )
 
+// UserService is a struct that is is used to set repository for usersRepo (or its mocks)
 type UserService struct {
 	UsersRepo repository.UserRepository
 }
 
+//NewUserService is a func to get new UserService with user's defined repository
 func NewUserService(repository repository.UserRepository) *UserService {
 	return &UserService{
 		UsersRepo: repository,
