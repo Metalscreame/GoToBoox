@@ -146,7 +146,7 @@ func (p booksRepositoryPG) GetByCategory(categoryID int) (books []repository.Boo
 
 //GetByLikeName iterates over the DB using the SQL SELECT Request and return books by name
 func (p booksRepositoryPG) GetByLikeName(title string) (books []repository.Book, err error) {
-	rows, err := p.Db.Query("SELECT id, title FROM gotoboox.books WHERE LOWER(title) LIKE '%' || $1 || '%'", strings.ToLower(title) )
+	rows, err := p.Db.Query("SELECT id, title FROM books WHERE LOWER(title) LIKE '%' || $1 || '%'", strings.ToLower(title) )
 	if err != nil {
 		log.Printf("Get %v", err)
 	}
