@@ -146,7 +146,7 @@ func (p booksRepositoryPG) GetByCategory(categoryID int) (books []repository.Boo
 
 //GetByLikeName iterates over the DB using the SQL SELECT Request and return books by name
 func (p booksRepositoryPG) GetByLikeName(title string) (books []repository.Book, err error) {
-	rows, err := p.Db.Query("SELECT id, title FROM books WHERE LOWER(title) LIKE '%' || $1 || '%'", strings.ToLower(title) )
+	rows, err := p.Db.Query("SELECT id, title FROM gotoboox.books WHERE LOWER(title) LIKE '%' || $1 || '%'", strings.ToLower(title) )
 	if err != nil {
 		log.Printf("Get %v", err)
 	}
@@ -176,7 +176,7 @@ func (p booksRepositoryPG) GetByTagsAndRating(tags []string, rating []int) (book
 			"LEFT JOIN gotoboox.books_tags ON gotoboox.books.id = gotoboox.books_tags.id " +
 			"LEFT JOIN gotoboox.tags ON gotoboox.books_tags.tag_id = gotoboox.tags.tag_id " +
 			"WHERE gotoboox.tags.title = any($1) " +
-			"GROUP BY gotoboox.books.title, gotoboox.books.id " + 
+			"GROUP BY title, id " + 
 			"having count(*) = $2",
 			pq.Array(tags), tagsLen)
 		log.Print(rating)
@@ -202,7 +202,7 @@ func (p booksRepositoryPG) GetByTagsAndRating(tags []string, rating []int) (book
 			"LEFT JOIN gotoboox.books_tags ON gotoboox.books.id = gotoboox.books_tags.id " +
 			"LEFT JOIN gotoboox.tags ON gotoboox.books_tags.tag_id = gotoboox.tags.tag_id " +
 			"WHERE gotoboox.books.popularity BETWEEN $1 AND $2" +
-			"GROUP BY gotoboox.books.title, gotoboox.books.id ",
+			"GROUP BY title, id ",
 			rating[0], rating[1])
 		log.Print(rating)
 		if err != nil {
@@ -227,7 +227,7 @@ func (p booksRepositoryPG) GetByTagsAndRating(tags []string, rating []int) (book
 			"LEFT JOIN gotoboox.books_tags ON gotoboox.books.id = gotoboox.books_tags.id " +
 			"LEFT JOIN gotoboox.tags ON gotoboox.books_tags.tag_id = gotoboox.tags.tag_id " +
 			"WHERE gotoboox.tags.title = any($1) AND gotoboox.books.popularity BETWEEN $3 AND $4" +
-			"GROUP BY gotoboox.books.title, gotoboox.books.id " +
+			"GROUP BY title, id " +
 			"having count(*) = $2",
 			pq.Array(tags), tagsLen, rating[0], rating[1])
 		log.Print(rating)
