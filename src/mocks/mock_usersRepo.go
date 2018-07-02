@@ -34,15 +34,15 @@ func (m *MockUserRepository) EXPECT() *MockUserRepositoryMockRecorder {
 }
 
 // ClearReturningBookIdByEmail mocks base method
-func (m *MockUserRepository) ClearReturningBookIdByEmail(arg0 string) error {
-	ret := m.ctrl.Call(m, "ClearReturningBookIdByEmail", arg0)
+func (m *MockUserRepository) ClearReturningBookIDByEmail(arg0 string) error {
+	ret := m.ctrl.Call(m, "ClearReturningBookIDByEmail", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // ClearReturningBookIdByEmail indicates an expected call of ClearReturningBookIdByEmail
-func (mr *MockUserRepositoryMockRecorder) ClearReturningBookIdByEmail(arg0 interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ClearReturningBookIdByEmail", reflect.TypeOf((*MockUserRepository)(nil).ClearReturningBookIdByEmail), arg0)
+func (mr *MockUserRepositoryMockRecorder) ClearReturningBookIDByEmail(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ClearReturningBookIDByEmail", reflect.TypeOf((*MockUserRepository)(nil).ClearReturningBookIDByEmail), arg0)
 }
 
 // DeleteUserByEmail mocks base method
@@ -134,15 +134,15 @@ func (mr *MockUserRepositoryMockRecorder) MakeBookCross(arg0 interface{}) *gomoc
 }
 
 // SetReturningBookIDByEmail mocks base method
-func (m *MockUserRepository) SetReturningBookIdByEmail(arg0 int, arg1 string) error {
+func (m *MockUserRepository) SetReturningBookIDByEmail(arg0 int, arg1 string) error {
 	ret := m.ctrl.Call(m, "SetReturningBookIDByEmail", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // SetReturningBookIDByEmail indicates an expected call of SetReturningBookIDByEmail
-func (mr *MockUserRepositoryMockRecorder) SetReturningBookIdByEmail(arg0, arg1 interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetReturningBookIDByEmail", reflect.TypeOf((*MockUserRepository)(nil).SetReturningBookIdByEmail), arg0, arg1)
+func (mr *MockUserRepositoryMockRecorder) SetReturningBookIDByEmail(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetReturningBookIDByEmail", reflect.TypeOf((*MockUserRepository)(nil).SetReturningBookIDByEmail), arg0, arg1)
 }
 
 // SetUsersBookAsNullByBookId mocks base method
