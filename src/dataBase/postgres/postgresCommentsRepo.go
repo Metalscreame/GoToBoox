@@ -15,11 +15,9 @@ func NewCommentsRepository(Db *sql.DB) repository.CommentsRepository {
 	return &poastgresCommentRepository{Db}
 }
 
-
 func (p *poastgresCommentRepository) GetAllCommentsByNickname(nickname string) (comments []repository.Comment, err error) {
 	rows, err := p.Db.Query("SELECT book_id, user_nickname, commentary, commentary_date  FROM gotoboox.comments where user_nickname = $1", nickname)
 	if err != nil {
-		log.Printf("Got %v", err)
 		return
 	}
 	defer rows.Close()
@@ -29,23 +27,17 @@ func (p *poastgresCommentRepository) GetAllCommentsByNickname(nickname string) (
 
 		if err := rows.Scan(&comment.BookID, &comment.UserNickname, &comment.CommentaryText, &comment.CommentDate);
 			err != nil {
-			log.Printf("Got %v", err)
+			return
 		}
 		comment.FormatedDate = comment.CommentDate.Format("2006-01-02 15:04:05")
 		comments = append(comments, comment)
 	}
-
-	if err != nil {
-		log.Printf("Got %v", err)
-		return
-	}
 	return
 }
 
-func (p *poastgresCommentRepository) GetAllCommentsByBookID(bookID int) (comments []repository.Comment,err error) {
+func (p *poastgresCommentRepository) GetAllCommentsByBookID(bookID int) (comments []repository.Comment, err error) {
 	rows, err := p.Db.Query("SELECT user_nickname, commentary, commentary_date  FROM gotoboox.comments where book_id = $1", bookID)
 	if err != nil {
-		log.Printf("Got %v", err)
 		return
 	}
 	defer rows.Close()
@@ -55,24 +47,19 @@ func (p *poastgresCommentRepository) GetAllCommentsByBookID(bookID int) (comment
 
 		if err := rows.Scan(&comment.UserNickname, &comment.CommentaryText, &comment.CommentDate);
 			err != nil {
-			log.Printf("Got %v", err)
+			return
 		}
-		comment.BookID=bookID
+		comment.BookID = bookID
 		comment.FormatedDate = comment.CommentDate.Format("2006-01-02 15:04:05")
-
 		comments = append(comments, comment)
 	}
 
-	if err != nil {
-		log.Printf("Got %v", err)
-		return
-	}
 	return
 }
 
-func (p *poastgresCommentRepository) InsertNewComment(email,nickname,comment string,bookID int) (err error){
-	t:=time.Now()
+func (p *poastgresCommentRepository) InsertNewComment(email, nickname, comment string, bookID int) (err error) {
+	t := time.Now()
 	_, err = p.Db.Query("INSERT INTO gotoboox.comments (user_nickname,user_email,commentary,commentary_date,book_id) values($1,$2,$3,$4,$5)",
-		nickname, email, comment, t,bookID)
+		nickname, email, comment, t, bookID)
 	return
 }

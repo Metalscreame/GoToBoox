@@ -11,44 +11,59 @@ import (
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
 )
 
-var d = gomail.NewDialer("smtp.gmail.com", 587, "GoToBooX", "hjvfhekbn")
+const (
+	senderEmailAddr = "GoToBooX@gmail.com"
+	emailUsername   = "GoToBooX"
+	emailPassword   = "hjvfhekbn"
+)
+
+var Dialer *gomail.Dialer
+
+//ConfigureEmailDialer is a function that configures Dialer for GoToBooX email sender
+func ConfigureEmailDialer() {
+	Dialer = gomail.NewDialer("smtp.gmail.com", 587, emailUsername, emailPassword)
+	Dialer.TLSConfig = &tls.Config{InsecureSkipVerify: true}
+}
 
 //DailyEmailNotifications is a functions that sends emails every 24 hours with lists of
 func DailyEmailNotifications() {
-	s:=NewBookService(postgres.NewBooksRepository(dataBase.Connection),postgres.NewPostgresUsersRepo(dataBase.Connection))
-	for true{
-		time.Sleep(24*time.Hour)
+	s := NewBookService(postgres.NewBooksRepository(dataBase.Connection), postgres.NewPostgresUsersRepo(dataBase.Connection))
+	for true {
+		time.Sleep(24 * time.Hour)
 
-		users,err:=s.UsersRepo.GetAllUsers()
-		if err!=nil{
-			log.Println(err)
-			continue
-		}
-
-		books,err:=s.BooksRepo.GetAll()
-		if err!=nil{
-			log.Println(err)
-			continue
-		}
-
-		sendCloser, err := d.Dial()
+		users, err := s.UsersRepo.GetAllUsers()
 		if err != nil {
+			log.Printf("Error at daily email notify while getting all users %v\n",time.Now())
+			log.Println(err)
+			continue
+		}
+
+		books, err := s.BooksRepo.GetAll()
+		if err != nil {
+			log.Println(err)
+			log.Printf("Error at daily email notify while getting all books at %v\n",time.Now())
+			continue
+		}
+
+		sendCloser, err := Dialer.Dial()
+		if err != nil {
+			log.Printf("Error at daily email notify while dial dialer at %v\n",time.Now())
 			log.Println(err)
 			continue
 		}
 		prepearedMsg := prepareMsgAllAvailebleBooksEveryDay(books)
 		msg := gomail.NewMessage()
-		for _, user := range users {
-			d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 
-			msg.SetHeader("From", "GoToBooX@gmail.com")
+		for _, user := range users {
+
+			msg.SetHeader("From", senderEmailAddr)
 			msg.SetAddressHeader("To", user.Email, user.Nickname)
 			msg.SetHeader("Subject", "A book has been reserved")
 			msg.SetBody("text/html", prepearedMsg)
 			msg.Attach("/static/images/logo.jpg")
 
 			if err := gomail.Send(sendCloser, msg); err != nil {
-				log.Printf("Could not send email to %q: %v", user.Email, err)
+				log.Printf("Could not send email to %q: %v \n at %v\n", user.Email, err,time.Now())
 			}
 			msg.Reset()
 		}
@@ -60,12 +75,14 @@ func NofityAllBookReserved(bookTitle, bookDescription string) {
 	s := NewUserService(postgres.NewPostgresUsersRepo(dataBase.Connection))
 	listOfUsersEmails, err := s.UsersRepo.GetUsersEmailToNotifyReserved()
 	if err != nil {
+		log.Printf("Error at notifyAllBookReserved email notify while getting all users %v\n",time.Now())
 		log.Println(err)
 		return
 	}
 
-	sc, err := d.Dial()
+	sc, err := Dialer.Dial()
 	if err != nil {
+		log.Printf("Error at notifyAllBookReserved while dial dialer at %v\n",time.Now())
 		log.Println(err)
 		return
 	}
@@ -73,16 +90,15 @@ func NofityAllBookReserved(bookTitle, bookDescription string) {
 
 	m := gomail.NewMessage()
 	for _, user := range listOfUsersEmails {
-		d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 
-		m.SetHeader("From", "GoToBooX@gmail.com")
+		m.SetHeader("From", senderEmailAddr)
 		m.SetAddressHeader("To", user.Email, user.Nickname)
 		m.SetHeader("Subject", "A book has been reserved")
 		m.SetBody("text/html", msg)
 		m.Attach("/static/images/logo.jpg")
 
 		if err := gomail.Send(sc, m); err != nil {
-			log.Printf("Could not send email to %q: %v", user.Email, err)
+			log.Printf("Could not send email to %q: %v \n at %v\n", user.Email, err,time.Now())
 		}
 		m.Reset()
 	}
@@ -95,7 +111,7 @@ func NotifyAllNewBook(bookTitle, bookDescription string) {
 		log.Println(err)
 		return
 	}
-	sc, err := d.Dial()
+	sc, err := Dialer.Dial()
 	if err != nil {
 		log.Println(err)
 		return
@@ -104,16 +120,16 @@ func NotifyAllNewBook(bookTitle, bookDescription string) {
 
 	m := gomail.NewMessage()
 	for _, user := range listOfUsersEmails {
-		d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
+		Dialer.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 
-		m.SetHeader("From", "GoToBooX@gmail.com")
+		m.SetHeader("From", senderEmailAddr)
 		m.SetAddressHeader("To", user.Email, user.Nickname)
 		m.SetHeader("Subject", "A book has been reserved")
 		m.SetBody("text/html", msg)
 		m.Attach("/static/images/logo.jpg")
 
 		if err := gomail.Send(sc, m); err != nil {
-			log.Printf("Could not send email to %q: %v", user.Email, err)
+			log.Printf("Could not send email to %q: %v \n at %v", user.Email, err,time.Now())
 		}
 		m.Reset()
 	}
