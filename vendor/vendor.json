@@ -7,6 +7,10 @@
 			"revision": ""
 		},
 		{
+			"path": "github.com/appleboy/gin-jwt",
+			"revision": ""
+		},
+		{
 			"checksumSHA1": "dvabztWVQX8f6oMLRyv4dLH+TGY=",
 			"comment": "v1.1.0",
 			"path": "github.com/davecgh/go-spew/spew",
@@ -212,14 +216,14 @@
 			"revisionTime": "2015-07-16T17:19:45Z"
 		},
 		{
+			"path": "gopkg.in/appleboy/gin-jwt.v2",
+			"revision": ""
+		},
+		{
 			"checksumSHA1": "P7dBpV3QA/3GJWGNwb9Hn3BzCQs=",
 			"comment": "v5.9.1",
 			"path": "gopkg.in/bluesuncorp/validator.v5",
 			"revision": "d627af88ac021317a280d320986282a6dc97549a"
-		},
-		{
-			"path": "gopkg.in/github.com/appleboy/gin-jwt.v2",
-			"revision": ""
 		},
 		{
 			"checksumSHA1": "39V1idWER42Lmcmg2Uy40wMzOlo=",
