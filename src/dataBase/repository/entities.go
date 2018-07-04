@@ -24,14 +24,14 @@ type Book struct {
 	Image          []byte   `json:"image,omitempty"`
 	Base64Img      string   `json:"base_64_img"`
 	TagID          []string `json:"tag_id"`
-	TagsTitles     string `json:"tag_title"`
+	TagsTitles     string   `json:"tag_title"`
 }
 
 type User struct {
 	ID                              int       `json:"-"`
-	Nickname                        string    `json:"nickname"`
-	Email                           string    `json:"email"`
-	Password                        string    `json:"password"`
+	Nickname                        string    `json:"nickname" `
+	Email                           string    `json:"email" binding:"required"`
+	Password                        string    `json:"password" binding:"required"`
 	NewPassword                     string    `json:"new_passwordd"`
 	ExchangesNumber                 int       `json:"-"`
 	HasBookForExchange              bool      `json:"has_book_for_exchange"`
@@ -42,6 +42,7 @@ type User struct {
 	RegisterDate                    time.Time `json:"-"`
 	ReturningBookId                 int       `json:"-"`
 	TakenBookId                     int       `json:"taken_book_id"`
+	Role                            string    `json:"role"`
 }
 
 type Tags struct {

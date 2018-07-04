@@ -11,13 +11,11 @@ type tagsRepositoryPG struct {
 }
 
 func NewTagsRepository(Db *sql.DB) repository.TagsRepository {
-	return &tagsRepositoryPG {Db}
+	return &tagsRepositoryPG{Db}
 }
 
-
-
 func (p tagsRepositoryPG) GetListOfTags() (tags []repository.Tags, err error) {
-	rows, err := p.Db.Query("SELECT id, title  FROM gotoboox.tags LIMIT 100")
+	rows, err := p.Db.Query("SELECT tag_id, title  FROM gotoboox.tags LIMIT 25")
 	if err != nil {
 		log.Printf("Get %v", err)
 		return
@@ -38,5 +36,3 @@ func (p tagsRepositoryPG) GetListOfTags() (tags []repository.Tags, err error) {
 	}
 	return tags, nil
 }
-
-

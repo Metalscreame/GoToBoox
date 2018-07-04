@@ -27,8 +27,9 @@ func EnsureNotLoggedIn() gin.HandlerFunc {
 		if loggedIn {
 			c.Redirect(http.StatusFound, "/")
 		}
+		}
 	}
-}
+
 
 // This middleware sets whether the user is logged in or not
 func SetUserStatus() gin.HandlerFunc {
