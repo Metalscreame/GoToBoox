@@ -17,7 +17,7 @@ package onloads
 import (
 	"context"
 
-	"github.com/heroku/x/hmetrics"
+	"gopkg.in/github.com/heroku/x/hmetrics"
 )
 
 func init() {

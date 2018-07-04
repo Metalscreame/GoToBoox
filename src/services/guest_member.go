@@ -11,6 +11,8 @@ import (
 	"encoding/hex"
 	"time"
 	"math/rand"
+	"gopkg.in/appleboy/gin-jwt.v2"
+	gojwt "github.com/dgrijalva/jwt-go"
 )
 
 type UserService struct {
@@ -57,7 +59,7 @@ func (s *UserService) UserDeleteHandler(c *gin.Context) {
 	}
 	c.SetCookie("email", "", -1, "", "", false, true)
 	c.SetCookie("token", "", -1, "", "", false, true)
-	c.SetCookie("is_logged_in","",-1, "", "", false, true)
+	c.SetCookie("is_logged_in", "", -1, "", "", false, true)
 	c.Set("is_logged_in", false)
 	c.JSON(http.StatusOK, gin.H{"status": "ok"})
 	return
@@ -123,7 +125,7 @@ func convertEmailString(emailCookie string) (string) {
 //Uses route /api/v1/logout
 func (s *UserService) LogoutHandler(c *gin.Context) {
 	c.SetCookie("email", "", -1, "", "", false, true)
-	c.SetCookie("nickname", "",-1,"","",false,true)
+	c.SetCookie("nickname", "", -1, "", "", false, true)
 	c.SetCookie("token", "", -1, "", "", false, true)
 	c.SetCookie("is_logged_in", "", -1, "", "", false, true)
 	c.Set("is_logged_in", false)
@@ -144,6 +146,8 @@ Input example for create
  */
 func (s *UserService) UserCreateHandler(c *gin.Context) {
 	var u repository.User
+	var tokenString string
+
 	if err := c.BindJSON(&u); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "bad request"})
 		return
@@ -152,13 +156,33 @@ func (s *UserService) UserCreateHandler(c *gin.Context) {
 	u.RegisterDate = time.Now()
 	u.Password = GetMD5Hash(u.Password)
 
-	if err := s.UsersRepo.InsertUser(u); err != nil {
+	lastID, err := s.UsersRepo.InsertUser(u);
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "bad request"})
 		return
 	}
+
+	if err := s.UsersRepo.InsertRolesToUsers(lastID, 1); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"status": "bad request"})
+		return
+	}
+
+	token := gojwt.New(gojwt.SigningMethodHS256)
+	token = gojwt.NewWithClaims(gojwt.SigningMethodHS256, gojwt.MapClaims{
+		"id":            string(lastID),
+		"role":          "user",
+		"exp":           time.Now().Add(time.Hour * 2).Unix(),
+		"generatedData": time.Now(),
+	})
+
+	if tokenString, err = token.SignedString(jwtMiddleware.Key); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"status": "bad request"})
+		return
+	}
+	c.SetCookie("token", tokenString, 2*60*60, "", "", false, false);
 	performLoginCookiesSetting(u, c)
-	c.JSON(http.StatusOK, gin.H{"status": "ok"})
 	return
+
 }
 
 //PerformLoginHandler is a handler to handle loggining and setting cookies after success login
@@ -180,22 +204,53 @@ func (s *UserService) PerformLoginHandler(c *gin.Context) {
 	return
 }
 
+func (s *UserService) CheckCredentials(email string, password string, c *gin.Context) (string, bool) {
+
+	b := s.UsersRepo
+	user, err := b.GetUserByEmail(email)
+	if err != nil || user.Password != GetMD5Hash(password) {
+		return "", false
+	}
+	s.Payload(email)
+	performLoginCookiesSetting(user, c)
+	return email, true
+}
+
+func (s *UserService) Authorization(userId string, c *gin.Context) bool {
+	claims := jwt.ExtractClaims(c)
+	if claims["role"] == "admin" {
+		return true
+	}
+	return false
+}
+
+func (s *UserService) Payload(email string) (map[string]interface{}) {
+	b := s.UsersRepo
+	user, _ := b.GetRoleByEmail(email)
+
+	return map[string]interface{}{
+		"id":            user.ID,
+		"role":          user.Role,
+		"exp":           time.Now().Add(time.Hour * 2).Unix(),
+		"generatedData": time.Now(),
+	}
+}
+
 func isUserValid(email string, password string, repository repository.UserRepository) bool {
 	user, err := repository.GetUserByEmail(email)
-
-	if err != nil || user.Password !=GetMD5Hash(password) {
+	if err != nil || user.Password != GetMD5Hash(password) {
 		return false
 	}
 	return true
 }
 
 func performLoginCookiesSetting(u repository.User, c *gin.Context) {
-	token := generateSessionToken()
-	c.SetCookie("token", token, 16000, "", "", false, false)
+
 	c.Set("is_logged_in", true)
-	c.SetCookie("email", u.Email, 16000, "", "", false, false)
-	c.SetCookie("nickname", u.Nickname, 16000, "", "", false, false)
-	c.SetCookie("is_logged_in", "true", 16000, "", "", false, false)
+	c.SetCookie("email", u.Email, 2*60*60, "", "", false, false)
+	c.SetCookie("nickname", u.Nickname, 2*60*60, "", "", false, false)
+	c.SetCookie("is_logged_in", "true", 2*60*60, "", "", false, false)
+	return
 }
 
 //GetMD5Hash generates md5 hash from input string

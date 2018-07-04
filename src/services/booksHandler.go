@@ -160,7 +160,6 @@ func (b *BookService) getBook(c *gin.Context) {
 	}
 }
 
-
 func (b *BookService) getTags(c *gin.Context) {
 	type Data struct {
 		Book []repository.Book
@@ -313,7 +312,7 @@ func (b *BookService) InsertNewBook(c *gin.Context) {
 		return
 	}
 
-	for k, _ := range bookToAdd.TagID {
+	for k := range bookToAdd.TagID {
 		number, _ := strconv.Atoi(bookToAdd.TagID[k])
 		if err := b.BooksRepo.InsertTags(number, last);
 			err != nil {
