@@ -21,14 +21,16 @@ const (
 	takenState = "TAKEN"
 )
 
-func (p booksRepositoryPG) InsertTags(tagID int, bookID int) (err error) {
+//InsertTags  insert to database tags that belong to book
+func (p *booksRepositoryPG) InsertTags(tagID int, bookID int) (err error) {
 
-	_, err = p.Db.Query("INSERT INTO gotoboox.books_tags (book_id, id) values($1, $2)",
+	_, err = p.Db.Query("INSERT INTO gotoboox.books_tags (id, tag_id) values($1, $2)",
 		bookID, tagID)
 	return
 }
 
-func (p booksRepositoryPG) GetTagsForBook(bookID int) (tags []repository.Book, err error) {
+//GetTagsForBook get list of tags that belong to certain book
+func (p *booksRepositoryPG) GetTagsForBook(bookID int) (tags []repository.Book, err error) {
 
 	rows, err := p.Db.Query("SELECT gotoboox.tags.title FROM (gotoboox.books JOIN gotoboox.books_tags USING (id)) JOIN gotoboox.tags USING (tag_id) WHERE gotoboox.books.id = $1", bookID)
 	if err != nil {
@@ -53,7 +55,7 @@ func (p booksRepositoryPG) GetTagsForBook(bookID int) (tags []repository.Book, e
 }
 
 //GetByID iterates over the DB using the SQL SELECT Request and return selected book by its ID
-func (p booksRepositoryPG) GetByID(bookID int) (books repository.Book, err error) {
+func (p *booksRepositoryPG) GetByID(bookID int) (books repository.Book, err error) {
 
 	row := p.Db.QueryRow("SELECT title, description, popularity, state, image  FROM gotoboox.books where id = $1", bookID)
 	if err != nil {
@@ -70,7 +72,8 @@ func (p booksRepositoryPG) GetByID(bookID int) (books repository.Book, err error
 	return
 }
 
-func (p booksRepositoryPG) GetAllTakenBooks() (books []repository.Book, err error) {
+//GetAllTakenBooks iterates over the DB using the SQL SELECT Request and return all books with state "taken"
+func (p *booksRepositoryPG) GetAllTakenBooks() (books []repository.Book, err error) {
 
 	rows, err := p.Db.Query("SELECT id, title, description, image  FROM gotoboox.books where state = $1", takenState)
 	if err != nil {
@@ -97,7 +100,7 @@ func (p booksRepositoryPG) GetAllTakenBooks() (books []repository.Book, err erro
 }
 
 //GetAll iterates over the DB using the SQL SELECT Request and return all books from DB
-func (p booksRepositoryPG) GetAll() (books []repository.Book, err error) {
+func (p *booksRepositoryPG) GetAll() (books []repository.Book, err error) {
 	rows, err := p.Db.Query("SELECT id, title, description, state  FROM gotoboox.books LIMIT 100")
 	if err != nil {
 		log.Printf("Get %v", err)
@@ -121,7 +124,7 @@ func (p booksRepositoryPG) GetAll() (books []repository.Book, err error) {
 }
 
 //GetByCategory iterates over the DB using the SQL SELECT Request and return books from chosen category
-func (p booksRepositoryPG) GetByCategory(categoryID int) (books []repository.Book, err error) {
+func (p *booksRepositoryPG) GetByCategory(categoryID int) (books []repository.Book, err error) {
 	rows, err := p.Db.Query("SELECT title FROM gotoboox.books WHERE categories_id=$1", categoryID)
 	if err != nil {
 		log.Printf("Get %v", err)
@@ -169,12 +172,12 @@ func (p booksRepositoryPG) GetByTagsAndRating(tags []string, rating []int) (book
 	tagsLen := len(tags)
 
 	// if user don't select rating, but select the tags
-	if rating[0] == 0 && rating[1] == 0 && tagsLen != 0 {
-		rows, err := p.Db.Query("SELECT gotoboox.books.id, gotoboox.books.title FROM gotoboox.books "+
-			"LEFT JOIN gotoboox.books_tags ON gotoboox.books.id = gotoboox.books_tags.id "+
-			"LEFT JOIN gotoboox.tags ON gotoboox.books_tags.tag_id = gotoboox.tags.tag_id "+
-			"WHERE gotoboox.tags.title = any($1) "+
-			"GROUP BY gotoboox.books.title, gotoboox.books.id "+
+	if rating[0] == 0 && rating[1] == 0 && tagsLen != 0{
+		rows, err := p.Db.Query("SELECT gotoboox.books.id, gotoboox.books.title FROM gotoboox.books " +
+			"LEFT JOIN gotoboox.books_tags ON gotoboox.books.id = gotoboox.books_tags.id " +
+			"LEFT JOIN gotoboox.tags ON gotoboox.books_tags.tag_id = gotoboox.tags.tag_id " +
+			"WHERE gotoboox.tags.title = any($1) " +
+			"GROUP BY gotoboox.books.title, gotoboox.books.id " + 
 			"having count(*) = $2",
 			pq.Array(tags), tagsLen)
 		log.Print(rating)

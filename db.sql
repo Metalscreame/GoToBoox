@@ -50,6 +50,17 @@ CREATE TABLE gotoboox.comments (
   commentary_date DATE
 );
 
+
+CREATE TABLE gotoboox.roles(
+role_id SERIAL primary key,
+title character varying (150) not null
+);
+
+CREATE TABLE gotoboox.users_roles(
+id int references gotoboox.users (id) not null,
+role_id int references gotoboox.roles (id) not null
+);
+
 INSERT INTO gotoboox.users  (nickname,email,password,register_date)
 VALUES
 ('admin', 'admin@admin', 'asd', '2018-01-01'),

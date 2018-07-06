@@ -7,11 +7,19 @@
 			"revision": ""
 		},
 		{
+			"path": "github.com/appleboy/gin-jwt",
+			"revision": ""
+		},
+		{
 			"checksumSHA1": "dvabztWVQX8f6oMLRyv4dLH+TGY=",
 			"comment": "v1.1.0",
 			"path": "github.com/davecgh/go-spew/spew",
 			"revision": "346938d642f2ec3594ed81d874461961cd0faa76",
 			"revisionTime": "2016-10-29T20:57:26Z"
+		},
+		{
+			"path": "github.com/dgrijalva/jwt-go",
+			"revision": ""
 		},
 		{
 			"checksumSHA1": "7c3FuEadBInl/4ExSrB7iJMXpe4=",
@@ -178,16 +186,16 @@
 			"revisionTime": "2017-06-19T06:03:41Z"
 		},
 		{
-			"checksumSHA1": "hKZGpbFuCrkE4s1vxubKK1aFlfI=",
-			"path": "golang.org/x/net/context",
-			"revision": "d9558e5c97f85372afee28cf2b6059d7d3818919"
-		},
-		{
 			"checksumSHA1": "9jjO5GjLa0XF/nfWihF02RoH4qc=",
 			"comment": "release-branch.go1.7",
 			"path": "golang.org/x/net/context",
 			"revision": "d4c55e66d8c3a2f3382d264b08e3e3454a66355a",
 			"revisionTime": "2016-10-18T08:54:36Z"
+		},
+		{
+			"checksumSHA1": "hKZGpbFuCrkE4s1vxubKK1aFlfI=",
+			"path": "golang.org/x/net/context",
+			"revision": "d9558e5c97f85372afee28cf2b6059d7d3818919"
 		},
 		{
 			"checksumSHA1": "S0DP7Pn7sZUmXc55IzZnNvERu6s=",
@@ -206,6 +214,10 @@
 			"path": "gopkg.in/alexcesaro/quotedprintable.v3",
 			"revision": "2caba252f4dc53eaf6b553000885530023f54623",
 			"revisionTime": "2015-07-16T17:19:45Z"
+		},
+		{
+			"path": "gopkg.in/appleboy/gin-jwt.v2",
+			"revision": ""
 		},
 		{
 			"checksumSHA1": "P7dBpV3QA/3GJWGNwb9Hn3BzCQs=",

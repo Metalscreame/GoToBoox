@@ -3,6 +3,7 @@ package postgres
 import (
 	"database/sql"
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
+	"log"
 )
 
 type postgresUsersRepository struct {
@@ -37,6 +38,30 @@ func (p *postgresUsersRepository) UpdateUserByEmail(u repository.User, oldEmail 
 	return
 }
 
+//GetRoleByEmail get user role by email
+func (p *postgresUsersRepository) GetRoleByEmail(email string) (user repository.User, err error) {
+	row := p.Db.QueryRow("SELECT gotoboox.roles.title, gotoboox.users_roles.id FROM (gotoboox.users JOIN gotoboox.users_roles USING (id)) JOIN gotoboox.roles USING (role_id) WHERE gotoboox.users.email = $1", email)
+	if err != nil {
+		log.Printf("Get %v", err)
+
+		return
+	}
+	err = row.Scan(&user.Role, &user.ID)
+	if err != nil {
+		log.Printf("Get %v", err)
+		return
+	}
+	return
+}
+//InsertRolesToUsers insert to database user's role (default role is "user")
+func (p *postgresUsersRepository) InsertRolesToUsers (userID int, roleID int) (err error){
+
+	_, err = p.Db.Query("INSERT INTO gotoboox.users_roles (id, role_id) values($1, $2)",
+		userID, roleID)
+	return
+}
+
+
 //DeleteUserByEmail deletes user from database
 func (p *postgresUsersRepository) DeleteUserByEmail(email string) (err error) {
 	_, err = p.Db.Query("DELETE FROM gotoboox.users WHERE email=$1", email)
@@ -44,9 +69,9 @@ func (p *postgresUsersRepository) DeleteUserByEmail(email string) (err error) {
 }
 
 //InsertUser is a function that inserts a user entity into a database
-func (p *postgresUsersRepository) InsertUser(u repository.User) (err error) {
-	_, err = p.Db.Query("INSERT INTO gotoboox.users (nickname,email,password,register_date) values($1,$2,$3,$4)",
-		u.Nickname, u.Email, u.Password, u.RegisterDate)
+func (p *postgresUsersRepository) InsertUser(u repository.User) (lastID int, err error) {
+	err = p.Db.QueryRow("INSERT INTO gotoboox.users (nickname,email,password,register_date) values($1,$2,$3,$4) RETURNING id",
+		u.Nickname, u.Email, u.Password, u.RegisterDate).Scan(&lastID)
 	return
 }
 //GetUsersEmailToNotifyNewBook is a function that
