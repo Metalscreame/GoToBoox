@@ -1,11 +1,10 @@
 Recording of the log file has started...
 Got pq: relation "gotoboox.comments" does not exist
-Get sql: no rows in result set
-Get sql: no rows in result set
 Got pq: relation "gotoboox.comments" does not exist
 Got pq: relation "gotoboox.comments" does not exist
-Get sql: no rows in result set
-Get sql: no rows in result set
-Get sql: no rows in result set
-Get sql: no rows in result set
-pq: insert or update on table "users" violates foreign key constraint "users_taken_book_id_fkey"
+Got pq: relation "gotoboox.comments" does not exist
+Got pq: relation "gotoboox.comments" does not exist
+Got pq: relation "gotoboox.comments" does not exist
+Got pq: relation "gotoboox.comments" does not exist
+Wrong token was parsed by ::1 at 7000.07.07. 07:07:10
+Wrong token was parsed by ::1 at 7000.07.07. 07:07:10

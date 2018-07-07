@@ -64,7 +64,7 @@ func Start() {
 	jwtMiddleware = &jwt.GinJWTMiddleware{
 
 		Realm:         "Name",
-		Key:           []byte("something super secret"),
+		Key:           []byte(dataBase.TokenKeyLookUp()),
 		Timeout:       time.Hour,
 		MaxRefresh:    time.Hour * 24,
 		Authenticator: service.CheckCredentials,

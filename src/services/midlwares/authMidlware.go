@@ -8,6 +8,7 @@ import (
 	gojwt "github.com/dgrijalva/jwt-go"
 	"log"
 	"time"
+	"github.com/metalscreame/GoToBoox/src/dataBase"
 )
 
 var jwtMiddleware *jwt.GinJWTMiddleware
@@ -77,7 +78,7 @@ func CheckToken(c *gin.Context) (parsed bool) {
 				return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 			}
 
-			return []byte("something super secret"), nil
+			return []byte(dataBase.TokenKeyLookUp()), nil
 		})
 
 		if _, ok := token.Claims.(gojwt.MapClaims); ok && token.Valid {
