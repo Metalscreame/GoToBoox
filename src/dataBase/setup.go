@@ -36,3 +36,13 @@ func Connect() () {
 	}
 	return
 }
+
+func TokenKeyLookUp() (string) {
+	tokenKey, ok := os.LookupEnv("TOKEN_KEY")
+	if !ok {
+		println("Missing tokenKey value\n Setup sys env \"TOKEN_KEY\" as any string you want and reload IDE")
+		log.Fatal("Missing tokenKey value\n Setup sys env \"TOKEN_KEY\" as any string you want and reload IDE")
+	}
+
+	return tokenKey
+}
