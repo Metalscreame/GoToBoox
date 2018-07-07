@@ -69,14 +69,15 @@ func (s *UserService) UserDeleteHandler(c *gin.Context) {
 	return
 }
 
-/* UserUpdateHandler is a handler function that updates users info in database. Uses PUT method
-Input example for update
+//UserUpdateHandler is a handler function that updates users info in database. Uses PUT method
+/*Input example for update
 {
 	"id": 1,
 	"nickname": "Denchick",
 	"email": "away4ppel@den.ua",
 	"password": "pass",
-	"registrDate": "2018-01-01"
+	"registrDate": "2018-01-01",
+	"role":""
 }
  */
 func (s *UserService) UserUpdateHandler(c *gin.Context) {
@@ -99,12 +100,12 @@ func (s *UserService) UserUpdateHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
 		return
 	}
-	userToUpdate.Password = GetMD5Hash(userToUpdate.Password)
-	if userFromDb.Password != userToUpdate.Password {
+	newPasswordToCheck := GetMD5Hash(userToUpdate.Password)
+	if userFromDb.Password != newPasswordToCheck {
 		c.JSON(http.StatusUnauthorized, gin.H{"status": "passwords doesnt much"})
 		return
 	}
-	userToUpdate.Password = GetMD5Hash(userToUpdate.NewPassword)
+	userToUpdate.NewPassword = GetMD5Hash(userToUpdate.NewPassword)
 
 	if err := s.UsersRepo.UpdateUserByEmail(userToUpdate, email); err != nil {
 		log.Println("Error in UserUpdateHandler while updating user in db: ")
@@ -113,19 +114,10 @@ func (s *UserService) UserUpdateHandler(c *gin.Context) {
 		return
 	}
 	c.SetCookie("email", userToUpdate.Email, 15000, "", "", false, true)
-	c.JSON(http.StatusOK, gin.H{"status": "updated"})
+	c.JSON(http.StatusOK, gin.H{"status": "ok"})
 	return
 }
 
-//This function was created because cookies gives '%40' instead of '@' when read the email. It converts
-func convertEmailString(emailCookie string) (string) {
-	indexOfPercentSymb := strings.IndexRune(emailCookie, '%')
-	runes := []rune(emailCookie)
-	runes[indexOfPercentSymb] = '@'
-	runes = append(runes[:indexOfPercentSymb+1], runes[indexOfPercentSymb+2:]...) //deletes 4
-	runes = append(runes[:indexOfPercentSymb+1], runes[indexOfPercentSymb+2:]...) //deletes 0
-	return string(runes)
-}
 
 //LogoutHandler is a handler function that logging out from site and clears users cookie
 //Uses route /api/v1/logout
@@ -161,7 +153,8 @@ func (s *UserService) UserCreateHandler(c *gin.Context) {
 
 	u.RegisterDate = time.Now().UTC()
 	u.Password = GetMD5Hash(u.Password)
-	if err := s.UsersRepo.InsertUser(u); err != nil {
+	lastID,err := s.UsersRepo.InsertUser(u)
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "bad request"})
 		return
 	}
@@ -179,11 +172,8 @@ func (s *UserService) UserCreateHandler(c *gin.Context) {
 		"generatedData": time.Now(),
 	})
 
-	if tokenString, err = token.SignedString(jwtMiddleware.Key); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"status": "bad request"})
-		return
-	}
-	c.SetCookie("token", tokenString, 2*60*60, "", "", false, false);
+	tokenString, _ = token.SignedString(jwtMiddleware.Key)
+	c.SetCookie("token", tokenString, 2*60*60, "", "", false, false)
 	performLoginCookiesSetting(u, c)
 	return
 
@@ -269,4 +259,14 @@ func GetMD5Hash(text string) string {
 // This is not a secure way of generating session tokens
 func generateSessionToken() string {
 	return strconv.FormatInt(rand.Int63(), 16)
+}
+
+//This function was created because cookies gives '%40' instead of '@' when read the email. It converts
+func convertEmailString(emailCookie string) (string) {
+	indexOfPercentSymb := strings.IndexRune(emailCookie, '%')
+	runes := []rune(emailCookie)
+	runes[indexOfPercentSymb] = '@'
+	runes = append(runes[:indexOfPercentSymb+1], runes[indexOfPercentSymb+2:]...) //deletes 4
+	runes = append(runes[:indexOfPercentSymb+1], runes[indexOfPercentSymb+2:]...) //deletes 0
+	return string(runes)
 }

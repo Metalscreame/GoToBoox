@@ -33,14 +33,14 @@ func (m *MockUserRepository) EXPECT() *MockUserRepositoryMockRecorder {
 	return m.recorder
 }
 
-// ClearReturningBookIdByEmail mocks base method
+// ClearReturningBookIDByEmail mocks base method
 func (m *MockUserRepository) ClearReturningBookIDByEmail(arg0 string) error {
 	ret := m.ctrl.Call(m, "ClearReturningBookIDByEmail", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// ClearReturningBookIdByEmail indicates an expected call of ClearReturningBookIdByEmail
+// ClearReturningBookIDByEmail indicates an expected call of ClearReturningBookIDByEmail
 func (mr *MockUserRepositoryMockRecorder) ClearReturningBookIDByEmail(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ClearReturningBookIDByEmail", reflect.TypeOf((*MockUserRepository)(nil).ClearReturningBookIDByEmail), arg0)
 }
@@ -68,6 +68,19 @@ func (m *MockUserRepository) GetAllUsers() ([]repository.User, error) {
 // GetAllUsers indicates an expected call of GetAllUsers
 func (mr *MockUserRepositoryMockRecorder) GetAllUsers() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllUsers", reflect.TypeOf((*MockUserRepository)(nil).GetAllUsers))
+}
+
+// GetRoleByEmail mocks base method
+func (m *MockUserRepository) GetRoleByEmail(arg0 string) (repository.User, error) {
+	ret := m.ctrl.Call(m, "GetRoleByEmail", arg0)
+	ret0, _ := ret[0].(repository.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetRoleByEmail indicates an expected call of GetRoleByEmail
+func (mr *MockUserRepositoryMockRecorder) GetRoleByEmail(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRoleByEmail", reflect.TypeOf((*MockUserRepository)(nil).GetRoleByEmail), arg0)
 }
 
 // GetUserByEmail mocks base method
@@ -109,11 +122,24 @@ func (mr *MockUserRepositoryMockRecorder) GetUsersEmailToNotifyReserved() *gomoc
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUsersEmailToNotifyReserved", reflect.TypeOf((*MockUserRepository)(nil).GetUsersEmailToNotifyReserved))
 }
 
-// InsertUser mocks base method
-func (m *MockUserRepository) InsertUser(arg0 repository.User) error {
-	ret := m.ctrl.Call(m, "InsertUser", arg0)
+// InsertRolesToUsers mocks base method
+func (m *MockUserRepository) InsertRolesToUsers(arg0, arg1 int) error {
+	ret := m.ctrl.Call(m, "InsertRolesToUsers", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
+}
+
+// InsertRolesToUsers indicates an expected call of InsertRolesToUsers
+func (mr *MockUserRepositoryMockRecorder) InsertRolesToUsers(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertRolesToUsers", reflect.TypeOf((*MockUserRepository)(nil).InsertRolesToUsers), arg0, arg1)
+}
+
+// InsertUser mocks base method
+func (m *MockUserRepository) InsertUser(arg0 repository.User) (int, error) {
+	ret := m.ctrl.Call(m, "InsertUser", arg0)
+	ret0, _ := ret[0].(int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // InsertUser indicates an expected call of InsertUser

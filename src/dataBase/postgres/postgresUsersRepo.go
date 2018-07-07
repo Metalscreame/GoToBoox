@@ -34,7 +34,7 @@ func (p *postgresUsersRepository) GetUserByEmail(email string) (u repository.Use
 //UpdateInsertUserByEmail updates a user or insert if there is no such user
 func (p *postgresUsersRepository) UpdateUserByEmail(u repository.User, oldEmail string) (err error) {
 	_, err = p.Db.Query("UPDATE gotoboox.users set nickname=$1,email=$2,password=$3,notification_get_new_books=$4, notification_get_when_book_reserved=$5,notification_daily=$6  where email=$7",
-		u.Nickname, u.Email, u.Password, u.NotificationGetBewBooks, u.NotificationGetWhenBookReserved, u.NotificationDaily, oldEmail)
+		u.Nickname, u.Email, u.NewPassword, u.NotificationGetBewBooks, u.NotificationGetWhenBookReserved, u.NotificationDaily, oldEmail)
 	return
 }
 

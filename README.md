@@ -24,3 +24,9 @@ Later... maybe
 ## For the team
 
 Every change in master will affect heroku's remote server. So be careful
+
+## Mockgen
+
+To generate a mock, for example for UsersRepo,use:
+
+    mockgen -destination=src/mocks/mock_usersRepo.go -package=mocks github.com/metalscreame/GoToBoox/src/dataBase/repository UserRepository
