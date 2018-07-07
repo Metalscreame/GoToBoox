@@ -6,14 +6,12 @@ import (
 	"github.com/metalscreame/GoToBoox/src/services"
 	"os"
 	"log"
-	"github.com/metalscreame/GoToBoox/src/dataBase/postgres"
 )
 
 func main() {
 	file:=setupLogFile()
 	defer file.Close()
 	dataBase.Connect()
-	postgres.NewBooksRepository(dataBase.Connection).GetByID(1)
 	services.Start()
 	go services.DailyEmailNotifications()
 }

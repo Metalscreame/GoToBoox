@@ -60,7 +60,7 @@ func(s* UserService) ShowUsersProfilePage(c *gin.Context) {
 		},
 	)
 }
-
+//ShowBook is a handler function that renders static book page
 func ShowBook(c *gin.Context) {
 	isLoggedIn := midlwares.CheckLoggedIn(c)
 	c.HTML(http.StatusOK, "index.tmpl.html", gin.H{
