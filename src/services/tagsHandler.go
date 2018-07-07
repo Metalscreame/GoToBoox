@@ -6,12 +6,14 @@ import (
 	"net/http"
 )
 
+
+//TagsService is a struct with books and tags repository
 type TagsService struct {
 	BooksRepo repository.BookRepository
 	TagsRepo repository.TagsRepository
 
 }
-
+//NewTagsService is a func that initialize TagsService struct
 func NewTagsService(repository repository.BookRepository, tagsRepo repository.TagsRepository) *TagsService {
 	return &TagsService{
 		BooksRepo: repository,
