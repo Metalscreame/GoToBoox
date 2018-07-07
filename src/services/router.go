@@ -60,6 +60,8 @@ func Start() {
 		})
 	})
 
+
+
 	service := NewUserService(postgres.NewPostgresUsersRepo(dataBase.Connection))
 	jwtMiddleware = &jwt.GinJWTMiddleware{
 
