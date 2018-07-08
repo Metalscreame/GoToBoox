@@ -118,7 +118,6 @@ func (s *UserService) UserUpdateHandler(c *gin.Context) {
 	return
 }
 
-
 //LogoutHandler is a handler function that logging out from site and clears users cookie
 //Uses route /api/v1/logout
 func (s *UserService) LogoutHandler(c *gin.Context) {
@@ -153,7 +152,7 @@ func (s *UserService) UserCreateHandler(c *gin.Context) {
 
 	u.RegisterDate = time.Now().UTC()
 	u.Password = GetMD5Hash(u.Password)
-	lastID,err := s.UsersRepo.InsertUser(u)
+	lastID, err := s.UsersRepo.InsertUser(u)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "bad request"})
 		return
@@ -172,11 +171,15 @@ func (s *UserService) UserCreateHandler(c *gin.Context) {
 		"generatedData": time.Now(),
 	})
 
-	tokenString, _ = token.SignedString(jwtMiddleware.Key)
+	tokenString, err = token.SignedString(jwtMiddleware.Key)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "bad request"})
+		return
+	}
 	c.SetCookie("token", tokenString, 2*60*60, "", "", false, false)
 	performLoginCookiesSetting(u, c)
+	c.JSON(http.StatusOK, gin.H{"status": "ok"})
 	return
-
 }
 
 //PerformLoginHandler is a handler to handle loggining and setting cookies after success login
@@ -200,8 +203,7 @@ func (s *UserService) PerformLoginHandler(c *gin.Context) {
 
 func (s *UserService) CheckCredentials(email string, password string, c *gin.Context) (string, bool) {
 
-	b := s.UsersRepo
-	user, err := b.GetUserByEmail(email)
+	user, err := s.UsersRepo.GetUserByEmail(email)
 	if err != nil || user.Password != GetMD5Hash(password) {
 		return "", false
 	}
