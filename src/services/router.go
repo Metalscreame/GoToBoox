@@ -66,7 +66,7 @@ func Start() {
 	jwtMiddleware = &jwt.GinJWTMiddleware{
 
 		Realm:         "Name",
-		Key:           []byte("something super secret"),
+		Key:           []byte(dataBase.TokenKeyLookUp()),
 		Timeout:       time.Hour,
 		MaxRefresh:    time.Hour * 24,
 		Authenticator: service.CheckCredentials,
@@ -160,7 +160,7 @@ func initUserProfileRoutes() {
 
 	// Show the user's profile page
 	// Ensure that the user is logged in by using the middleware
-	router.GET("/userProfilePage", midlwares.EnsureLoggedIn(), userService.ShowUsersProfilePage)
+	router.GET("/userProfilePage", midlwares.EnsureLoggedIn(),midlwares.TokenChecking(), userService.ShowUsersProfilePage)
 
 	router.GET("/userComments/:nickname", ShowCommentsPage)
 }

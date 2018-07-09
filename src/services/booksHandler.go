@@ -12,11 +12,13 @@ import (
 	"time"
 )
 
+
+//BookService is a struct with book and user repository
 type BookService struct {
 	BooksRepo repository.BookRepository
 	UsersRepo repository.UserRepository
 }
-
+//NewBookService is a func that initialize BookService struct
 func NewBookService(repository repository.BookRepository, usersRepo repository.UserRepository) *BookService {
 	return &BookService{
 		BooksRepo: repository,
@@ -24,6 +26,7 @@ func NewBookService(repository repository.BookRepository, usersRepo repository.U
 	}
 }
 
+//FiveMostPop returns top 5 books
 func (b *BookService) FiveMostPop(c *gin.Context) {
 	FiveMostPop, _ := b.BooksRepo.GetMostPopularBooks(5)
 	if len(FiveMostPop) > 0 {

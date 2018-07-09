@@ -12,9 +12,7 @@ func main() {
 	file:=setupLogFile()
 	defer file.Close()
 	dataBase.Connect()
-
 	services.ConfigureEmailDialer()
-
 	services.Start()
 	go services.DailyEmailNotifications()
 }

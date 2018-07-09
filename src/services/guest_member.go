@@ -6,11 +6,9 @@ import (
 	"strings"
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
 	"log"
-	"strconv"
 	"crypto/md5"
 	"encoding/hex"
 	"time"
-	"math/rand"
 	"gopkg.in/appleboy/gin-jwt.v2"
 	gojwt "github.com/dgrijalva/jwt-go"
 )
@@ -113,7 +111,7 @@ func (s *UserService) UserUpdateHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "bad request"})
 		return
 	}
-	c.SetCookie("email", userToUpdate.Email, 15000, "", "", false, true)
+	c.SetCookie("email", userToUpdate.Email, 2*60*60, "", "", false, true)
 	c.JSON(http.StatusOK, gin.H{"status": "ok"})
 	return
 }
@@ -141,6 +139,7 @@ Input example for create
 	"registrDate": "2018-01-01"
 }
  */
+ //UserCreateHandler create new user and generate session token
 func (s *UserService) UserCreateHandler(c *gin.Context) {
 	var u repository.User
 	var tokenString string
@@ -201,6 +200,7 @@ func (s *UserService) PerformLoginHandler(c *gin.Context) {
 	return
 }
 
+//CheckCredentials checks email and password
 func (s *UserService) CheckCredentials(email string, password string, c *gin.Context) (string, bool) {
 
 	user, err := s.UsersRepo.GetUserByEmail(email)
@@ -212,7 +212,8 @@ func (s *UserService) CheckCredentials(email string, password string, c *gin.Con
 	return email, true
 }
 
-func (s *UserService) Authorization(userId string, c *gin.Context) bool {
+//Authorization checks user's permission to access special links
+func (s *UserService) Authorization(userID string, c *gin.Context) bool {
 	claims := jwt.ExtractClaims(c)
 	if claims["role"] == "admin" {
 		return true
@@ -220,6 +221,7 @@ func (s *UserService) Authorization(userId string, c *gin.Context) bool {
 	return false
 }
 
+//Payload is a function that add some fields to the jwt
 func (s *UserService) Payload(email string) (map[string]interface{}) {
 	b := s.UsersRepo
 	user, _ := b.GetRoleByEmail(email)
@@ -250,6 +252,7 @@ func performLoginCookiesSetting(u repository.User, c *gin.Context) {
 	return
 }
 
+
 //GetMD5Hash generates md5 hash from input string
 func GetMD5Hash(text string) string {
 	hasher := md5.New()
@@ -257,11 +260,6 @@ func GetMD5Hash(text string) string {
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
-// I'm using a random 16 character string as the session token
-// This is not a secure way of generating session tokens
-func generateSessionToken() string {
-	return strconv.FormatInt(rand.Int63(), 16)
-}
 
 //This function was created because cookies gives '%40' instead of '@' when read the email. It converts
 func convertEmailString(emailCookie string) (string) {
