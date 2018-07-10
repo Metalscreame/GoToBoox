@@ -25,3 +25,6 @@ func IndexHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": output})
 }
 
+func ServerIsOn(c * gin.Context){
+	c.JSON(http.StatusOK, gin.H{"status":"alive"})
+}

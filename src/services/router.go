@@ -35,6 +35,8 @@ func Start() {
 	router.Static("/static", "./static")
 	router.LoadHTMLGlob("templates/*.html")
 
+	router.GET("/serverStatus", ServerIsOn)
+
 	router.GET("/", func(c *gin.Context) {
 		isLoggedIn := midlwares.CheckLoggedIn(c)
 		c.HTML(http.StatusOK, "index.tmpl.html", gin.H{
@@ -87,8 +89,7 @@ func Start() {
 	initUserProfileRoutes()
 	initBooksRoutes()
 	initTagsRoutes()
-	router.Run(":" + port)
-
+	go router.Run(":" + port)
 }
 
 func helloHandler(c *gin.Context) {
