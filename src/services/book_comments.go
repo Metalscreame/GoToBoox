@@ -35,14 +35,19 @@ func (cs *CommentsService) BookCommentsHandler(c *gin.Context) {
 
 	comments, _ := cs.CommentsRepo.GetAllCommentsByBookID(bookID)
 	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": Data{comments}})
-
 }
 
 //AddBookCommentHandler is a handler func that adds a single user's comment for a single book.
 func (cs *CommentsService) AddBookCommentHandler(c *gin.Context) {
 
 	var comment repository.Comment
-	if err := c.BindJSON(&comment); err != nil {
+	err := c.BindJSON(&comment)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"status": "bad request"})
+		return
+	}
+
+	if comment.CommentaryText==""{
 		c.JSON(http.StatusBadRequest, gin.H{"status": "bad request"})
 		return
 	}
@@ -58,11 +63,7 @@ func (cs *CommentsService) AddBookCommentHandler(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"status": "bad request"})
 		return
 	}
-	nicknameCookie, err := c.Request.Cookie("nickname")
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"status": "bad request"})
-		return
-	}
+	nicknameCookie, _ := c.Request.Cookie("nickname")
 
 	nickname := nicknameCookie.Value
 	email := convertEmailString(emailCookie.Value)
@@ -89,6 +90,5 @@ func (cs *CommentsService) AllCommentsByNicknameHandler(c *gin.Context)  {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "server error"})
 		return
 	}
-
 	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": Data{comments}})
 }
