@@ -10,7 +10,7 @@ type postgresUsersRepository struct {
 	Db *sql.DB
 }
 
-//NewPostgresUsersRepo is a function to get New postgresUsersRepository which uses given connecti
+//NewPostgresUsersRepo is a function to get New postgresUsersRepository which uses given connection
 func NewPostgresUsersRepo(Db *sql.DB) repository.UserRepository {
 	return &postgresUsersRepository{Db}
 }
@@ -18,16 +18,16 @@ func NewPostgresUsersRepo(Db *sql.DB) repository.UserRepository {
 //GetUserByEmail gets users from users table by
 func (p *postgresUsersRepository) GetUserByEmail(email string) (u repository.User, err error) {
 	var n1, n2, n3 sql.NullInt64
-	row := p.Db.QueryRow("SELECT id, nickname,password,email,notification_get_new_books,notification_get_when_book_reserved,notification_daily," +
+	row := p.Db.QueryRow("SELECT id, nickname,password,email,notification_get_new_books,notification_get_when_book_reserved,notification_daily,"+
 		"has_book_for_exchange,returning_book_id,book_id,taken_book_id FROM gotoboox.users where email=$1", email)
 	err = row.Scan(&u.ID, &u.Nickname, &u.Password, &u.Email, &u.NotificationGetBewBooks, &u.NotificationGetWhenBookReserved,
 		&u.NotificationDaily, &u.HasBookForExchange, &n1, &n2, &n3)
 	if err != nil {
 		return
 	}
-	u.ReturningBookId = getNullableIntValue(n1)
-	u.BookId=getNullableIntValue(n2)
-	u.TakenBookId=getNullableIntValue(n3)
+	u.ReturningBookID = getNullableIntValue(n1)
+	u.BookId = getNullableIntValue(n2)
+	u.TakenBookID = getNullableIntValue(n3)
 	return
 }
 
@@ -53,14 +53,14 @@ func (p *postgresUsersRepository) GetRoleByEmail(email string) (user repository.
 	}
 	return
 }
+
 //InsertRolesToUsers insert to database user's role (default role is "user")
-func (p *postgresUsersRepository) InsertRolesToUsers (userID int, roleID int) (err error){
+func (p *postgresUsersRepository) InsertRolesToUsers(userID int, roleID int) (err error) {
 
 	_, err = p.Db.Query("INSERT INTO gotoboox.users_roles (id, role_id) values($1, $2)",
 		userID, roleID)
 	return
 }
-
 
 //DeleteUserByEmail deletes user from database
 func (p *postgresUsersRepository) DeleteUserByEmail(email string) (err error) {
@@ -74,6 +74,7 @@ func (p *postgresUsersRepository) InsertUser(u repository.User) (lastID int, err
 		u.Nickname, u.Email, u.Password, u.RegisterDate).Scan(&lastID)
 	return
 }
+
 //GetUsersEmailToNotifyNewBook is a function that
 func (p *postgresUsersRepository) GetUsersEmailToNotifyNewBook() (u []repository.User, err error) {
 	rows, err := p.Db.Query(
@@ -105,7 +106,7 @@ func (p *postgresUsersRepository) GetUsersEmailToNotifyReserved() (u []repositor
 	return
 }
 
-func (p *postgresUsersRepository) SetUsersBookAsNullByBookId(id int) (err error) {
+func (p *postgresUsersRepository) SetUsersBookAsNullByBookID(id int) (err error) {
 	_, err = p.Db.Query("UPDATE gotoboox.users set book_id=NULL where book_id=$1", id)
 	return
 }
@@ -141,8 +142,8 @@ func (p *postgresUsersRepository) MakeBookCross(email string) (err error) {
 		return
 	}
 
-	tx,err:=p.Db.Begin()
-	if err!=nil{
+	tx, err := p.Db.Begin()
+	if err != nil {
 		return
 	}
 
@@ -157,7 +158,7 @@ func (p *postgresUsersRepository) MakeBookCross(email string) (err error) {
 		defer stmt.Close()
 
 		if _, err := stmt.Exec(u.BookId, email); err != nil {
-			tx.Rollback() // return an error too, we may want to wrap them
+			tx.Rollback()
 			return err
 		}
 	}
@@ -171,7 +172,7 @@ func (p *postgresUsersRepository) MakeBookCross(email string) (err error) {
 		defer stmt.Close()
 
 		if _, err := stmt.Exec(repository.BookStateTaken, u.BookId); err != nil {
-			tx.Rollback() // return an error too, we may want to wrap them
+			tx.Rollback()
 			return err
 		}
 	}

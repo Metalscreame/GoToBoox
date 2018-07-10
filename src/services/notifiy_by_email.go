@@ -28,12 +28,12 @@ func ConfigureEmailDialer() {
 //DailyEmailNotifications is a functions that sends emails every 24 hours with lists of
 func DailyEmailNotifications() {
 	s := NewBookService(postgres.NewBooksRepository(dataBase.Connection), postgres.NewPostgresUsersRepo(dataBase.Connection))
-	for true {
+	for {
 		time.Sleep(24 * time.Hour)
 
 		users, err := s.UsersRepo.GetAllUsers()
 		if err != nil {
-			log.Printf("Error at daily email notify while getting all users %v\n",time.Now())
+			log.Printf("Error at daily email notify while getting all users %v\n", time.Now())
 			log.Println(err)
 			continue
 		}
@@ -41,13 +41,13 @@ func DailyEmailNotifications() {
 		books, err := s.BooksRepo.GetAll()
 		if err != nil {
 			log.Println(err)
-			log.Printf("Error at daily email notify while getting all books at %v\n",time.Now())
+			log.Printf("Error at daily email notify while getting all books at %v\n", time.Now())
 			continue
 		}
 
 		sendCloser, err := dialer.Dial()
 		if err != nil {
-			log.Printf("Error at daily email notify while dial dialer at %v\n",time.Now())
+			log.Printf("Error at daily email notify while dial dialer at %v\n", time.Now())
 			log.Println(err)
 			continue
 		}
@@ -63,7 +63,7 @@ func DailyEmailNotifications() {
 			msg.Attach("/static/images/logo.jpg")
 
 			if err := gomail.Send(sendCloser, msg); err != nil {
-				log.Printf("Could not send email to %q: %v \n at %v\n", user.Email, err,time.Now())
+				log.Printf("Could not send email to %q: %v \n at %v\n", user.Email, err, time.Now())
 			}
 			msg.Reset()
 		}
@@ -75,14 +75,14 @@ func NofityAllBookReserved(bookTitle, bookDescription string) {
 	s := NewUserService(postgres.NewPostgresUsersRepo(dataBase.Connection))
 	listOfUsersEmails, err := s.UsersRepo.GetUsersEmailToNotifyReserved()
 	if err != nil {
-		log.Printf("Error at notifyAllBookReserved email notify while getting all users %v\n",time.Now())
+		log.Printf("Error at notifyAllBookReserved email notify while getting all users %v\n", time.Now())
 		log.Println(err)
 		return
 	}
 
 	sc, err := dialer.Dial()
 	if err != nil {
-		log.Printf("Error at notifyAllBookReserved while dial dialer at %v\n",time.Now())
+		log.Printf("Error at notifyAllBookReserved while dial dialer at %v\n", time.Now())
 		log.Println(err)
 		return
 	}
@@ -98,7 +98,7 @@ func NofityAllBookReserved(bookTitle, bookDescription string) {
 		m.Attach("/static/images/logo.jpg")
 
 		if err := gomail.Send(sc, m); err != nil {
-			log.Printf("Could not send email to %q: %v \n at %v\n", user.Email, err,time.Now())
+			log.Printf("Could not send email to %q: %v \n at %v\n", user.Email, err, time.Now())
 		}
 		m.Reset()
 	}
@@ -130,7 +130,7 @@ func NotifyAllNewBook(bookTitle, bookDescription string) {
 		m.Attach("/static/images/logo.jpg")
 
 		if err := gomail.Send(sc, m); err != nil {
-			log.Printf("Could not send email to %q: %v \n at %v", user.Email, err,time.Now())
+			log.Printf("Could not send email to %q: %v \n at %v", user.Email, err, time.Now())
 		}
 		m.Reset()
 	}

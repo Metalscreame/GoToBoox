@@ -244,10 +244,7 @@ func TestUserService_UserUpdateHandler(t *testing.T) {
 			router.PUT("/update", mockService.UserUpdateHandler)
 
 			requestBody := bytes.NewReader([]byte(testCase.inputBody))
-			req, err := http.NewRequest("PUT", "/update", requestBody)
-			if err != nil {
-				t.Fatal(err)
-			}
+			req, _ := http.NewRequest("PUT", "/update", requestBody)
 
 			if testCase.needEmailCookie {
 				req.AddCookie(&http.Cookie{Name: "email", Value: "email%40email.com"})
@@ -323,7 +320,6 @@ func TestUserService_UserCreateHandler(t *testing.T) {
 		needError                         bool
 		needServerErrorFromInsertRepo     bool
 		needServerErrorFromInsertRoleRepo bool
-		user                              repository.User
 	}{
 		{
 			name:      "bad request, wrong json",
@@ -406,7 +402,6 @@ func TestUserService_PerformLoginHandler(t *testing.T) {
 		expResponseBody                string
 		needError                      bool
 		needServerErrorFromGetUserRepo bool
-		needUpdateRepo                 bool
 		user                           repository.User
 	}{
 		{
@@ -534,8 +529,6 @@ func TestUserService_CheckCredentials(t *testing.T) {
 				mockUsersRepo.EXPECT().InsertUser(gomock.Any()).Return(1, nil)
 				mockUsersRepo.EXPECT().InsertRolesToUsers(gomock.Any(), 1).Return(errors.New("role error"))
 			}
-
-
 
 			_, errBool := mockService.CheckCredentials(emailString, passToSend, &gin.Context{})
 			if errBool == testCase.needError {

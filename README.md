@@ -30,3 +30,8 @@ Every change in master will affect heroku's remote server. So be careful
 To generate a mock, for example for UsersRepo,use:
 
     mockgen -destination=src/mocks/mock_usersRepo.go -package=mocks github.com/metalscreame/GoToBoox/src/dataBase/repository UserRepository
+
+
+To pass code through metalinter use:
+
+    gometalinter.v2 --vendor --tests --skip=mocks --exclude='_gen.go' --exclude='docs.go' --disable=gotype --disable=errcheck --disable=gas --disable=dupl --deadline=1500s --checkstyle --sort=linter ./... > static-analysis.xml

@@ -41,10 +41,8 @@ func  UserProfileHandler(c *gin.Context) {
 	if loggedIn {
 		c.Redirect(http.StatusFound, "/userProfilePage")
 		return
-	} else {
-		c.Redirect(http.StatusFound, "/login")
-		return
 	}
+	c.Redirect(http.StatusFound, "/login")
 }
 
 //ShowUsersProfilePage is a handler function that renders static userProfile page

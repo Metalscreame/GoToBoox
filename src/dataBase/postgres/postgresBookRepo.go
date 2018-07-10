@@ -12,7 +12,7 @@ import (
 type booksRepositoryPG struct {
 	Db *sql.DB
 }
-
+//NewBooksRepository is a function to get New BooksRepository which uses given connection
 func NewBooksRepository(Db *sql.DB) repository.BookRepository {
 	return &booksRepositoryPG{Db}
 }

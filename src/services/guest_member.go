@@ -42,7 +42,6 @@ func (s *UserService) UserGetHandler(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, user)
-	return
 }
 
 //UserDeleteHandler deletes user from database. Uses DELETE method.
@@ -64,7 +63,6 @@ func (s *UserService) UserDeleteHandler(c *gin.Context) {
 	c.SetCookie("is_logged_in", "", -1, "", "", false, true)
 	c.Set("is_logged_in", false)
 	c.JSON(http.StatusOK, gin.H{"status": "ok"})
-	return
 }
 
 //UserUpdateHandler is a handler function that updates users info in database. Uses PUT method
@@ -113,7 +111,6 @@ func (s *UserService) UserUpdateHandler(c *gin.Context) {
 	}
 	c.SetCookie("email", userToUpdate.Email, 2*60*60, "", "", false, true)
 	c.JSON(http.StatusOK, gin.H{"status": "ok"})
-	return
 }
 
 //LogoutHandler is a handler function that logging out from site and clears users cookie
@@ -125,11 +122,10 @@ func (s *UserService) LogoutHandler(c *gin.Context) {
 	c.SetCookie("is_logged_in", "", -1, "", "", false, true)
 	c.Set("is_logged_in", false)
 	c.Redirect(http.StatusFound, "/")
-	return
 }
 
-/* UserCreateHandler is a handler function that creates new user in a database\
-Uses route/api/v1/register
+//UserCreateHandler is a handler function that creates new user in a database and generate session token
+/*Uses route/api/v1/register
 Input example for create
 {
 	"id": 1,
@@ -139,7 +135,6 @@ Input example for create
 	"registrDate": "2018-01-01"
 }
  */
- //UserCreateHandler create new user and generate session token
 func (s *UserService) UserCreateHandler(c *gin.Context) {
 	var u repository.User
 	var tokenString string
@@ -157,7 +152,7 @@ func (s *UserService) UserCreateHandler(c *gin.Context) {
 		return
 	}
 
-	if err := s.UsersRepo.InsertRolesToUsers(lastID, 1); err != nil {
+	if err = s.UsersRepo.InsertRolesToUsers(lastID, 1); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "bad request"})
 		return
 	}
@@ -178,7 +173,6 @@ func (s *UserService) UserCreateHandler(c *gin.Context) {
 	c.SetCookie("token", tokenString, 2*60*60, "", "", false, false)
 	performLoginCookiesSetting(u, c)
 	c.JSON(http.StatusOK, gin.H{"status": "ok"})
-	return
 }
 
 //PerformLoginHandler is a handler to handle loggining and setting cookies after success login
@@ -197,7 +191,6 @@ func (s *UserService) PerformLoginHandler(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusBadRequest, gin.H{"status": "wrong credentials"})
-	return
 }
 
 //CheckCredentials checks email and password
@@ -249,9 +242,7 @@ func performLoginCookiesSetting(u repository.User, c *gin.Context) {
 	c.SetCookie("email", u.Email, 2*60*60, "", "", false, false)
 	c.SetCookie("nickname", u.Nickname, 2*60*60, "", "", false, false)
 	c.SetCookie("is_logged_in", "true", 2*60*60, "", "", false, false)
-	return
 }
-
 
 //GetMD5Hash generates md5 hash from input string
 func GetMD5Hash(text string) string {
@@ -259,7 +250,6 @@ func GetMD5Hash(text string) string {
 	hasher.Write([]byte(text))
 	return hex.EncodeToString(hasher.Sum(nil))
 }
-
 
 //This function was created because cookies gives '%40' instead of '@' when read the email. It converts
 func convertEmailString(emailCookie string) (string) {

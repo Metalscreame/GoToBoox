@@ -9,17 +9,18 @@ import (
 	"time"
 )
 
+//CommentsService is a struct that holds Comments repository
 type CommentsService struct {
 	CommentsRepo repository.CommentsRepository
 }
 
+//NewCommentsService is a function to return comments service based on concrete repository
 func NewCommentsService(commentsRepo repository.CommentsRepository) *CommentsService {
 	return &CommentsService{
 		CommentsRepo: commentsRepo,
 	}
 }
-
-
+//Data is a structure that holds comments
 type Data struct {
 	Comments []repository.Comment
 }
@@ -34,7 +35,7 @@ func (cs *CommentsService) BookCommentsHandler(c *gin.Context) {
 
 	comments, _ := cs.CommentsRepo.GetAllCommentsByBookID(bookID)
 	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": Data{comments}})
-	return
+
 }
 
 //AddBookCommentHandler is a handler func that adds a single user's comment for a single book.
@@ -74,7 +75,6 @@ func (cs *CommentsService) AddBookCommentHandler(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"status": "ok"})
-	return
 }
 
 
@@ -91,5 +91,4 @@ func (cs *CommentsService) AllCommentsByNicknameHandler(c *gin.Context)  {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": Data{comments}})
-	return
 }

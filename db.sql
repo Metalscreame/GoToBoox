@@ -4,12 +4,6 @@ CREATE TABLE gotoboox.tags(
 id SERIAL primary key,
 title character varying (150) not null
 );
-
-CREATE TABLE gotoboox.books_tags(
-book_id int references gotoboox.books (id) not null,
-tag_id int references gotoboox.tags (id) not null
-);
-
 CREATE TABLE gotoboox.books(
 id SERIAL PRIMARY KEY,
 title CHARACTER VARYING (250) NOT NULL,
@@ -19,6 +13,12 @@ evaluation_number INT DEFAULT 0,
 state TEXT DEFAULT 'FREE',
 image BYTEA
 );
+
+CREATE TABLE gotoboox.books_tags(
+book_id int references gotoboox.books (id) not null,
+tag_id int references gotoboox.tags (id) not null
+);
+
 
 CREATE TABLE gotoboox.users (
 id SERIAL PRIMARY KEY,
@@ -58,7 +58,7 @@ title character varying (150) not null
 
 CREATE TABLE gotoboox.users_roles(
 id int references gotoboox.users (id) not null,
-role_id int references gotoboox.roles (id) not null
+role_id int references gotoboox.roles (role_id) not null
 );
 
 INSERT INTO gotoboox.users  (nickname,email,password,register_date)

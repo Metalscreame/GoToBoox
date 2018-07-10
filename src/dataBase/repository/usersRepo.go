@@ -9,7 +9,7 @@ type UserRepository interface {
 	InsertUser(u User) (lastID int, err error)
 	GetUsersEmailToNotifyNewBook() (u []User, err error)
 	GetUsersEmailToNotifyReserved() (u []User, err error)
-	SetUsersBookAsNullByBookId(id int) (err error)
+	SetUsersBookAsNullByBookID(id int) (err error)
 	GetAllUsers() (u []User, err error)
 	MakeBookCross(email string) (err error)
 	SetReturningBookIDByEmail(id int,email string)(err error)
