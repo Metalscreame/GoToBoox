@@ -89,7 +89,7 @@ func Start() {
 	initUserProfileRoutes()
 	initBooksRoutes()
 	initTagsRoutes()
-	go router.Run(":" + port)
+	router.Run(":" + port)
 }
 
 func helloHandler(c *gin.Context) {
