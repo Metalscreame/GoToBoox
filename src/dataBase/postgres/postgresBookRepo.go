@@ -180,7 +180,7 @@ func (p booksRepositoryPG) GetByTagsAndRating(tags []string, rating []int) (book
 			"GROUP BY gotoboox.books.title, gotoboox.books.id " + 
 			"having count(*) = $2",
 			pq.Array(tags), tagsLen)
-		log.Print(rating)
+
 		if err != nil {
 			log.Printf("Get %v", err)
 		}
@@ -205,7 +205,6 @@ func (p booksRepositoryPG) GetByTagsAndRating(tags []string, rating []int) (book
 			"WHERE gotoboox.books.popularity BETWEEN $1 AND $2"+
 			"GROUP BY gotoboox.books.title, gotoboox.books.id ",
 			rating[0], rating[1])
-		log.Print(rating)
 		if err != nil {
 			log.Printf("Get %v", err)
 		}
@@ -231,7 +230,6 @@ func (p booksRepositoryPG) GetByTagsAndRating(tags []string, rating []int) (book
 			"GROUP BY gotoboox.books.title, gotoboox.books.id "+
 			"having count(*) = $2",
 			pq.Array(tags), tagsLen, rating[0], rating[1])
-		log.Print(rating)
 		if err != nil {
 			log.Printf("Get %v", err)
 		}
@@ -273,7 +271,7 @@ func (p booksRepositoryPG) GetMostPopularBooks(quantity int) ([]repository.Book,
 
 func (p *booksRepositoryPG) InsertNewBook(b repository.Book) (lastID int, err error) {
 	err = p.Db.QueryRow("INSERT INTO gotoboox.books (title,description,image, popularity) values($1,$2,$3, $4) RETURNING id",
-		b.Title, b.Description, b.Image, b.Popularity).Scan(&lastID);
+		b.Title, b.Description, b.Image, b.Popularity).Scan(&lastID)
 	return
 }
 

@@ -81,6 +81,7 @@ func (p *postgresUsersRepository) GetUsersEmailToNotifyNewBook() (u []repository
 		"SELECT email,nickname FROM gotoboox.users where notification_get_new_books='true'")
 	defer rows.Close()
 	for rows.Next() {
+
 		var user repository.User
 		err = rows.Scan(&user.Email, &user.Nickname)
 		if err != nil {
@@ -88,6 +89,7 @@ func (p *postgresUsersRepository) GetUsersEmailToNotifyNewBook() (u []repository
 		}
 		u = append(u, user)
 	}
+
 	return
 }
 

@@ -238,7 +238,7 @@ func (b *BookService) InsertNewBook(c *gin.Context) {
 		return
 	}
 
-	last, err := b.BooksRepo.InsertNewBook(bookToAdd);
+	last, err := b.BooksRepo.InsertNewBook(bookToAdd)
 	if err != nil {
 		log.Printf("Error in InsertNewBook while adding new book to db at %v: \n", time.Now())
 		log.Println(err)
