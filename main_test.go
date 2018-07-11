@@ -11,10 +11,10 @@ import (
 )
 
 func TestRouter(t *testing.T)  {
-	services.Start()
+	go services.Start()
 
 	time.Sleep(time.Second*10)
-	req, _ := http.NewRequest("GET", "/serverStatus", bytes.NewReader([]byte("")))
+	req, _ := http.NewRequest("GET", "http://localhost:6666/serverStatus", bytes.NewReader([]byte("")))
 
 	rr := httptest.NewRecorder()
 	router := gin.New()
@@ -25,4 +25,6 @@ func TestRouter(t *testing.T)  {
 	if result != `{"status":"alive"}` && status != http.StatusOK {
 		t.Errorf("handler returned unexpected body: \n wanted: %v\n but got %v",`{"status":"alive"}`, result)
 	}
+
+	services.Shutdown <- 1
 }

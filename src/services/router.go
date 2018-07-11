@@ -6,7 +6,6 @@ import (
 	"github.com/metalscreame/GoToBoox/src/services/midlwares"
 	"github.com/metalscreame/GoToBoox/src/dataBase"
 	"github.com/metalscreame/GoToBoox/src/dataBase/postgres"
-	"os"
 	"log"
 	"net/http"
 	"gopkg.in/appleboy/gin-jwt.v2"
@@ -19,23 +18,24 @@ const (
 
 var router *gin.Engine
 var jwtMiddleware *jwt.GinJWTMiddleware
+var Shutdown chan int
 
 //Start is a function that starts server and initializes all the routes.
 func Start() {
-	port, ok := os.LookupEnv("PORT")
-	if !ok {
-		println("PORT is required\nFor localhosts setup sys env \"PORT\" as 8080 and reload IDE")
-		log.Fatal("PORT is required\nFor localhosts setup sys env \"PORT\" as 8080 and reload IDE")
-	}
+	//port, ok := os.LookupEnv("PORT")
+	//if !ok {
+	//	println("PORT is required\nFor localhosts setup sys env \"PORT\" as 8080 and reload IDE")
+	//	log.Fatal("PORT is required\nFor localhosts setup sys env \"PORT\" as 8080 and reload IDE")
+	//}
 
 	gin.SetMode(gin.ReleaseMode)
-	router = gin.New()
+
+	router = gin.Default()
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 	router.Static("/static", "./static")
 	router.LoadHTMLGlob("templates/*.html")
 
-	router.GET("/serverStatus", ServerIsOn)
 
 	router.GET("/", func(c *gin.Context) {
 		isLoggedIn := midlwares.CheckLoggedIn(c)
@@ -45,6 +45,9 @@ func Start() {
 			"isLoggedIn": isLoggedIn,
 		})
 	})
+	router.GET("/serverStatus", ServerIsOn)
+
+
 	router.GET("/location", func(c *gin.Context) {
 		isLoggedIn := midlwares.CheckLoggedIn(c)
 		c.HTML(http.StatusOK, "index.tmpl.html", gin.H{
@@ -61,8 +64,6 @@ func Start() {
 			"isLoggedIn": isLoggedIn,
 		})
 	})
-
-
 
 	service := NewUserService(postgres.NewPostgresUsersRepo(dataBase.Connection))
 	jwtMiddleware = &jwt.GinJWTMiddleware{
@@ -89,7 +90,26 @@ func Start() {
 	initUserProfileRoutes()
 	initBooksRoutes()
 	initTagsRoutes()
-	router.Run(":" + port)
+
+	srv := &http.Server{
+		Addr:    ":6666",
+		Handler: router,
+	}
+
+	go func() {
+		// service connections
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("listen: %s\n", err)
+		}
+	}()
+
+
+	Shutdown = make(chan int)
+	//signal.Notify(Shutdown, os.Interrupt)
+	<-Shutdown
+	log.Println("Shutdown Server ...")
+
+	//router.Run(":" + port)
 }
 
 func helloHandler(c *gin.Context) {
@@ -161,7 +181,7 @@ func initUserProfileRoutes() {
 
 	// Show the user's profile page
 	// Ensure that the user is logged in by using the middleware
-	router.GET("/userProfilePage", midlwares.EnsureLoggedIn(),midlwares.TokenChecking(), userService.ShowUsersProfilePage)
+	router.GET("/userProfilePage", midlwares.EnsureLoggedIn(), midlwares.TokenChecking(), userService.ShowUsersProfilePage)
 
 	router.GET("/userComments/:nickname", ShowCommentsPage)
 }

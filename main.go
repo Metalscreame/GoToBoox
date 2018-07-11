@@ -2,7 +2,6 @@ package main
 
 import (
 	_ "gopkg.in/github.com/heroku/x/hmetrics/onload"
-	"github.com/metalscreame/GoToBoox/src/dataBase"
 	"github.com/metalscreame/GoToBoox/src/services"
 	"os"
 	"log"
@@ -11,7 +10,7 @@ import (
 func main() {
 	file:=setupLogFile()
 	defer file.Close()
-	dataBase.Connect()
+	//dataBase.Connect()
 	services.ConfigureEmailDialer()
 	services.Start()
 	go services.DailyEmailNotifications()
