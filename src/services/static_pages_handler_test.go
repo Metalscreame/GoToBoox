@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"os"
 	"path/filepath"
+	"io/ioutil"
 )
 
 func TestStaticPages(t *testing.T) {
@@ -126,6 +127,8 @@ func BenchmarkSearchHandler(b *testing.B) {
 
 func getTestRouter() *gin.Engine {
 	r := gin.Default()
+	gin.DefaultWriter = ioutil.Discard
+	gin.SetMode(gin.ReleaseMode)
 	path := filepath.ToSlash(os.Getenv("GOPATH"))
 	r.LoadHTMLGlob(path + "/src/github.com/metalscreame/GoToBoox/templates/*")
 	return r

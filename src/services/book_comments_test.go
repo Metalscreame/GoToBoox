@@ -304,7 +304,7 @@ func BenchmarkCommentsService_BookCommentsHandler(b *testing.B) {
 		needRepoErr     bool
 		needRepoNoErr   bool
 	}
-	
+
 	benchCase := BenchCase{
 		name:            "regular",
 		needRepoNoErr:   true,
