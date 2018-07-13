@@ -31,43 +31,17 @@ func Start() {
 	}
 
 	gin.SetMode(gin.ReleaseMode)
-
 	Router = gin.Default()
 	Router.Use(gin.Logger())
 	Router.Use(gin.Recovery())
-	if !TestCaseFlag{
+	if !TestCaseFlag {
 		Router.Static("/static", "./static")
 		Router.LoadHTMLGlob("templates/*.html")
 	}
 
-
-	Router.GET("/", func(c *gin.Context) {
-		isLoggedIn := midlwares.CheckLoggedIn(c)
-		c.HTML(http.StatusOK, "index.tmpl.html", gin.H{
-			"title":      "GoToBooX",
-			"page":       "main",
-			"isLoggedIn": isLoggedIn,
-		})
-	})
-	Router.GET("/serverStatus", ServerIsOn)
-
-
-	Router.GET("/location", func(c *gin.Context) {
-		isLoggedIn := midlwares.CheckLoggedIn(c)
-		c.HTML(http.StatusOK, "index.tmpl.html", gin.H{
-			"title":      "GoToBooX - location",
-			"page":       "location",
-			"isLoggedIn": isLoggedIn,
-		})
-	})
-	Router.GET("/search", func(c *gin.Context) {
-		isLoggedIn := midlwares.CheckLoggedIn(c)
-		c.HTML(http.StatusOK, "index.tmpl.html", gin.H{
-			"title":      "GoToBooX - search",
-			"page":       "search",
-			"isLoggedIn": isLoggedIn,
-		})
-	})
+	Router.GET("/", IndexHandler)
+	Router.GET("/location", LocationHandler)
+	Router.GET("/search", SearchHandler)
 
 	service := NewUserService(postgres.NewPostgresUsersRepo(dataBase.Connection))
 	jwtMiddleware = &jwt.GinJWTMiddleware{
@@ -90,36 +64,27 @@ func Start() {
 		PayloadFunc: service.Payload,
 	}
 
-	Router.GET(apiRoute, IndexHandler)
+	Router.GET(apiRoute, ApiIndexHandler)
 	initUserProfileRoutes()
 	initBooksRoutes()
 	initTagsRoutes()
 
 	srv := &http.Server{
-		Addr:    ":"+port,
+		Addr:    ":" + port,
 		Handler: Router,
 	}
+	Router.GET("/serverStatus", ServerIsOn)
 
 	go func() {
-		// service connections
+		// Starting server
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("listen: %s\n", err)
 		}
 	}()
 
-
 	Shutdown = make(chan int)
 	<-Shutdown
 	log.Println("Shutdown Server ...")
-
-}
-
-func helloHandler(c *gin.Context) {
-	claims := jwt.ExtractClaims(c)
-	c.JSON(200, gin.H{
-		"userID": claims["id"],
-		"text":   "Hello! U see this cause u'r vip.",
-	})
 }
 
 func initUserProfileRoutes() {
@@ -183,7 +148,7 @@ func initUserProfileRoutes() {
 
 	// Show the user's profile page
 	// Ensure that the user is logged in by using the middleware
-	Router.GET("/userProfilePage", midlwares.EnsureLoggedIn(), midlwares.TokenChecking(), userService.ShowUsersProfilePage)
+	Router.GET("/userProfilePage", midlwares.EnsureLoggedIn(), midlwares.TokenChecking(), ShowUsersProfilePage)
 
 	Router.GET("/userComments/:nickname", ShowCommentsPage)
 }
@@ -225,4 +190,12 @@ func initTagsRoutes() {
 
 	tagsService := NewTagsService(postgres.NewBooksRepository(dataBase.Connection), postgres.NewTagsRepository(dataBase.Connection))
 	Router.GET("/api/v1/tags", tagsService.getTags)
+}
+
+func helloHandler(c *gin.Context) {
+	claims := jwt.ExtractClaims(c)
+	c.JSON(200, gin.H{
+		"userID": claims["id"],
+		"text":   "Hello! U see this cause u'r vip.",
+	})
 }

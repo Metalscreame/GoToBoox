@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	file:=setupLogFile()
+	file := setupLogFile()
 	defer file.Close()
 	dataBase.Connect()
 	services.ConfigureEmailDialer()
@@ -17,8 +17,8 @@ func main() {
 	go services.DailyEmailNotifications()
 }
 
-func setupLogFile()  *os.File{
-	logFile, err := os.OpenFile("log.txt", os.O_RDWR | os.O_CREATE | os.O_APPEND | os.O_TRUNC, 0666)
+func setupLogFile() *os.File {
+	logFile, err := os.OpenFile("log.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND|os.O_TRUNC, 0666)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -27,3 +27,5 @@ func setupLogFile()  *os.File{
 	log.Println("Recording of the log file has started...")
 	return logFile
 }
+
+

@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"github.com/metalscreame/GoToBoox/src/services/midlwares"
+
 )
 
 //ShowLoginPage is a handler function that renders static login page
@@ -46,7 +47,7 @@ func  UserProfileHandler(c *gin.Context) {
 }
 
 //ShowUsersProfilePage is a handler function that renders static userProfile page
-func(s* UserService) ShowUsersProfilePage(c *gin.Context) {
+func ShowUsersProfilePage(c *gin.Context) {
 	isLoggedIn := midlwares.CheckLoggedIn(c)
 	c.HTML(
 		http.StatusOK,
@@ -104,4 +105,22 @@ func ShowCommentsPage(c *gin.Context)  {
 			"page": "comments",
 		},
 	)
+}
+
+func SearchHandler(c *gin.Context)  {
+	isLoggedIn := midlwares.CheckLoggedIn(c)
+	c.HTML(http.StatusOK, "index.tmpl.html", gin.H{
+		"title":      "GoToBooX - search",
+		"page":       "search",
+		"isLoggedIn": isLoggedIn,
+	})
+}
+
+func LocationHandler(c *gin.Context)  {
+	isLoggedIn := midlwares.CheckLoggedIn(c)
+	c.HTML(http.StatusOK, "index.tmpl.html", gin.H{
+		"title":      "GoToBooX - location",
+		"page":       "location",
+		"isLoggedIn": isLoggedIn,
+	})
 }
