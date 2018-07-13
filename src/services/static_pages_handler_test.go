@@ -74,12 +74,11 @@ func TestStaticPages(t *testing.T) {
 	for _, testCase := range testCases {
 		testCase := testCase
 		t.Run(testCase.name, func(t *testing.T) {
-			router := GetTestRouter()
+			router := getTestRouter()
 			router.GET("/staticTest", testCase.handlerFunc)
 
 			req, _ := http.NewRequest("GET", "/staticTest", nil)
 
-			req.Header.Add("Content-Type", "text/html")
 			if !testCase.needLoggedOff {
 				req.AddCookie(&http.Cookie{Name: "is_logged_in", Value: "true"})
 			}
@@ -97,7 +96,35 @@ func TestStaticPages(t *testing.T) {
 
 }
 
-func GetTestRouter() *gin.Engine {
+func BenchmarkShowTakenBooksPage(b *testing.B) {
+	router := getTestRouter()
+	router.GET("/staticTest", ShowTakenBooksPage)
+	req, _ := http.NewRequest("GET", "/staticTest", nil)
+
+	for n := 0; n < b.N; n++ {
+		rr := httptest.NewRecorder()
+		router.ServeHTTP(rr, req)
+		if rr.Code != http.StatusOK {
+			b.Errorf("handler returned unexpected status: \n wanted: %v\n but got %v", http.StatusOK, rr.Code)
+		}
+	}
+}
+
+func BenchmarkSearchHandler(b *testing.B) {
+	router := getTestRouter()
+	router.GET("/staticTest", SearchHandler)
+	req, _ := http.NewRequest("GET", "/staticTest", nil)
+
+	for n := 0; n < b.N; n++ {
+		rr := httptest.NewRecorder()
+		router.ServeHTTP(rr, req)
+		if rr.Code != http.StatusOK {
+			b.Errorf("handler returned unexpected status: \n wanted: %v\n but got %v", http.StatusOK, rr.Code)
+		}
+	}
+}
+
+func getTestRouter() *gin.Engine {
 	r := gin.Default()
 	path := filepath.ToSlash(os.Getenv("GOPATH"))
 	r.LoadHTMLGlob(path + "/src/github.com/metalscreame/GoToBoox/templates/*")

@@ -31,9 +31,9 @@ func TestCommentsService_BookCommentsHandler(t *testing.T) {
 			needError: true,
 		},
 		{
-			name:      "need error, bad param",
-			needError: true,
-			needBadParam:true,
+			name:         "need error, bad param",
+			needError:    true,
+			needBadParam: true,
 		},
 		{
 			name:        "need error, cant get",
@@ -290,5 +290,60 @@ func TestCommentsService_AddBookCommentHandler(t *testing.T) {
 				t.Errorf("handler returned unexpected body: \n wanted: %v\n but got %v", testCase.expResponseBody, result)
 			}
 		})
+	}
+}
+
+func BenchmarkCommentsService_BookCommentsHandler(b *testing.B) {
+	gin.SetMode(gin.ReleaseMode)
+
+	type BenchCase struct {
+		name string
+
+		expResponseBody string
+		needError       bool
+		needRepoErr     bool
+		needRepoNoErr   bool
+	}
+	
+	benchCase := BenchCase{
+		name:            "regular",
+		needRepoNoErr:   true,
+		expResponseBody: `{"data":{"Comments":null},"status":200}`,
+	}
+
+	for n := 0; n < b.N; n++ {
+
+		mockCtrl := gomock.NewController(b)
+		defer mockCtrl.Finish()
+
+		mocCommentsRepo := mocks.NewMockCommentsRepository(mockCtrl)
+		mockService := NewCommentsService(mocCommentsRepo)
+
+		router := gin.New()
+		router.GET("/getAll/:book_id", mockService.BookCommentsHandler)
+
+		var req *http.Request
+		req, _ = http.NewRequest("GET", "/getAll/1", nil)
+		if benchCase.needRepoErr {
+			var commen []repository.Comment
+			mocCommentsRepo.EXPECT().GetAllCommentsByBookID(gomock.Any()).Return(commen, errors.New("needed error"))
+		}
+
+		if benchCase.needRepoNoErr {
+			var commen []repository.Comment
+			mocCommentsRepo.EXPECT().GetAllCommentsByBookID(gomock.Any()).Return(commen, nil)
+		}
+
+		rr := httptest.NewRecorder()
+		router.ServeHTTP(rr, req)
+
+		if status := rr.Code; status != http.StatusOK && !benchCase.needError {
+			b.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
+		}
+
+		result := rr.Body.String()
+		if result != benchCase.expResponseBody && !benchCase.needError {
+			b.Errorf("handler returned unexpected body: \n wanted: %v\n but got %v", benchCase.expResponseBody, result)
+		}
 	}
 }
