@@ -1,1 +1,4 @@
+<<<<<<< Updated upstream
 Recording of the log file has started...
+=======
+>>>>>>> Stashed changes

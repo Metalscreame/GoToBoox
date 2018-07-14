@@ -10,6 +10,7 @@ type tagsRepositoryPG struct {
 	Db *sql.DB
 }
 
+//NewTagsRepository is a function to get New TagsRepository which uses given connection
 func NewTagsRepository(Db *sql.DB) repository.TagsRepository {
 	return &tagsRepositoryPG{Db}
 }

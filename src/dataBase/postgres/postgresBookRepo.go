@@ -12,7 +12,7 @@ import (
 type booksRepositoryPG struct {
 	Db *sql.DB
 }
-
+//NewBooksRepository is a function to get New BooksRepository which uses given connection
 func NewBooksRepository(Db *sql.DB) repository.BookRepository {
 	return &booksRepositoryPG{Db}
 }
@@ -147,7 +147,7 @@ func (p *booksRepositoryPG) GetByCategory(categoryID int) (books []repository.Bo
 
 //GetByLikeName iterates over the DB using the SQL SELECT Request and return books by name
 func (p booksRepositoryPG) GetByLikeName(title string) (books []repository.Book, err error) {
-	rows, err := p.Db.Query("SELECT id, title FROM gotoboox.books WHERE LOWER(title) LIKE '%' || $1 || '%'", strings.ToLower(title) )
+	rows, err := p.Db.Query("SELECT id, title FROM gotoboox.books WHERE LOWER(title) LIKE '%' || $1 || '%'", strings.ToLower(title))
 	if err != nil {
 		log.Printf("Get %v", err)
 	}
@@ -180,7 +180,7 @@ func (p booksRepositoryPG) GetByTagsAndRating(tags []string, rating []int) (book
 			"GROUP BY gotoboox.books.title, gotoboox.books.id " + 
 			"having count(*) = $2",
 			pq.Array(tags), tagsLen)
-		log.Print(rating)
+
 		if err != nil {
 			log.Printf("Get %v", err)
 		}
@@ -197,15 +197,14 @@ func (p booksRepositoryPG) GetByTagsAndRating(tags []string, rating []int) (book
 		if err := rows.Err(); err != nil {
 			log.Printf("Get %v", err)
 		}
-	}else if tagsLen == 0 && rating[0] != 0 && rating[1] != 0{
+	} else if tagsLen == 0 && rating[0] != 0 && rating[1] != 0 {
 		// if user select the rating without tags
-		rows, err := p.Db.Query("SELECT gotoboox.books.id, gotoboox.books.title FROM gotoboox.books " +
-			"LEFT JOIN gotoboox.books_tags ON gotoboox.books.id = gotoboox.books_tags.id " +
-			"LEFT JOIN gotoboox.tags ON gotoboox.books_tags.tag_id = gotoboox.tags.tag_id " +
-			"WHERE gotoboox.books.popularity BETWEEN $1 AND $2" +
+		rows, err := p.Db.Query("SELECT gotoboox.books.id, gotoboox.books.title FROM gotoboox.books "+
+			"LEFT JOIN gotoboox.books_tags ON gotoboox.books.id = gotoboox.books_tags.id "+
+			"LEFT JOIN gotoboox.tags ON gotoboox.books_tags.tag_id = gotoboox.tags.tag_id "+
+			"WHERE gotoboox.books.popularity BETWEEN $1 AND $2"+
 			"GROUP BY gotoboox.books.title, gotoboox.books.id ",
 			rating[0], rating[1])
-		log.Print(rating)
 		if err != nil {
 			log.Printf("Get %v", err)
 		}
@@ -222,16 +221,15 @@ func (p booksRepositoryPG) GetByTagsAndRating(tags []string, rating []int) (book
 		if err := rows.Err(); err != nil {
 			log.Printf("Get %v", err)
 		}
-	}else{
+	} else {
 		// if user select the rating with tags
-		rows, err := p.Db.Query("SELECT gotoboox.books.id, gotoboox.books.title FROM gotoboox.books " +
-			"LEFT JOIN gotoboox.books_tags ON gotoboox.books.id = gotoboox.books_tags.id " +
-			"LEFT JOIN gotoboox.tags ON gotoboox.books_tags.tag_id = gotoboox.tags.tag_id " +
-			"WHERE gotoboox.tags.title = any($1) AND gotoboox.books.popularity BETWEEN $3 AND $4" +
-			"GROUP BY gotoboox.books.title, gotoboox.books.id " +
+		rows, err := p.Db.Query("SELECT gotoboox.books.id, gotoboox.books.title FROM gotoboox.books "+
+			"LEFT JOIN gotoboox.books_tags ON gotoboox.books.id = gotoboox.books_tags.id "+
+			"LEFT JOIN gotoboox.tags ON gotoboox.books_tags.tag_id = gotoboox.tags.tag_id "+
+			"WHERE gotoboox.tags.title = any($1) AND gotoboox.books.popularity BETWEEN $3 AND $4"+
+			"GROUP BY gotoboox.books.title, gotoboox.books.id "+
 			"having count(*) = $2",
 			pq.Array(tags), tagsLen, rating[0], rating[1])
-		log.Print(rating)
 		if err != nil {
 			log.Printf("Get %v", err)
 		}
@@ -273,22 +271,49 @@ func (p booksRepositoryPG) GetMostPopularBooks(quantity int) ([]repository.Book,
 
 func (p *booksRepositoryPG) InsertNewBook(b repository.Book) (lastID int, err error) {
 	err = p.Db.QueryRow("INSERT INTO gotoboox.books (title,description,image, popularity) values($1,$2,$3, $4) RETURNING id",
-		b.Title, b.Description, b.Image, b.Popularity).Scan(&lastID);
+		b.Title, b.Description, b.Image, b.Popularity).Scan(&lastID)
 	return
 }
 
-func (p *booksRepositoryPG) UpdateBookState(bookId int, state string) (err error) {
+func (p *booksRepositoryPG) UpdateBookState(bookID int, state string) (err error) {
 	_, err = p.Db.Query("UPDATE gotoboox.books set state=$1 where id=$2",
-		state, bookId)
+		state, bookID)
 	return
 }
 
-func (p *booksRepositoryPG) UpdateBookStateAndUsersBookIdByUserEmail(email string, state string, bookId int) (err error) {
-	_, err = p.Db.Query("UPDATE gotoboox.users set book_id=$1, has_book_for_exchange=TRUE where email=$2",
-		bookId, email)
+func (p *booksRepositoryPG) UpdateBookStateAndUsersBookIDByUserEmail(email string, state string, bookID int) (err error) {
+	tx, err := p.Db.Begin()
 	if err != nil {
 		return
 	}
-	_, err = p.Db.Query("UPDATE gotoboox.books set  state=$1 where id=$2", state, bookId)
-	return
+
+	//First transaction
+	{
+		stmt, err := tx.Prepare(`UPDATE gotoboox.users set book_id=$1, has_book_for_exchange=TRUE where email=$2`)
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
+		defer stmt.Close()
+
+		if _, err := stmt.Exec(bookID, email); err != nil {
+			tx.Rollback() // return an error too, we may want to wrap them
+			return err
+		}
+	}
+	//Second transaction
+	{
+		stmt, err := tx.Prepare(`UPDATE gotoboox.books set  state=$1 where id=$2`)
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
+		defer stmt.Close()
+
+		if _, err := stmt.Exec(state, bookID); err != nil {
+			tx.Rollback() // return an error too, we may want to wrap them
+			return err
+		}
+	}
+	return tx.Commit()
 }
