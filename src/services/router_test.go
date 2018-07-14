@@ -18,6 +18,7 @@ func TestStart(t *testing.T)  {
 	rr := httptest.NewRecorder()
 	Router.ServeHTTP(rr, req)
 
+
 	result := rr.Body.String()
 	status := rr.Code
 	if result != `{"status":"alive"}` && status != http.StatusOK {
