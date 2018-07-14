@@ -45,12 +45,7 @@ func DailyEmailNotifications() {
 			continue
 		}
 
-		sendCloser, err := dialer.Dial()
-		if err != nil {
-			log.Printf("Error at daily email notify while dial dialer at %v\n", time.Now())
-			log.Println(err)
-			continue
-		}
+		sendCloser, _ := dialer.Dial()
 		prepearedMsg := prepareMsgAllAvailebleBooksEveryDay(books)
 		msg := gomail.NewMessage()
 
@@ -80,15 +75,10 @@ func NofityAllBookReserved(bookTitle, bookDescription string) {
 		return
 	}
 
-	sc, err := dialer.Dial()
-	if err != nil {
-		log.Printf("Error at notifyAllBookReserved while dial dialer at %v\n", time.Now())
-		log.Println(err)
-		return
-	}
+	sc, _ := dialer.Dial()
 	msg := prepareMsgNewBook(bookTitle, bookDescription)
-
 	m := gomail.NewMessage()
+
 	for _, user := range listOfUsersEmails {
 
 		m.SetHeader("From", senderEmailAddr)
@@ -112,11 +102,8 @@ func NotifyAllNewBook(bookTitle, bookDescription string) {
 		log.Println(err)
 		return
 	}
-	sc, err := dialer.Dial()
-	if err != nil {
-		log.Println(err)
-		return
-	}
+	sc, _ := dialer.Dial()
+
 	msg := prepareMsgBookReserved(bookTitle, bookDescription)
 
 	m := gomail.NewMessage()
