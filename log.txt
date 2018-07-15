@@ -1,1 +1,5 @@
 Recording of the log file has started...
+<<<<<<< Updated upstream
+=======
+Wrong token was parsed by ::1 at 15000.07.15. 07:15:06
+>>>>>>> Stashed changes

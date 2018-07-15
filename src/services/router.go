@@ -148,7 +148,7 @@ func initUserProfileRoutes() {
 
 	// Show the user's profile page
 	// Ensure that the user is logged in by using the middleware
-	Router.GET("/userProfilePage", midlwares.EnsureLoggedIn(), ShowUsersProfilePage)
+	Router.GET("/userProfilePage", midlwares.EnsureLoggedIn(),midlwares.TokenChecking(), ShowUsersProfilePage)
 
 	Router.GET("/userComments/:nickname", ShowCommentsPage)
 }
