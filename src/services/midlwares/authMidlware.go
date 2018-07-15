@@ -69,24 +69,21 @@ func CheckLoggedIn(c *gin.Context) bool {
 //CheckToken is a func to parse token (whether it is valid or not)
 func CheckToken(c *gin.Context) (parsed bool) {
 	parsed = false
-	if cookie, err := c.Request.Cookie("token"); err != nil || cookie.Value == "" {
+	cookie, err := c.Request.Cookie("token")
+	if  err != nil || cookie.Value == "" {
 		return false
-	} else {
-		tokenValue := cookie.Value
-		token, _ := gojwt.Parse(tokenValue, func(token *gojwt.Token) (interface{}, error) {
-			if _, ok := token.Method.(*gojwt.SigningMethodHMAC); !ok {
-				return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
-			}
-
-			return []byte(dataBase.TokenKeyLookUp()), nil
-		})
-
-		if _, ok := token.Claims.(gojwt.MapClaims); ok && token.Valid {
-			return true
-		} else {
-			return false
-		}
 	}
-	return true
+	tokenValue := cookie.Value
+	token, _ := gojwt.Parse(tokenValue, func(token *gojwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*gojwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
 
+		return []byte(dataBase.TokenKeyLookUp()), nil
+	})
+
+	if _, ok := token.Claims.(gojwt.MapClaims); ok && token.Valid {
+		return true
+	}
+	return false
 }

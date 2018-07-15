@@ -83,8 +83,7 @@ func (p *booksRepositoryPG) GetAllTakenBooks() (books []repository.Book, err err
 	defer rows.Close()
 	var book repository.Book
 	for rows.Next() {
-
-		if err := rows.Scan(&book.ID, &book.Title, &book.Description, &book.Image);
+		if err = rows.Scan(&book.ID, &book.Title, &book.Description, &book.Image);
 			err != nil {
 			log.Printf("Get %v", err)
 		}
@@ -92,7 +91,7 @@ func (p *booksRepositoryPG) GetAllTakenBooks() (books []repository.Book, err err
 	}
 
 	if err != nil {
-		log.Printf("Get %v", err)
+		log.Printf("Got %v", err)
 		return
 	}
 

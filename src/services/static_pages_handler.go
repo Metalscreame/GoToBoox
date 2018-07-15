@@ -107,6 +107,7 @@ func ShowCommentsPage(c *gin.Context)  {
 	)
 }
 
+//SearchHandler is a static page hangler func that renders search page
 func SearchHandler(c *gin.Context)  {
 	isLoggedIn := midlwares.CheckLoggedIn(c)
 	c.HTML(http.StatusOK, "index.tmpl.html", gin.H{
@@ -116,6 +117,7 @@ func SearchHandler(c *gin.Context)  {
 	})
 }
 
+//LocationHandler is a static page handler func that renders location page
 func LocationHandler(c *gin.Context)  {
 	isLoggedIn := midlwares.CheckLoggedIn(c)
 	c.HTML(http.StatusOK, "index.tmpl.html", gin.H{

@@ -26,7 +26,7 @@ func (p *postgresUsersRepository) GetUserByEmail(email string) (u repository.Use
 		return
 	}
 	u.ReturningBookID = getNullableIntValue(n1)
-	u.BookId = getNullableIntValue(n2)
+	u.BookID = getNullableIntValue(n2)
 	u.TakenBookID = getNullableIntValue(n3)
 	return
 }
@@ -159,7 +159,7 @@ func (p *postgresUsersRepository) MakeBookCross(email string) (err error) {
 		}
 		defer stmt.Close()
 
-		if _, err := stmt.Exec(u.BookId, email); err != nil {
+		if _, err := stmt.Exec(u.BookID, email); err != nil {
 			tx.Rollback()
 			return err
 		}
@@ -173,7 +173,7 @@ func (p *postgresUsersRepository) MakeBookCross(email string) (err error) {
 		}
 		defer stmt.Close()
 
-		if _, err := stmt.Exec(repository.BookStateTaken, u.BookId); err != nil {
+		if _, err := stmt.Exec(repository.BookStateTaken, u.BookID); err != nil {
 			tx.Rollback()
 			return err
 		}
