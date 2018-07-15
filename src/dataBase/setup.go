@@ -37,6 +37,7 @@ func Connect() () {
 	return
 }
 
+//TokenKeyLookUp is a func that search for token value in system environment
 func TokenKeyLookUp() (string) {
 	tokenKey, ok := os.LookupEnv("TOKEN_KEY")
 	if !ok {

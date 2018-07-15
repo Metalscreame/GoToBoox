@@ -1,10 +1,8 @@
 Recording of the log file has started...
+Wrong token was parsed by ::1 at 15000.07.15. 07:15:06
+Wrong token was parsed by ::1 at 15000.07.15. 07:15:06
+Got pq: relation "gotoboox.comments" does not exist
+pq: could not determine data type of parameter $1
 Got pq: relation "gotoboox.comments" does not exist
 Got pq: relation "gotoboox.comments" does not exist
 Got pq: relation "gotoboox.comments" does not exist
-Got pq: relation "gotoboox.comments" does not exist
-Got pq: relation "gotoboox.comments" does not exist
-Got pq: relation "gotoboox.comments" does not exist
-Got pq: relation "gotoboox.comments" does not exist
-Wrong token was parsed by ::1 at 7000.07.07. 07:07:10
-Wrong token was parsed by ::1 at 7000.07.07. 07:07:10
