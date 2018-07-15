@@ -66,7 +66,7 @@ func CheckLoggedIn(c *gin.Context) bool {
 	return true
 }
 
-//CheckToken is a func to check token?
+//CheckToken is a func to parse token (whether it is valid or not)
 func CheckToken(c *gin.Context) (parsed bool) {
 	parsed = false
 	if cookie, err := c.Request.Cookie("token"); err != nil || cookie.Value == "" {
