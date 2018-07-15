@@ -1,3 +1,4 @@
+
 all:get glide vendor install linter test run
 
 get:
@@ -26,3 +27,7 @@ build:
 run:
 	go run main.go
 
+prof:
+	cd src/services
+	go test -v -run=^$ -bench=^BenchmarkCommentsService_BookCommentsHandler$ -benchtime=2s -cpuprofile=prof.cpu
+	go tool pprof services.test prof.cpu

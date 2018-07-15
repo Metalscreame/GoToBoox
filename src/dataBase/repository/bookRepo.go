@@ -1,5 +1,6 @@
 package repository
 
+//BookRepository is a repository interface for operations with books
 type BookRepository interface {
 	InsertTags (tagID int, bookID int) (err error)
 	GetAll() (books []Book, err error)
@@ -11,7 +12,7 @@ type BookRepository interface {
 	GetAllTakenBooks() (books []Book, err error)
 
 	InsertNewBook(b Book) (lastID int, err error)
-	UpdateBookState(bookId int, state string) (err error)
-	UpdateBookStateAndUsersBookIdByUserEmail(email string, state string, bookId int) (err error)
+	UpdateBookState(bookID int, state string) (err error)
+	UpdateBookStateAndUsersBookIDByUserEmail(email string, state string, bookID int) (err error)
 	GetTagsForBook (bookID int) (tags []Book, err error)
 }

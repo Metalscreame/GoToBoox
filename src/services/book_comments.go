@@ -5,19 +5,22 @@ import (
 	"strconv"
 	"net/http"
 	"github.com/metalscreame/GoToBoox/src/dataBase/repository"
+	"log"
+	"time"
 )
 
+//CommentsService is a struct that holds Comments repository
 type CommentsService struct {
 	CommentsRepo repository.CommentsRepository
 }
 
+//NewCommentsService is a function to return comments service based on concrete repository
 func NewCommentsService(commentsRepo repository.CommentsRepository) *CommentsService {
 	return &CommentsService{
 		CommentsRepo: commentsRepo,
 	}
 }
-
-
+//Data is a structure that holds comments
 type Data struct {
 	Comments []repository.Comment
 }
@@ -32,14 +35,19 @@ func (cs *CommentsService) BookCommentsHandler(c *gin.Context) {
 
 	comments, _ := cs.CommentsRepo.GetAllCommentsByBookID(bookID)
 	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": Data{comments}})
-	return
 }
 
 //AddBookCommentHandler is a handler func that adds a single user's comment for a single book.
 func (cs *CommentsService) AddBookCommentHandler(c *gin.Context) {
 
 	var comment repository.Comment
-	if err := c.BindJSON(&comment); err != nil {
+	err := c.BindJSON(&comment)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"status": "bad request"})
+		return
+	}
+
+	if comment.CommentaryText==""{
 		c.JSON(http.StatusBadRequest, gin.H{"status": "bad request"})
 		return
 	}
@@ -55,22 +63,19 @@ func (cs *CommentsService) AddBookCommentHandler(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"status": "bad request"})
 		return
 	}
-	nicknameCookie, err := c.Request.Cookie("nickname")
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"status": "bad request"})
-		return
-	}
+	nicknameCookie, _ := c.Request.Cookie("nickname")
 
 	nickname := nicknameCookie.Value
 	email := convertEmailString(emailCookie.Value)
 
 	err = cs.CommentsRepo.InsertNewComment(email, nickname, comment.CommentaryText, bookID)
 	if err != nil {
+		log.Println("Error in AddBookCommentHandler while getting user from db: ")
+		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"status": "ok"})
-	return
 }
 
 
@@ -80,10 +85,10 @@ func (cs *CommentsService) AllCommentsByNicknameHandler(c *gin.Context)  {
 
 	comments,err:=cs.CommentsRepo.GetAllCommentsByNickname(nickname)
 	if err != nil {
+		log.Printf("Error in AllCommentsByNickname while getting user from db at %v: ",time.Now())
+		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "server error"})
 		return
 	}
-
 	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": Data{comments}})
-	return
 }
