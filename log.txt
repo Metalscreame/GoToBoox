@@ -1,9 +1,2 @@
 Recording of the log file has started...
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-Wrong token was parsed by ::1 at 15000.07.15. 07:15:06
->>>>>>> Stashed changes
-=======
-Wrong token was parsed by ::1 at 15000.07.15. 07:15:06
->>>>>>> Stashed changes
+Get sql: no rows in result set
