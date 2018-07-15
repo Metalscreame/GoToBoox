@@ -12,6 +12,7 @@ func main() {
 	file := setupLogFile()
 	defer file.Close()
 	dataBase.Connect()
+	dataBase.TokenKeyLookUp()
 	services.ConfigureEmailDialer()
 	services.Start()
 	go services.DailyEmailNotifications()

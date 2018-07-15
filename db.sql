@@ -101,3 +101,5 @@ INSERT INTO gotoboox.books_tags(
   book_id, tag_id)
 VALUES ('1', '1'), ('1', '2'), ('1', '3'), ('2', '4'), ('3', '5'), ('4', '1'), ('5', '2'), ('6', '3'),
   ('7', '15'), ('8', '1'), ('5', '11'), ('5', '16'),('5', '5') ;
+
+INSERT INTO gotoboox.roles VALUES (1,'User');

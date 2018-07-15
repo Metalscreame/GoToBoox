@@ -116,8 +116,8 @@
     xhr.open('GET', '/api/v1/book/' + param, false);
     xhr.send();
     if (xhr.status != 200) {
-        alert("error")
-        alert(xhr.status + ': ' + xhr.statusText);
+        console.log("error");
+        console.log(xhr.status + ': ' + xhr.statusText);
     } else {
         var BookDescription = document.getElementById('BookDescription');
         var data = JSON.parse(xhr.responseText)
@@ -138,8 +138,8 @@
     xhr.open('GET', '/api/v1/tag/' + param, false);
     xhr.send();
     if (xhr.status != 200) {
-        alert("error")
-        alert(xhr.status + ': ' + xhr.statusText);
+        console.log("error");
+        console.log(xhr.status + ': ' + xhr.statusText);
     } else {
         var BookDescription = document.getElementById('BookDescription');
         var data = JSON.parse(xhr.responseText);
@@ -358,40 +358,28 @@
                     window.location.href = "/";
                 } else {
                     alert("Nickname or email is already registered!");
-                    window.location.href = "/register";
+                    window.location.href = "/register/0";
                 }
             };
             xhr.send(data);
-
         } else {
             var xhr = new XMLHttpRequest();
             xhr.open('POST', "/api/v1/register", false);
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == XMLHttpRequest.DONE && this.status == 200) {
-                    // console.log('bookId is not undefined + status 200')
-                    //
-                    // // alert("Redirecting to book"+bookId);
-                    // var xhr2= new XMLHttpRequest();
-                    // // document.cookie = "bookToReturnFromUpload=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                    // xhr2.open('GET', "/book/"+bookId, false);
-                    // xhr2.send();
                     window.location.replace("/book/" + bookId);
                     return false;
                 } else {
                     alert("Nickname or email is already registered!");
-                    window.location.href = "/register";
                     return false;
                 }
             };
             xhr.send(data);
         }
-
-
     });
 </script>
 {{end}}
-
 
 {{if eq .page "userprofile"}}
 <script>
@@ -410,7 +398,7 @@
         xhr.open('GET', '/api/v1/makeBookCross', false);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.send();
-        if (xhr.status != 200) {
+        if (xhr.status == 200) {
             window.location.replace("/");
             return false;
         }
@@ -597,7 +585,7 @@
         }
 
         var rate = $("#rateText").val();
-        rate = parseFloat(rate)
+        rate = parseFloat(rate);
         if(rate==""){
             alert("Please, rate the book");
             return;
@@ -623,7 +611,6 @@
 
         reader.onload = function () {
             fileBase64 = reader.result;
-            // alert(fileBase64);
             console.log(reader.result);
             var data = JSON.stringify({
                 "title": title,
@@ -631,7 +618,6 @@
                 "popularity": rate,
                 "tag_id": select_val,
                 "base_64_img": fileBase64.toString(),
-
             });
             xhr.send(data);
         };
@@ -737,7 +723,6 @@
 {{end}}
 
 {{if eq .page "comments"}}
-
 <script>
     var url_string = window.location.href;
     var param = url_string.substr(url_string.lastIndexOf('/') + 1);
@@ -749,25 +734,6 @@
             var commentSection = document.getElementById('commentSection');
             var i = 0;
             for (i; i < data.data['Comments'].length; i++) {
-                // var newLi = document.createElement('li');
-                // newLi.innerHTML = '<li class="media">\n' +
-                //         '                                    <a class="pull-left" href="#">\n' +
-                //         '                                        <img class="media-object img-circle" src="/static/img/bklogo.jpg" height="60" width="60" alt="profile">\n' +
-                //         '                                    </a>\n' +
-                //         '                                    <div class="media-body">\n' +
-                //         '                                        <div class="well well-lg">\n' +
-                //         '                                            <a href="/userComments/'+data.data['Comments'][i]['nickname']+'">' + data.data['Comments'][i]['nickname'] + ' </a>\n' +
-                //         '                                            <ul class="media-date text-uppercase reviews list-inline">\n' +
-                //         '                                            <li class="date">' + data.data['Comments'][i]['date'].substring(0,data.data['Comments'][i]['date'].length-8) + '</li>' +
-                //         '                                            </ul>\n' +
-                //         '                                            <p class="media-comment">\n' +
-                //         data.data['Comments'][i]['commentText'] +
-                //         '                                            </p>\n' +
-                //         '                                        </div>\n' +
-                //         '                                    </div>\n' +
-                //         '                                </li>';
-                // commentSection.appendChild(newLi);
-
                 var commentSection = document.getElementById('commentFulfier');
                 var newLi = document.createElement('div');
                 newLi.innerHTML =
@@ -778,16 +744,12 @@
                         '<p>' + data.data['Comments'][i]['commentText'] + ' </p>' +
                         '</div>';
                 commentSection.appendChild(newLi);
-
-
             }
         }
     };
     xhr.send();
 </script>
-
 {{end}}
-
 
 <script>
     var xhr = new XMLHttpRequest();

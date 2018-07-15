@@ -1,4 +1,2 @@
-<<<<<<< Updated upstream
 Recording of the log file has started...
-=======
->>>>>>> Stashed changes
+Get pq: столбец "tag_id" не существует
