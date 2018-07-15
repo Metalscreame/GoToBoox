@@ -17,9 +17,14 @@ const (
 	apiRoute = "/api/v1"
 )
 
+//Router is a global router variable
 var Router *gin.Engine
 var jwtMiddleware *jwt.GinJWTMiddleware
+
+//Shutdown Is a channel to shutdown the router in runtime
 var Shutdown chan int
+
+//TestCaseFlag is a variable that used in router test. Is true when it's a test
 var TestCaseFlag bool
 
 //Start is a function that starts server and initializes all the routes.
@@ -64,7 +69,7 @@ func Start() {
 		PayloadFunc: service.Payload,
 	}
 
-	Router.GET(apiRoute, ApiIndexHandler)
+	Router.GET(apiRoute, ApIIndexHandler)
 	initUserProfileRoutes()
 	initBooksRoutes()
 	initTagsRoutes()

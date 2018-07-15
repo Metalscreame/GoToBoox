@@ -38,7 +38,7 @@ type User struct {
 	NewPassword                     string    `json:"new_passwordd"`
 	ExchangesNumber                 int       `json:"-"`
 	HasBookForExchange              bool      `json:"has_book_for_exchange"`
-	BookId                          int       `json:"-"`
+	BookID                          int       `json:"-"`
 	NotificationGetBewBooks         bool      `json:"notification_get_new_books"`
 	NotificationGetWhenBookReserved bool      `json:"notification_get_when_book_reserved"`
 	NotificationDaily               bool      `json:"notification_daily"`

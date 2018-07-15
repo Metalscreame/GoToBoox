@@ -9,8 +9,8 @@ import (
 	"github.com/metalscreame/GoToBoox/src/services/midlwares"
 )
 
-// ApiIndexHandler get all nedeed data for the main page from repos.
-func ApiIndexHandler(c *gin.Context) {
+// ApIIndexHandler get all nedeed data for the main page from repos.
+func ApIIndexHandler(c *gin.Context) {
 	type Data struct{
 		Books []repository.Book
 		Users []repository.User
@@ -26,6 +26,7 @@ func ApiIndexHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": output})
 }
 
+//IndexHandler is a static handler func that render index.html
 func IndexHandler(c *gin.Context)  {
 	isLoggedIn := midlwares.CheckLoggedIn(c)
 	c.HTML(http.StatusOK, "index.tmpl.html", gin.H{
