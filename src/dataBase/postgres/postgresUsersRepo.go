@@ -134,7 +134,7 @@ func (p *postgresUsersRepository) SetReturningBookIDByEmail(id int, email string
 }
 
 func (p *postgresUsersRepository) ClearReturningBookIDByEmail(email string) (err error) {
-	_, err = p.Db.Query("UPDATE gotoboox.users set returning_book_id=NULL where email=$2", email)
+	_, err = p.Db.Query("UPDATE gotoboox.users set returning_book_id=NULL where email=$1", email)
 	return
 }
 

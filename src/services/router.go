@@ -141,14 +141,14 @@ func initUserProfileRoutes() {
 	Router.GET("/register/:bookid", midlwares.EnsureNotLoggedIn(), ShowRegistrPage)
 
 	// Show the user's profile page or login page
-	Router.GET("/userProfile", UserProfileHandler, )
+	Router.GET("/userProfile", UserProfileHandler )
 
 	//Shows the lock page
 	Router.GET("/uploadPage/:book_id", midlwares.EnsureLoggedIn(), ShowUploadBookPage)
 
 	// Show the user's profile page
 	// Ensure that the user is logged in by using the middleware
-	Router.GET("/userProfilePage", midlwares.EnsureLoggedIn(), midlwares.TokenChecking(), ShowUsersProfilePage)
+	Router.GET("/userProfilePage", midlwares.EnsureLoggedIn(), ShowUsersProfilePage)
 
 	Router.GET("/userComments/:nickname", ShowCommentsPage)
 }
