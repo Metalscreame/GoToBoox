@@ -32,6 +32,8 @@ func Connect() () {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	Connection.Exec("SET search_path TO gotoboox, PUBLIC")
 	return
 }
 

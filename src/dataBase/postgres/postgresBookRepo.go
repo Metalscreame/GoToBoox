@@ -24,7 +24,7 @@ const (
 //InsertTags inserts to database tags that belong to book
 func (p *booksRepositoryPG) InsertTags(tagID int, bookID int) (err error) {
 
-	_, err = p.Db.Query("INSERT INTO gotoboox.books_tags (id, tag_id) values($1, $2)",
+	_, err = p.Db.Query("INSERT INTO books_tags (id, tag_id) values($1, $2)",
 		bookID, tagID)
 	return
 }
@@ -32,7 +32,7 @@ func (p *booksRepositoryPG) InsertTags(tagID int, bookID int) (err error) {
 //GetTagsForBook get list of tags that belong to certain book
 func (p *booksRepositoryPG) GetTagsForBook(bookID int) (tags []repository.Book, err error) {
 
-	rows, err := p.Db.Query("SELECT gotoboox.tags.title FROM (gotoboox.books JOIN gotoboox.books_tags USING (id)) JOIN gotoboox.tags USING (tag_id) WHERE gotoboox.books.id = $1", bookID)
+	rows, err := p.Db.Query("SELECT tags.title FROM (books JOIN books_tags USING (id)) JOIN tags USING (tag_id) WHERE books.id = $1", bookID)
 	if err != nil {
 		log.Printf("Get %v", err)
 		return
@@ -57,7 +57,7 @@ func (p *booksRepositoryPG) GetTagsForBook(bookID int) (tags []repository.Book, 
 //GetByID iterates over the DB using the SQL SELECT Request and return selected book by its ID
 func (p *booksRepositoryPG) GetByID(bookID int) (books repository.Book, err error) {
 
-	row := p.Db.QueryRow("SELECT title, description, popularity, state, image  FROM gotoboox.books where id = $1", bookID)
+	row := p.Db.QueryRow("SELECT title, description, popularity, state, image  FROM books where id = $1", bookID)
 	if err != nil {
 		log.Printf("Get %v", err)
 
@@ -75,7 +75,7 @@ func (p *booksRepositoryPG) GetByID(bookID int) (books repository.Book, err erro
 //GetAllTakenBooks iterates over the DB using the SQL SELECT Request and return all books with state "taken"
 func (p *booksRepositoryPG) GetAllTakenBooks() (books []repository.Book, err error) {
 
-	rows, err := p.Db.Query("SELECT id, title, description, image  FROM gotoboox.books where state = $1", takenState)
+	rows, err := p.Db.Query("SELECT id, title, description, image  FROM books where state = $1", takenState)
 	if err != nil {
 		log.Printf("Get %v", err)
 		return
@@ -100,7 +100,7 @@ func (p *booksRepositoryPG) GetAllTakenBooks() (books []repository.Book, err err
 
 //GetAll iterates over the DB using the SQL SELECT Request and return all books from DB
 func (p *booksRepositoryPG) GetAll() (books []repository.Book, err error) {
-	rows, err := p.Db.Query("SELECT id, title, description, state  FROM gotoboox.books LIMIT 100")
+	rows, err := p.Db.Query("SELECT id, title, description, state  FROM books LIMIT 100")
 	if err != nil {
 		log.Printf("Get %v", err)
 		return
@@ -117,14 +117,13 @@ func (p *booksRepositoryPG) GetAll() (books []repository.Book, err error) {
 	}
 	if err := rows.Err(); err != nil {
 		log.Printf("Get %v", err)
-
 	}
 	return books, nil
 }
 
 //GetByCategory iterates over the DB using the SQL SELECT Request and return books from chosen category
 func (p *booksRepositoryPG) GetByCategory(categoryID int) (books []repository.Book, err error) {
-	rows, err := p.Db.Query("SELECT title FROM gotoboox.books WHERE categories_id=$1", categoryID)
+	rows, err := p.Db.Query("SELECT title FROM books WHERE categories_id=$1", categoryID)
 	if err != nil {
 		log.Printf("Get %v", err)
 	}
@@ -146,7 +145,7 @@ func (p *booksRepositoryPG) GetByCategory(categoryID int) (books []repository.Bo
 
 //GetByLikeName iterates over the DB using the SQL SELECT Request and return books by name
 func (p booksRepositoryPG) GetByLikeName(title string) (books []repository.Book, err error) {
-	rows, err := p.Db.Query("SELECT id, title FROM gotoboox.books WHERE LOWER(title) LIKE '%' || $1 || '%'", strings.ToLower(title))
+	rows, err := p.Db.Query("SELECT id, title FROM books WHERE LOWER(title) LIKE '%' || $1 || '%'", strings.ToLower(title))
 	if err != nil {
 		log.Printf("Get %v", err)
 	}
@@ -172,11 +171,11 @@ func (p booksRepositoryPG) GetByTagsAndRating(tags []string, rating []int) (book
 
 	// if user don't select rating, but select the tags
 	if rating[0] == 0 && rating[1] == 0 && tagsLen != 0{
-		rows, err := p.Db.Query("SELECT gotoboox.books.id, gotoboox.books.title FROM gotoboox.books " +
-			"LEFT JOIN gotoboox.books_tags ON gotoboox.books.id = gotoboox.books_tags.id " +
-			"LEFT JOIN gotoboox.tags ON gotoboox.books_tags.tag_id = gotoboox.tags.tag_id " +
-			"WHERE gotoboox.tags.title = any($1) " +
-			"GROUP BY gotoboox.books.title, gotoboox.books.id " + 
+		rows, err := p.Db.Query("SELECT books.id, books.title FROM books " +
+			"LEFT JOIN books_tags ON books.id = books_tags.id " +
+			"LEFT JOIN tags ON books_tags.tag_id = tags.tag_id " +
+			"WHERE tags.title = any($1) " +
+			"GROUP BY books.title, books.id " +
 			"having count(*) = $2",
 			pq.Array(tags), tagsLen)
 
@@ -198,11 +197,11 @@ func (p booksRepositoryPG) GetByTagsAndRating(tags []string, rating []int) (book
 		}
 	} else if tagsLen == 0 && rating[0] != 0 && rating[1] != 0 {
 		// if user select the rating without tags
-		rows, err := p.Db.Query("SELECT gotoboox.books.id, gotoboox.books.title FROM gotoboox.books "+
-			"LEFT JOIN gotoboox.books_tags ON gotoboox.books.id = gotoboox.books_tags.id "+
-			"LEFT JOIN gotoboox.tags ON gotoboox.books_tags.tag_id = gotoboox.tags.tag_id "+
-			"WHERE gotoboox.books.popularity BETWEEN $1 AND $2"+
-			"GROUP BY gotoboox.books.title, gotoboox.books.id ",
+		rows, err := p.Db.Query("SELECT books.id, books.title FROM books "+
+			"LEFT JOIN books_tags ON books.id = books_tags.id "+
+			"LEFT JOIN tags ON books_tags.tag_id = tags.tag_id "+
+			"WHERE books.popularity BETWEEN $1 AND $2"+
+			"GROUP BY books.title, books.id ",
 			rating[0], rating[1])
 		if err != nil {
 			log.Printf("Get %v", err)
@@ -222,11 +221,11 @@ func (p booksRepositoryPG) GetByTagsAndRating(tags []string, rating []int) (book
 		}
 	} else {
 		// if user select the rating with tags
-		rows, err := p.Db.Query("SELECT gotoboox.books.id, gotoboox.books.title FROM gotoboox.books "+
-			"LEFT JOIN gotoboox.books_tags ON gotoboox.books.id = gotoboox.books_tags.id "+
-			"LEFT JOIN gotoboox.tags ON gotoboox.books_tags.tag_id = gotoboox.tags.tag_id "+
-			"WHERE gotoboox.tags.title = any($1) AND gotoboox.books.popularity BETWEEN $3 AND $4"+
-			"GROUP BY gotoboox.books.title, gotoboox.books.id "+
+		rows, err := p.Db.Query("SELECT books.id, books.title FROM books "+
+			"LEFT JOIN books_tags ON books.id = books_tags.id "+
+			"LEFT JOIN tags ON books_tags.tag_id = tags.tag_id "+
+			"WHERE tags.title = any($1) AND books.popularity BETWEEN $3 AND $4"+
+			"GROUP BY books.title, books.id "+
 			"having count(*) = $2",
 			pq.Array(tags), tagsLen, rating[0], rating[1])
 		if err != nil {
@@ -269,13 +268,13 @@ func (p booksRepositoryPG) GetMostPopularBooks(quantity int) ([]repository.Book,
 }
 
 func (p *booksRepositoryPG) InsertNewBook(b repository.Book) (lastID int, err error) {
-	err = p.Db.QueryRow("INSERT INTO gotoboox.books (title,description,image, popularity) values($1,$2,$3, $4) RETURNING id",
+	err = p.Db.QueryRow("INSERT INTO books (title,description,image, popularity) values($1,$2,$3, $4) RETURNING id",
 		b.Title, b.Description, b.Image, b.Popularity).Scan(&lastID)
 	return
 }
 
 func (p *booksRepositoryPG) UpdateBookState(bookID int, state string) (err error) {
-	_, err = p.Db.Query("UPDATE gotoboox.books set state=$1 where id=$2",
+	_, err = p.Db.Query("UPDATE books set state=$1 where id=$2",
 		state, bookID)
 	return
 }
@@ -288,7 +287,7 @@ func (p *booksRepositoryPG) UpdateBookStateAndUsersBookIDByUserEmail(email strin
 
 	//First transaction
 	{
-		stmt, err := tx.Prepare(`UPDATE gotoboox.users set book_id=$1, has_book_for_exchange=TRUE where email=$2`)
+		stmt, err := tx.Prepare(`UPDATE users set book_id=$1, has_book_for_exchange=TRUE where email=$2`)
 		if err != nil {
 			tx.Rollback()
 			return err
@@ -302,7 +301,7 @@ func (p *booksRepositoryPG) UpdateBookStateAndUsersBookIDByUserEmail(email strin
 	}
 	//Second transaction
 	{
-		stmt, err := tx.Prepare(`UPDATE gotoboox.books set  state=$1 where id=$2`)
+		stmt, err := tx.Prepare(`UPDATE books set  state=$1 where id=$2`)
 		if err != nil {
 			tx.Rollback()
 			return err
