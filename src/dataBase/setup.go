@@ -33,7 +33,7 @@ func Connect() () {
 		log.Fatal(err)
 	}
 
-	Connection.Exec("SET search_path TO gotoboox, PUBLIC")
+	//Connection.Exec("SET search_path TO gotoboox, PUBLIC")
 	return
 }
 
