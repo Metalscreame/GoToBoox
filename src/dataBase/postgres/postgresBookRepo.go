@@ -24,7 +24,7 @@ const (
 //InsertTags inserts to database tags that belong to book
 func (p *booksRepositoryPG) InsertTags(tagID int, bookID int) (err error) {
 
-	_, err = p.Db.Query("INSERT INTO books_tags (id, tag_id) values($1, $2)", bookID, tagID)
+	_, err = p.Db.Query("INSERT INTO gotoboox.books_tags (id, tag_id) values($1, $2)", bookID, tagID)
 	return
 }
 
