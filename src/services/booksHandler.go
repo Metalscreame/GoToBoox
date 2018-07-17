@@ -248,8 +248,8 @@ func (b *BookService) InsertNewBook(c *gin.Context) {
 
 	for k := range bookToAdd.TagID {
 		number, _ := strconv.Atoi(bookToAdd.TagID[k])
-		if err := b.BooksRepo.InsertTags(number, last);
-			err != nil {
+		err = b.BooksRepo.InsertTags(number, last)
+		if 	err != nil {
 			log.Printf("Error in InsertNewBook while adding tag to a new book %v: \n", time.Now())
 			log.Println(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"status": "server error"})
