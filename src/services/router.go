@@ -6,19 +6,26 @@ import (
 	"github.com/metalscreame/GoToBoox/src/services/midlwares"
 	"github.com/metalscreame/GoToBoox/src/dataBase"
 	"github.com/metalscreame/GoToBoox/src/dataBase/postgres"
-	"os"
 	"log"
 	"net/http"
 	"gopkg.in/appleboy/gin-jwt.v2"
 	"time"
+	"os"
 )
 
 const (
 	apiRoute = "/api/v1"
 )
 
-var router *gin.Engine
+//Router is a global router variable
+var Router *gin.Engine
 var jwtMiddleware *jwt.GinJWTMiddleware
+
+//Shutdown Is a channel to shutdown the router in runtime
+var Shutdown chan int
+
+//TestCaseFlag is a variable that used in router test. Is true when it's a test
+var TestCaseFlag bool
 
 //Start is a function that starts server and initializes all the routes.
 func Start() {
@@ -29,38 +36,17 @@ func Start() {
 	}
 
 	gin.SetMode(gin.ReleaseMode)
-	router = gin.New()
-	router.Use(gin.Logger())
-	router.Use(gin.Recovery())
-	router.Static("/static", "./static")
-	router.LoadHTMLGlob("templates/*.html")
+	Router = gin.Default()
+	Router.Use(gin.Logger())
+	Router.Use(gin.Recovery())
+	if !TestCaseFlag {
+		Router.Static("/static", "./static")
+		Router.LoadHTMLGlob("templates/*.html")
+	}
 
-	router.GET("/", func(c *gin.Context) {
-		isLoggedIn := midlwares.CheckLoggedIn(c)
-		c.HTML(http.StatusOK, "index.tmpl.html", gin.H{
-			"title":      "GoToBooX",
-			"page":       "main",
-			"isLoggedIn": isLoggedIn,
-		})
-	})
-	router.GET("/location", func(c *gin.Context) {
-		isLoggedIn := midlwares.CheckLoggedIn(c)
-		c.HTML(http.StatusOK, "index.tmpl.html", gin.H{
-			"title":      "GoToBooX - location",
-			"page":       "location",
-			"isLoggedIn": isLoggedIn,
-		})
-	})
-	router.GET("/search", func(c *gin.Context) {
-		isLoggedIn := midlwares.CheckLoggedIn(c)
-		c.HTML(http.StatusOK, "index.tmpl.html", gin.H{
-			"title":      "GoToBooX - search",
-			"page":       "search",
-			"isLoggedIn": isLoggedIn,
-		})
-	})
-
-
+	Router.GET("/", IndexHandler)
+	Router.GET("/location", LocationHandler)
+	Router.GET("/search", SearchHandler)
 
 	service := NewUserService(postgres.NewPostgresUsersRepo(dataBase.Connection))
 	jwtMiddleware = &jwt.GinJWTMiddleware{
@@ -83,30 +69,37 @@ func Start() {
 		PayloadFunc: service.Payload,
 	}
 
-	router.GET(apiRoute, IndexHandler)
+	Router.GET(apiRoute, ApIIndexHandler)
 	initUserProfileRoutes()
 	initBooksRoutes()
 	initTagsRoutes()
-	router.Run(":" + port)
 
-}
+	srv := &http.Server{
+		Addr:    ":" + port,
+		Handler: Router,
+	}
+	Router.GET("/serverStatus", ServerIsOn)
 
-func helloHandler(c *gin.Context) {
-	claims := jwt.ExtractClaims(c)
-	c.JSON(200, gin.H{
-		"userID": claims["id"],
-		"text":   "Hello! U see this cause u'r vip.",
-	})
+	go func() {
+		// Starting server
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("listen: %s\n", err)
+		}
+	}()
+
+	Shutdown = make(chan int)
+	<-Shutdown
+	log.Println("Shutdown Server ...")
 }
 
 func initUserProfileRoutes() {
 
 	// Use the SetUserStatus middleware for every route to set a flag
 	// indicating whether the request was from an authenticated user or not
-	router.Use(midlwares.SetUserStatus())
+	Router.Use(midlwares.SetUserStatus())
 
 	userService := NewUserService(postgres.NewPostgresUsersRepo(dataBase.Connection))
-	userRoutes := router.Group(apiRoute)
+	userRoutes := Router.Group(apiRoute)
 	{
 
 		// Handle POST requests at /api/v1/login
@@ -137,7 +130,7 @@ func initUserProfileRoutes() {
 		userRoutes.DELETE("/userProfile", midlwares.EnsureLoggedIn(), userService.UserDeleteHandler)
 	}
 
-	auth := router.Group("/auth")
+	auth := Router.Group("/auth")
 	auth.Use(jwtMiddleware.MiddlewareFunc())
 	{
 		auth.GET("/vip", helloHandler)
@@ -146,60 +139,68 @@ func initUserProfileRoutes() {
 
 	// Show the login page
 	// Ensure that the user is not logged in by using the middleware
-	router.GET("/login", midlwares.EnsureNotLoggedIn(), ShowLoginPage)
+	Router.GET("/login", midlwares.EnsureNotLoggedIn(), ShowLoginPage)
 
 	// Show the registration page
 	// Ensure that the user is not logged in by using the middleware
-	router.GET("/register/:bookid", midlwares.EnsureNotLoggedIn(), ShowRegistrPage)
+	Router.GET("/register/:bookid", midlwares.EnsureNotLoggedIn(), ShowRegistrPage)
 
 	// Show the user's profile page or login page
-	router.GET("/userProfile", UserProfileHandler, )
+	Router.GET("/userProfile", UserProfileHandler )
 
 	//Shows the lock page
-	router.GET("/uploadPage/:book_id", midlwares.EnsureLoggedIn(), ShowUploadBookPage)
+	Router.GET("/uploadPage/:book_id", midlwares.EnsureLoggedIn(), ShowUploadBookPage)
 
 	// Show the user's profile page
 	// Ensure that the user is logged in by using the middleware
-	router.GET("/userProfilePage", midlwares.EnsureLoggedIn(),midlwares.TokenChecking(), userService.ShowUsersProfilePage)
+	Router.GET("/userProfilePage", midlwares.EnsureLoggedIn(),midlwares.TokenChecking(), ShowUsersProfilePage)
 
-	router.GET("/userComments/:nickname", ShowCommentsPage)
+	Router.GET("/userComments/:nickname", ShowCommentsPage)
 }
 
 func initBooksRoutes() {
 	bookService := NewBookService(postgres.NewBooksRepository(dataBase.Connection), postgres.NewPostgresUsersRepo(dataBase.Connection))
 	//get all books in certain category
-	router.GET("categories/:cat_id/books", bookService.getBooks)
+	Router.GET("categories/:cat_id/books", bookService.getBooks)
 	//get all books
-	router.GET("/books", bookService.showAllBooks)
+	Router.GET("/books", bookService.showAllBooks)
 	//get books by it's ID
-	//router.GET("/categories/:cat_id/book/:book_id", bookService.getBook)
-	router.GET("/books/m/mostPopularBooks", bookService.FiveMostPop)
-	router.POST("/api/v1/books/search", bookService.getBookBySearch)
-	router.GET("/api/v1/book/:book_id", bookService.getBook)
+	//Router.GET("/categories/:cat_id/book/:book_id", bookService.getBook)
+	Router.GET("/books/m/mostPopularBooks", bookService.FiveMostPop)
+	Router.POST("/api/v1/books/search", bookService.getBookBySearch)
+	Router.GET("/api/v1/book/:book_id", bookService.getBook)
 
-	router.GET("/book/:book_id", ShowBook)
-	router.GET("/api/v1/books/taken", bookService.showAllTakenBooks)
+	Router.GET("/book/:book_id", ShowBook)
+	Router.GET("/api/v1/books/taken", bookService.showAllTakenBooks)
 
-	router.GET("/api/v1/books/showReserved", bookService.ShowReservedBooksByUser)
-	router.GET("/api/v1/books/taken/0", bookService.ShowTakenBookByUser)
-	router.GET("/books/taken/:id", ShowTakenBooksPage)
+	Router.GET("/api/v1/books/showReserved", bookService.ShowReservedBooksByUser)
+	Router.GET("/api/v1/books/taken/0", bookService.ShowTakenBookByUser)
+	Router.GET("/books/taken/:id", ShowTakenBooksPage)
 
-	router.POST("/api/v1/insertNewBook/:book_id", midlwares.EnsureLoggedIn(), bookService.InsertNewBook)
+	Router.POST("/api/v1/insertNewBook/:book_id", midlwares.EnsureLoggedIn(), bookService.InsertNewBook)
 
-	router.GET("/api/v1/updateBookStatus/:book_id", bookService.UpdateBookStatusToReturningFromTaken)
-	router.GET("/api/v1/updateBookStatusReturn/:book_id/:reserved_book_id", bookService.UpdateBookStatusToReturning)
-	router.GET("/api/v1/makeBookCross", bookService.ExchangeBook)
+	Router.GET("/api/v1/updateBookStatus/:book_id", bookService.UpdateBookStatusToReturningFromTaken)
+	Router.GET("/api/v1/updateBookStatusReturn/:book_id/:reserved_book_id", bookService.UpdateBookStatusToReturning)
+	Router.GET("/api/v1/makeBookCross", bookService.ExchangeBook)
 
 	commentsService := NewCommentsService(postgres.NewCommentsRepository(dataBase.Connection))
-	router.GET("/api/v1/bookComments/:book_id", commentsService.BookCommentsHandler)
-	router.POST("/api/v1/addBookComment/:book_id", commentsService.AddBookCommentHandler)
-	router.GET("/api/v1/allCommentsByNickname/:nickname", commentsService.AllCommentsByNicknameHandler)
+	Router.GET("/api/v1/bookComments/:book_id", commentsService.BookCommentsHandler)
+	Router.POST("/api/v1/addBookComment/:book_id", commentsService.AddBookCommentHandler)
+	Router.GET("/api/v1/allCommentsByNickname/:nickname", commentsService.AllCommentsByNicknameHandler)
 
-	router.GET("api/v1/tag/:book_id", bookService.getTags)
+	Router.GET("api/v1/tag/:book_id", bookService.getTags)
 }
 
 func initTagsRoutes() {
 
 	tagsService := NewTagsService(postgres.NewBooksRepository(dataBase.Connection), postgres.NewTagsRepository(dataBase.Connection))
-	router.GET("/api/v1/tags", tagsService.getTags)
+	Router.GET("/api/v1/tags", tagsService.getTags)
+}
+
+func helloHandler(c *gin.Context) {
+	claims := jwt.ExtractClaims(c)
+	c.JSON(200, gin.H{
+		"userID": claims["id"],
+		"text":   "Hello! U see this cause u'r vip.",
+	})
 }
