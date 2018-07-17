@@ -147,7 +147,7 @@ func (p *booksRepositoryPG) GetByCategory(categoryID int) (books []repository.Bo
 
 //GetByLikeName iterates over the DB using the SQL SELECT Request and return books by name
 func (p booksRepositoryPG) GetByLikeName(title string) (books []repository.Book, err error) {
-	rows, err := p.Db.Query("SELECT id, title FROM gotoboox.books WHERE LOWER(title) LIKE '%' || $1 || '%'", strings.ToLower(title) )
+	rows, err := p.Db.Query("SELECT id, title FROM gotoboox.books WHERE LOWER(title) LIKE '%' || $1 || '%'", strings.ToLower(title))
 	if err != nil {
 		log.Printf("Get %v", err)
 	}
@@ -167,86 +167,67 @@ func (p booksRepositoryPG) GetByLikeName(title string) (books []repository.Book,
 	return books, nil
 }
 
+func getResult(rows *sql.Rows) (books []repository.Book, err error) {
+	defer rows.Close()
+	var book repository.Book
+	for rows.Next() {
+
+		if err := rows.Scan(&book.ID, &book.Title);
+			err != nil {
+			log.Printf("Get %v", err)
+		}
+		books = append(books, book)
+	}
+	if err := rows.Err(); err != nil {
+		log.Printf("Get %v", err)
+	}
+	return books, err
+}
+
 //GetByTagsAndRating iterates over the DB using the SQL SELECT Request and return books by tags AND/OR rating
 func (p booksRepositoryPG) GetByTagsAndRating(tags []string, rating []int) (books []repository.Book, err error) {
 	tagsLen := len(tags)
-
 	// if user don't select rating, but select the tags
-	if rating[0] == 0 && rating[1] == 0 && tagsLen != 0{
-		rows, err := p.Db.Query("SELECT gotoboox.books.id, gotoboox.books.title FROM gotoboox.books " +
-			"LEFT JOIN gotoboox.books_tags ON gotoboox.books.id = gotoboox.books_tags.id " +
-			"LEFT JOIN gotoboox.tags ON gotoboox.books_tags.tag_id = gotoboox.tags.tag_id " +
-			"WHERE gotoboox.tags.title = any($1) " +
-			"GROUP BY gotoboox.books.title, gotoboox.books.id " + 
-			"having count(*) = $2",
-			pq.Array(tags), tagsLen)
-		log.Print(rating)
-		if err != nil {
-			log.Printf("Get %v", err)
-		}
-		defer rows.Close()
-		var book repository.Book
-		for rows.Next() {
-
-			if err := rows.Scan(&book.ID, &book.Title);
-				err != nil {
+	if rating[0] >= 0 && rating[1] >= 0 {
+		if rating[0] == 0 && rating[1] == 0 && tagsLen != 0 {
+			rows, err := p.Db.Query("SELECT gotoboox.books.id, gotoboox.books.title FROM gotoboox.books "+
+				"LEFT JOIN gotoboox.books_tags ON gotoboox.books.id = gotoboox.books_tags.id "+
+				"LEFT JOIN gotoboox.tags ON gotoboox.books_tags.tag_id = gotoboox.tags.tag_id "+
+				"WHERE gotoboox.tags.title = any($1) "+
+				"GROUP BY gotoboox.books.title, gotoboox.books.id "+
+				"having count(*) = $2",
+				pq.Array(tags), tagsLen)
+			if err != nil {
 				log.Printf("Get %v", err)
 			}
-			books = append(books, book)
-		}
-		if err := rows.Err(); err != nil {
-			log.Printf("Get %v", err)
-		}
-	}else if tagsLen == 0 && rating[0] != 0 && rating[1] != 0{
-		// if user select the rating without tags
-		rows, err := p.Db.Query("SELECT gotoboox.books.id, gotoboox.books.title FROM gotoboox.books " +
-			"LEFT JOIN gotoboox.books_tags ON gotoboox.books.id = gotoboox.books_tags.id " +
-			"LEFT JOIN gotoboox.tags ON gotoboox.books_tags.tag_id = gotoboox.tags.tag_id " +
-			"WHERE gotoboox.books.popularity BETWEEN $1 AND $2" +
-			"GROUP BY gotoboox.books.title, gotoboox.books.id ",
-			rating[0], rating[1])
-		log.Print(rating)
-		if err != nil {
-			log.Printf("Get %v", err)
-		}
-		defer rows.Close()
-		var book repository.Book
-		for rows.Next() {
+			return getResult(rows)
 
-			if err := rows.Scan(&book.ID, &book.Title);
-				err != nil {
+			// if user select the rating without tags
+		} else if tagsLen == 0 && rating[0] != 0 && rating[1] != 0 {
+			rows, err := p.Db.Query("SELECT gotoboox.books.id, gotoboox.books.title FROM gotoboox.books "+
+				"LEFT JOIN gotoboox.books_tags ON gotoboox.books.id = gotoboox.books_tags.id "+
+				"LEFT JOIN gotoboox.tags ON gotoboox.books_tags.tag_id = gotoboox.tags.tag_id "+
+				"WHERE gotoboox.books.popularity BETWEEN $1 AND $2"+
+				"GROUP BY gotoboox.books.title, gotoboox.books.id ",
+				rating[0], rating[1])
+			if err != nil {
 				log.Printf("Get %v", err)
 			}
-			books = append(books, book)
-		}
-		if err := rows.Err(); err != nil {
-			log.Printf("Get %v", err)
-		}
-	}else{
-		// if user select the rating with tags
-		rows, err := p.Db.Query("SELECT gotoboox.books.id, gotoboox.books.title FROM gotoboox.books " +
-			"LEFT JOIN gotoboox.books_tags ON gotoboox.books.id = gotoboox.books_tags.id " +
-			"LEFT JOIN gotoboox.tags ON gotoboox.books_tags.tag_id = gotoboox.tags.tag_id " +
-			"WHERE gotoboox.tags.title = any($1) AND gotoboox.books.popularity BETWEEN $3 AND $4" +
-			"GROUP BY gotoboox.books.title, gotoboox.books.id " +
-			"having count(*) = $2",
-			pq.Array(tags), tagsLen, rating[0], rating[1])
-		log.Print(rating)
-		if err != nil {
-			log.Printf("Get %v", err)
-		}
-		defer rows.Close()
-		var book repository.Book
-		for rows.Next() {
+			return getResult(rows)
 
-			if err := rows.Scan(&book.ID, &book.Title);
-				err != nil {
+			// if user select the rating with tags
+		} else {
+			rows, err := p.Db.Query("SELECT gotoboox.books.id, gotoboox.books.title FROM gotoboox.books "+
+				"LEFT JOIN gotoboox.books_tags ON gotoboox.books.id = gotoboox.books_tags.id "+
+				"LEFT JOIN gotoboox.tags ON gotoboox.books_tags.tag_id = gotoboox.tags.tag_id "+
+				"WHERE gotoboox.tags.title = any($1) AND gotoboox.books.popularity BETWEEN $3 AND $4"+
+				"GROUP BY gotoboox.books.title, gotoboox.books.id "+
+				"having count(*) = $2",
+				pq.Array(tags), tagsLen, rating[0], rating[1])
+			if err != nil {
 				log.Printf("Get %v", err)
 			}
-			books = append(books, book)
-		}
-		if err := rows.Err(); err != nil {
-			log.Printf("Get %v", err)
+			return getResult(rows)
 		}
 	}
 	return books, nil

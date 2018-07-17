@@ -1,15 +1,5 @@
 CREATE SCHEMA gotoboox;
 
-CREATE TABLE gotoboox.tags(
-id SERIAL primary key,
-title character varying (150) not null
-);
-
-CREATE TABLE gotoboox.books_tags(
-book_id int references gotoboox.books (id) not null,
-tag_id int references gotoboox.tags (id) not null
-);
-
 CREATE TABLE gotoboox.books(
 id SERIAL PRIMARY KEY,
 title CHARACTER VARYING (250) NOT NULL,
@@ -18,6 +8,16 @@ popularity REAL NOT NULL DEFAULT 0,
 evaluation_number INT DEFAULT 0,
 state TEXT DEFAULT 'FREE',
 image BYTEA
+);
+
+CREATE TABLE gotoboox.tags(
+tag_id SERIAL primary key,
+title character varying (150) not null
+);
+
+CREATE TABLE gotoboox.books_tags(
+id int references gotoboox.books (id) not null,
+tag_id int references gotoboox.tags (tag_id) not null
 );
 
 CREATE TABLE gotoboox.users (
@@ -98,6 +98,6 @@ VALUES
   ('EpicReads'),('MyFav'),('NeededToBeRead');
 
 INSERT INTO gotoboox.books_tags(
-  book_id, tag_id)
+  id, tag_id)
 VALUES ('1', '1'), ('1', '2'), ('1', '3'), ('2', '4'), ('3', '5'), ('4', '1'), ('5', '2'), ('6', '3'),
   ('7', '15'), ('8', '1'), ('5', '11'), ('5', '16'),('5', '5') ;
