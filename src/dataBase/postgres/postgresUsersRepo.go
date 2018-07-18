@@ -59,10 +59,30 @@ func (p *postgresUsersRepository) GetRoleByEmail(email string) (user repository.
 //InsertRolesToUsers insert to database user's role (default role is "user")
 func (p *postgresUsersRepository) InsertRolesToUsers(userID int, roleID int) (err error) {
 
-	_, err = p.Db.Query("INSERT INTO gotoboox.users_roles (id, role_id) values($1, $2)",
-		userID, roleID)
-	return
+	tx, err := p.Db.Begin()
+	if err != nil {
+		return
+	}
+
+	stmt, err := tx.Prepare("INSERT INTO gotoboox.users_roles (id, role_id) values($1, $2)")
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	defer stmt.Close()
+
+	if _, err := stmt.Exec(userID, roleID); err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
 }
+
+//_, err = p.Db.Query("INSERT INTO gotoboox.users_roles (id, role_id) values($1, $2)",
+//	userID, roleID)
+//return
+//}
 
 //DeleteUserByEmail deletes user from database
 func (p *postgresUsersRepository) DeleteUserByEmail(email string) (err error) {

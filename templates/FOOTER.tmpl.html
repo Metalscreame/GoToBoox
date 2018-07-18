@@ -9,6 +9,8 @@
 <script src="/static/vendor/jquery/jquery.min.js"></script>
 <script src="/static/vendor/bootstrap/js/bootstrap.min.js"></script>
 <script src="/static/js/nativemultiple.jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
 {{if eq .page "search"}}
 <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
@@ -16,21 +18,20 @@
     $.ajax({
         type: 'GET',
         url: '/api/v1/tags',
-        success: function(data){
-            for(var i = 0; i < data.data.Tags.length; i++){
+        success: function (data) {
+            for (var i = 0; i < data.data.Tags.length; i++) {
                 $('#tags').append("<option>" + data.data.Tags[i].tag_title + "</option>")
             }
 
             console.log(data)
         },
-        error: function(data){
+        error: function (data) {
             console.log('error: ' + data)
         }
     })
 
 
-
-    $('#search').submit(function(e) {
+    $('#search').submit(function (e) {
         e.preventDefault();
         var $form = $(this);
         console.log($form.serialize());
@@ -38,16 +39,16 @@
             type: 'POST',
             url: '/api/v1/books/search',
             data: $form.serialize(),
-            success: function(data) { //Данные отправлены успешно
+            success: function (data) { //Данные отправлены успешно
                 console.log(data);
                 $('#result').empty();
-                if (data.response.Books){
-                    for (var i = 0; i < data.response.Books.length; i++){
+                if (data.response.Books) {
+                    for (var i = 0; i < data.response.Books.length; i++) {
                         $('#result').append("<li><a href='/book/" + data.response.Books[i].id + "'>" + data.response.Books[i].title + "</a></li>");
                     }
                 }
             },
-            error: function(data) { // Данные не отправлены
+            error: function (data) { // Данные не отправлены
                 console.log(data);
             }
         });
@@ -55,15 +56,15 @@
 
     $('input[name=three]').nativeMultiple({
         stylesheet: "slider",
-        onCreate: function() {
+        onCreate: function () {
             console.log(this);
         },
-        onChange: function(first_value, second_value) {
+        onChange: function (first_value, second_value) {
             $('#firstValue').val(first_value);
             $('#secondValue').val(second_value);
             console.log('onchange', [first_value, second_value]);
         },
-        onSlide: function(first_value, second_value) {
+        onSlide: function (first_value, second_value) {
             $('#firstValue').val(first_value);
             $('#secondValue').val(second_value);
             console.log('onslide', [first_value, second_value]);
@@ -99,12 +100,21 @@
                         status = '/static/img/returning.svg';
                         break;
                 }
-                newLi.innerHTML = "<img src='" + status + "'> " + "<a href='/book/" + data.data['Books'][i]['id'] + "'>" + data.data['Books'][i]['title'] + "</a>"
-                ;
+
+
+                newLi.innerHTML = "<p class=\"name\"> <img src='" + status + "'> " + "<a href='/book/" + data.data['Books'][i]['id'] + "'>" + data.data['Books'][i]['title'] + "</a></p>";
                 books.appendChild(newLi);
+
             }
+            var booksList = new List('book-list', {
+                valueNames:  ['name'],
+                page: 15,
+                pagination: true
+            });
         }
     }
+
+
 </script>
 {{end}}
 
@@ -134,7 +144,7 @@
     var url_string = window.location.href;
     var param = url_string.substr(url_string.lastIndexOf('/') + 1);
     var xhr = new XMLHttpRequest();
-    var tags =  document.getElementById('tags');
+    var tags = document.getElementById('tags');
     xhr.open('GET', '/api/v1/tag/' + param, false);
     xhr.send();
     if (xhr.status != 200) {
@@ -146,7 +156,7 @@
         var i = 0;
         for (i; i < data.data['Book'].length; i++) {
             var newLi = document.createElement('li');
-            newLi.innerHTML =  data.data['Book'][i]['tag_title'];
+            newLi.innerHTML = data.data['Book'][i]['tag_title'];
             tags.appendChild(newLi);
             //document.getElementById('tags').innerHTML = data.data['Book'][i]['tag_title'];
         }
@@ -586,7 +596,7 @@
 
         var rate = $("#rateText").val();
         rate = parseFloat(rate);
-        if(rate==""){
+        if (rate == "") {
             alert("Please, rate the book");
             return;
         }
@@ -738,8 +748,8 @@
                 var newLi = document.createElement('div');
                 newLi.innerHTML =
                         '<div class="head">' +
-                        '<small><strong class=\'user\'>' + data.data['Comments'][i]['nickname']+'</strong>'
-                        +'    '+ data.data['Comments'][i]['date'].substring(0, data.data['Comments'][i]['date'].length - 8) + '</small>' +
+                        '<small><strong class=\'user\'>' + data.data['Comments'][i]['nickname'] + '</strong>'
+                        + '    ' + data.data['Comments'][i]['date'].substring(0, data.data['Comments'][i]['date'].length - 8) + '</small>' +
                         '</div>' +
                         '<p>' + data.data['Comments'][i]['commentText'] + ' </p>' +
                         '</div>';
@@ -780,23 +790,23 @@
 
 </script>
 
-        <script>
-            $(document).ready(function () {
-                $(".js-example-basic-multiple-limit").select2({
-                    maximumSelectionLength: 5
-                });
+<script>
+    $(document).ready(function () {
+        $(".js-example-basic-multiple-limit").select2({
+            maximumSelectionLength: 5
+        });
+    });
+</script>
+
+<script>
+    var select_val;
+    $("#tagsList").select2()
+            .on("select2:select", function (e) {
+                var selected_element = $(e.currentTarget);
+                select_val = selected_element.val();
             });
-        </script>
 
-        <script>
-            var select_val;
-            $("#tagsList").select2()
-                    .on("select2:select", function (e) {
-                        var selected_element = $(e.currentTarget);
-                      select_val = selected_element.val();
-                    });
-
-        </script>
+</script>
 </body>
 </html>
 {{end}}
