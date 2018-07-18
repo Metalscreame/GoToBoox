@@ -164,28 +164,18 @@ func (p booksRepositoryPG) GetByLikeName(title string) (books []repository.Book,
 	return books, nil
 }
 
-func getResult(rows *sql.Rows) (books []repository.Book, err error) {
+func getResult(rows *sql.Rows, rowsError error) (books []repository.Book, err error) {
 	defer rows.Close()
+	if rowsError != nil {
+		log.Printf("Get %v", err)
+	}
+
 	var book repository.Book
 	for rows.Next() {
-
-	// if user don't select rating, but select the tags
-	if rating[0] == 0 && rating[1] == 0 && tagsLen != 0{
-		rows, err := p.Db.Query("SELECT gotoboox.books.id, gotoboox.books.title FROM gotoboox.books " +
-			"LEFT JOIN gotoboox.books_tags ON gotoboox.books.id = gotoboox.books_tags.id " +
-			"LEFT JOIN gotoboox.tags ON gotoboox.books_tags.tag_id = gotoboox.tags.tag_id " +
-			"WHERE gotoboox.tags.title = any($1) " +
-			"GROUP BY gotoboox.books.title, gotoboox.books.id " +
-			"having count(*) = $2",
-			pq.Array(tags), tagsLen)
-
-		if err != nil {
+		books = append(books, book)
+		if err := rows.Err(); err != nil {
 			log.Printf("Get %v", err)
 		}
-		books = append(books, book)
-	}
-	if err := rows.Err(); err != nil {
-		log.Printf("Get %v", err)
 	}
 	return books, err
 }
@@ -203,47 +193,18 @@ func (p booksRepositoryPG) GetByTagsAndRating(tags []string, rating []int) (book
 				"GROUP BY gotoboox.books.title, gotoboox.books.id "+
 				"having count(*) = $2",
 				pq.Array(tags), tagsLen)
-			if err != nil {
-				log.Printf("Get %v", err)
-			}
-			books = append(books, book)
-		}
-		if err := rows.Err(); err != nil {
-			log.Printf("Get %v", err)
-		}
+			return getResult(rows, err)
 	} else if tagsLen == 0 && rating[0] != 0 && rating[1] != 0 {
-		// if user select the rating without tags
+		// if user don't select tags, but select the rating
 		rows, err := p.Db.Query("SELECT gotoboox.books.id, gotoboox.books.title FROM gotoboox.books "+
 			"LEFT JOIN gotoboox.books_tags ON gotoboox.books.id = gotoboox.books_tags.id "+
 			"LEFT JOIN gotoboox.tags ON gotoboox.books_tags.tag_id = gotoboox.tags.tag_id "+
 			"WHERE gotoboox.books.popularity BETWEEN $1 AND $2"+
 			"GROUP BY gotoboox.books.title, books.id ",
 			rating[0], rating[1])
-		if err != nil {
-			log.Printf("Get %v", err)
-		}
-		defer rows.Close()
-		var book repository.Book
-		for rows.Next() {
-
-			// if user select the rating without tags
-		} else if tagsLen == 0 && rating[0] != 0 && rating[1] != 0 {
-			rows, err := p.Db.Query("SELECT gotoboox.books.id, gotoboox.books.title FROM gotoboox.books "+
-				"LEFT JOIN gotoboox.books_tags ON gotoboox.books.id = gotoboox.books_tags.id "+
-				"LEFT JOIN gotoboox.tags ON gotoboox.books_tags.tag_id = gotoboox.tags.tag_id "+
-				"WHERE gotoboox.books.popularity BETWEEN $1 AND $2"+
-				"GROUP BY gotoboox.books.title, gotoboox.books.id ",
-				rating[0], rating[1])
-			if err != nil {
-				log.Printf("Get %v", err)
-			}
-			books = append(books, book)
-		}
-		if err := rows.Err(); err != nil {
-			log.Printf("Get %v", err)
-		}
+			return getResult(rows, err)
 	} else {
-		// if user select the rating with tags
+		// if user select the rating and tags
 		rows, err := p.Db.Query("SELECT gotoboox.books.id, gotoboox.books.title FROM gotoboox.books "+
 			"LEFT JOIN gotoboox.books_tags ON gotoboox.books.id = gotoboox.books_tags.id "+
 			"LEFT JOIN gotoboox.tags ON gotoboox.books_tags.tag_id = gotoboox.tags.tag_id "+
@@ -251,26 +212,7 @@ func (p booksRepositoryPG) GetByTagsAndRating(tags []string, rating []int) (book
 			"GROUP BY gotoboox.books.title, gotoboox.books.id "+
 			"having count(*) = $2",
 			pq.Array(tags), tagsLen, rating[0], rating[1])
-		if err != nil {
-			log.Printf("Get %v", err)
-		}
-		defer rows.Close()
-		var book repository.Book
-		for rows.Next() {
-
-			// if user select the rating with tags
-		} else {
-			rows, err := p.Db.Query("SELECT gotoboox.books.id, gotoboox.books.title FROM gotoboox.books "+
-				"LEFT JOIN gotoboox.books_tags ON gotoboox.books.id = gotoboox.books_tags.id "+
-				"LEFT JOIN gotoboox.tags ON gotoboox.books_tags.tag_id = gotoboox.tags.tag_id "+
-				"WHERE gotoboox.tags.title = any($1) AND gotoboox.books.popularity BETWEEN $3 AND $4"+
-				"GROUP BY gotoboox.books.title, gotoboox.books.id "+
-				"having count(*) = $2",
-				pq.Array(tags), tagsLen, rating[0], rating[1])
-			if err != nil {
-				log.Printf("Get %v", err)
-			}
-			return getResult(rows)
+			return getResult(rows, err)
 		}
 	}
 	return books, nil
