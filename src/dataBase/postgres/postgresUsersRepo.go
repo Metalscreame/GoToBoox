@@ -79,11 +79,6 @@ func (p *postgresUsersRepository) InsertRolesToUsers(userID int, roleID int) (er
 	return tx.Commit()
 }
 
-//_, err = p.Db.Query("INSERT INTO gotoboox.users_roles (id, role_id) values($1, $2)",
-//	userID, roleID)
-//return
-//}
-
 //DeleteUserByEmail deletes user from database
 func (p *postgresUsersRepository) DeleteUserByEmail(email string) (err error) {
 	_, err = p.Db.Query("DELETE FROM gotoboox.users WHERE email=$1", email)
