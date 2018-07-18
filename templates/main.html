@@ -1,26 +1,31 @@
 {{define "main"}}
 
 <div class="col-lg-6">
-<h2>About us</h2>
-<p> BookCrossing is the act of releasing your books "into the wild" for a stranger to find, or via "controlled release"
-    to another BookCrossing member, and tracking where they go via journal entries from around the world. Our community
-    of passionate, generous book-lovers is changing the world and touching lives, one traveling book at a time.
-    We hope you join us!</p>
-<img src="https://img.depo.ua/original/Dec2015/81879.jpg" width="400" height="400"/>
-<div class="row mb-4" style="display: block">
-    <div class="col-md-8">
+    <h2>About us</h2>
+    <p> BookCrossing is the act of releasing your books "into the wild" for a stranger to find, or via "controlled
+        release"
+        to another BookCrossing member, and tracking where they go via journal entries from around the world. Our
+        community
+        of passionate, generous book-lovers is changing the world and touching lives, one traveling book at a time.
+        We hope you join us!</p>
+    <img src="https://img.depo.ua/original/Dec2015/81879.jpg" width="400" height="400"/>
+    <div class="row mb-4" style="display: block">
+        <div class="col-md-8">
 
-    </div>
-    <div class="col-md-4">
+        </div>
+        <div class="col-md-4">
+        </div>
     </div>
 </div>
-</div>
 
 
-<div class="col-lg-6">
+<div class="col-lg-6" id="book-list">
+    <h6>Search: </h6>
+    <input type="text" class="search"/>
     <h2>Books: </h2>
-    <ul id="books">
+    <ul id="books" class="list">
     </ul>
+    <ul class="pagination"></ul>
 </div>
 
 {{end}}
